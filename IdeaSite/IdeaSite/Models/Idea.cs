@@ -22,7 +22,7 @@ namespace IdeaSite.Models
         public DateTime creationDate { get; set; }
 
         // What is the name of the individual who submitted this idea?
-        public string submitter { get; set; }
+        //public string submitter { get; set; }
 
         // Is the idea Submitted, Active, or Archived?
         public string statusCode { get; set; }
