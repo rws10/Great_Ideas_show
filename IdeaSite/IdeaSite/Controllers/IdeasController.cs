@@ -46,7 +46,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ideaID,name,description,category,creationDate,submitter,statusCode,denialReason")] Idea idea)
+        public ActionResult Create([Bind(Include = "ideaID,name,description,category,creationDate,statusCode,denialReason")] Idea idea)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ideaID,name,description,category,creationDate,submitter,statusCode,denialReason")] Idea idea)
+        public ActionResult Edit([Bind(Include = "ideaID,name,description,category,creationDate,statusCode,denialReason")] Idea idea)
         {
             if (ModelState.IsValid)
             {
