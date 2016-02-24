@@ -50,6 +50,7 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
+                idea.creationDate = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -4,8 +4,29 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h1>Great Ideas</h1>
 
+<h2>How You Can Contribute</h2>
+
+​<p>If you have an idea to improve current processes or believe a process could be improved, <font color="red">start by searching to ensure you aren't creating a duplicate idea</font>. You can use the search box in the upper right-hand side of the page.</p>
+
+<h2>Submitting Your Idea</h2>
+
+<p>
+    Can't find what you were looking for?
+    <br /><br />
+    Create Your Idea.
+    <br /><br />
+    Please note that Florida has a broad public records law (Chapter 119, Florida Statutes). Most written communications to or from state employees are public records obtainable by the public upon request.
+    <br /><br />
+    If you wish to change the sort order or filter ideas by name, date, or title go to the filter page.
+    <br/><br />
+    If you wish to view the ideas that have been approved for project submission, please go to the Approved Ideas and Discussions page.
+    <br /><br />
+    To comment on the discussion of an idea, click on the title below.
+    <br /><br />
+    Note: <font color="red">You cannot directly add a new discussion using "new discussion" below</font>. You will first need to submit your idea above and when your idea has been approved, it will appear below.
+</p>
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -18,46 +39,29 @@
             @Html.DisplayNameFor(model => model.description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.category)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.creationDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.statusCode)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.denialReason)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.category)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.creationDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.statusCode)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.denialReason)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ideaID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ideaID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ideaID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.creationDate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ideaID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ideaID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ideaID })
+            </td>
+        </tr>
+    }
 
 </table>

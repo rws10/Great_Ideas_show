@@ -1,5 +1,6 @@
 # Team_Zed
-FDACS Forum
+Here are a list of tips and such the project.
 
-TESTING....
-|I can edit the readme from Visual Studios
+Desired (non critical) Functions:
+- Have a page that will list all of the ideas with a specific status code. 
+  (e.g. all of the ideas with a status of "Submitted")
