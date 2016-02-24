@@ -26,10 +26,6 @@
             @Html.DisplayFor(model => model.description)
         </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.category)
-        </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.creationDate)
         </dt>
@@ -46,11 +42,11 @@
             @Html.DisplayFor(model => model.statusCode)
         </dd>
 
-        <dt>
+        <dt class="@Model.statusCode">
             @Html.DisplayNameFor(model => model.denialReason)
         </dt>
 
-        <dd>
+        <dd class="@Model.statusCode">
             @Html.DisplayFor(model => model.denialReason)
         </dd>
 

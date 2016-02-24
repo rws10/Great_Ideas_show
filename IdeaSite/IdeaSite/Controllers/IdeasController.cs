@@ -36,6 +36,7 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas/Create
+
         public ActionResult Create()
         {
             return View();

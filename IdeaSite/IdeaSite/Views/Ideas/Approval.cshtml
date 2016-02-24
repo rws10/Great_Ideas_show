@@ -1,20 +1,22 @@
 ﻿@model IdeaSite.Models.Idea
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Approval";
 }
 
-<h2>Create</h2>
+<h2>Approval</h2>
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
+    
     <div class="form-horizontal">
         <h4>Idea</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ideaID)
+
         <div class="form-group">
             @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -32,6 +34,14 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.statusCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.statusCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.statusCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.denialReason, new { htmlAttributes = new { @class = "form-control" } })
@@ -39,11 +49,9 @@
             </div>
         </div>
 
-        @Html.Hidden("statusCode", "Submitted");
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
     </div>
