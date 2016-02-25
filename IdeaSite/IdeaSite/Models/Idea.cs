@@ -35,6 +35,7 @@ namespace IdeaSite.Models
         // On approval it needs to be "Approved"
         // On archival it needs to be "Archived"
         // On rejection it needs to be "Rejected"
+        [Display(Name = "Status")]
         public string statusCode { get; set; }
 
         // Why was this idea Denied?
