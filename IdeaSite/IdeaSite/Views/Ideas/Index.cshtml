@@ -1,31 +1,46 @@
-﻿@model IEnumerable<IdeaSite.Models.Idea>
+﻿<!-- This page seems a little confusing. I've tried to make it easier on the eyes and order the information in
+    a way that is more natural.-->
+
+
+@model IEnumerable<IdeaSite.Models.Idea>
 
 @{
     ViewBag.Title = "Index";
 }
 
+<!--We should probably come up with a better title-->
 <h1>Great Ideas</h1>
+<br />
 
-<h2>How You Can Contribute</h2>
+<h3>How You Can Contribute</h3>
+<!--An unwanted newline is printed here-->
+​<p>
+    If you have an idea to improve current processes or believe a process could be improved post it here!
+    <br />
+    Please remember to search first to ensure your idea has not already been posted.
+</p>
+    
 
-​<p>If you have an idea to improve current processes or believe a process could be improved, <font color="red">start by searching to ensure you aren't creating a duplicate idea</font>. You can use the search box in the upper right-hand side of the page.</p>
-
-<h2>Submitting Your Idea</h2>
+<h3>Before submitting Your Idea...</h3>
 
 <p>
-    Can't find what you were looking for?
+    Please remember to search to ensure your idea has not already been submitted!
+    <br />
+    The filter page enables you to sort or filter ideas by name, date, or title.
+    <br />
+    Approved submissions are listed on the Approved Ideas and Discussions page.
+    <!--<br />
+    Click the title below to comment on an idea.
+    <br /><br /> -->
+    <br />
+    &nbsp; &nbsp; <font size="2"><b>Note: New discussions will not be displayed below until they are approved.</b></font>
     <br /><br />
-    Create Your Idea.
-    <br /><br />
-    Please note that Florida has a broad public records law (Chapter 119, Florida Statutes). Most written communications to or from state employees are public records obtainable by the public upon request.
-    <br /><br />
-    If you wish to change the sort order or filter ideas by name, date, or title go to the filter page.
-    <br/><br />
-    If you wish to view the ideas that have been approved for project submission, please go to the Approved Ideas and Discussions page.
-    <br /><br />
-    To comment on the discussion of an idea, click on the title below.
-    <br /><br />
-    Note: <font color="red">You cannot directly add a new discussion using "new discussion" below</font>. You will first need to submit your idea above and when your idea has been approved, it will appear below.
+
+    <h3>Still can't find what you were looking for?</h3>
+    <b>Create your idea.</b>
+    <br />
+    Click the "Create New" link below to begin.
+    <br /> <br />
 </p>
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -65,3 +80,11 @@
     }
 
 </table>
+
+<p> <!--Made the Florida public records law more of a footnote-->
+    <font size="1">
+    <b>
+        Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).
+        Most written communications to or from state employees are public records obtainable by request.
+    </b>
+</p>
