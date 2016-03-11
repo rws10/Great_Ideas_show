@@ -1,0 +1,56 @@
+﻿@model IdeaSite.Models.Idea
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Idea<br></h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        
+        <div class="form-group">
+            <label class="control-label col-md-2" for="name">Name</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="name" name="name" value="" type="text">
+                <span class="field-validation-valid text-danger" data-valmsg-for="name" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="description">Description</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="description" name="description" value="" type="text">
+                <span class="field-validation-valid text-danger" data-valmsg-for="description" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="denialReason">Reason for Denial</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="denialReason" name="denialReason" value="" type="text">
+                <span class="field-validation-valid text-danger" data-valmsg-for="denialReason" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <input id="statusCode" name="statusCode" value="Submitted" type="hidden">
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input value="Create" class="btn btn-default" type="submit">
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
