@@ -11,6 +11,8 @@ namespace IdeaSite.Models
     public class Comment
     {
         [Key]
+        public int ideaID { get; set; }
+ 
         public string ideaName { get; set; }
 
         [Display(Name = "Name")]
