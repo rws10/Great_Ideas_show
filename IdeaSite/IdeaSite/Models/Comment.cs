@@ -10,6 +10,7 @@ namespace IdeaSite.Models
 {
     public class Comment
     {
+        // change to commit correctly.
         [Key]
         public int ideaID { get; set; }
  
