@@ -80,13 +80,13 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment)
+        public ActionResult Edit([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment, int id)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index/");
             }
             return View(comment);
         }

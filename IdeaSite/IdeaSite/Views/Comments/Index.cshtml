@@ -12,9 +12,7 @@
     <title>Index</title>
 </head>
 <body>
-    <p>
-        @Html.ActionLink("Create New", "Create", "Comments", new { id = Model.ownerID }, null)
-    </p>
+    
     <table class="table">
         <tr>
             <th>
@@ -45,9 +43,9 @@
                 @Html.DisplayFor(modelItem => item.creationDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.ideaID }) |
+                @Html.ActionLink("Edit", "Edit", "Comments", new { id=item.ideaID }, null) |
                 @Html.ActionLink("Details", "Details", new { id=item.ideaID }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.ideaID })
+                @Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ideaID }, null)
             </td>
         </tr>
     }
