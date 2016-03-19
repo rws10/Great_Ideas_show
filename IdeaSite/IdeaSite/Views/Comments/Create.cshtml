@@ -1,7 +1,7 @@
 ﻿@model IdeaSite.Models.Comment
 
 @{
-    Layout = null;
+    ViewBag.Title = "Create";
 }
 
 <!DOCTYPE html>
@@ -57,7 +57,7 @@
     }
     
     <div>
-        @Html.ActionLink("Back to List", "Index/"+id)
+        @Html.ActionLink("Back to List", "Index")
     </div>
 </body>
 </html>

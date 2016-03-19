@@ -54,7 +54,7 @@ namespace IdeaSite.Controllers
                 comment.ownerID = id;
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index/" + id);
             }
 
             return View(comment);

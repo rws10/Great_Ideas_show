@@ -91,6 +91,8 @@ namespace IdeaSite.Controllers
             return View(idea);
         }
 
+
+        // must delete all comments as well
         // GET: Ideas/Delete/5
         public ActionResult Delete(int? id)
         {
