@@ -17,6 +17,7 @@ namespace IdeaSite.Models
     
         public IdeaSiteContext() : base("name=IdeaSiteContext")
         {
+            //Database.SetInitializer<IdeaSiteContext>(null);
         }
 
         public System.Data.Entity.DbSet<IdeaSite.Models.Idea> Ideas { get; set; }

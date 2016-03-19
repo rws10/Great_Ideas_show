@@ -73,7 +73,8 @@
                 @Html.ActionLink("Edit", "Edit", new { id = item.ideaID }) |
                 @Html.ActionLink("Details", "Details", new { id = item.ideaID }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.ideaID }) |
-                @Html.ActionLink("Comment", "CommentsIndex", new { id = item.ideaID })
+                @Html.ActionLink("Add Comment", "Create", "Comments", new { id = item.ideaID }, null) |
+                @Html.ActionLink("See Comments", "Index", "Comments", new { id = item.ideaID }, null)
             </td>
         </tr>
     }

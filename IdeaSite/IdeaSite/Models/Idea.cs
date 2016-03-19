@@ -46,5 +46,7 @@ namespace IdeaSite.Models
         // The attachments on this idea
         //[Display(Name = "Attachments")]
         //public List<Attachment> attachments { get; set; }
+
+        //public List<Comment> comments { get; set; }
     }
 }

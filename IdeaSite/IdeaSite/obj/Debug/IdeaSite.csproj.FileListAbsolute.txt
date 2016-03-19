@@ -64,8 +64,6 @@ C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\bin\Microsoft.Owin.Securit
 C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.InitialCreate.resources
-C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csproj.GenerateResource.Cache
+C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csprojResolveAssemblyReference.cache
 C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.dll
 C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.pdb
-C:\Users\alex\Source\Repos\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csprojResolveAssemblyReference.cache

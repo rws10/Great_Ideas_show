@@ -10,7 +10,6 @@ namespace IdeaSite.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            ContextKey = "IdeaSite.Models.IdeaSiteContext";
         }
 
         protected override void Seed(IdeaSite.Models.IdeaSiteContext context)

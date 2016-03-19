@@ -18,6 +18,14 @@
         <hr />
         <dl class="dl-horizontal">
             <dt>
+                @Html.DisplayNameFor(model => model.ideaName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ideaName)
+            </dd>
+    
+            <dt>
                 @Html.DisplayNameFor(model => model.userName)
             </dt>
     
@@ -39,6 +47,14 @@
     
             <dd>
                 @Html.DisplayFor(model => model.creationDate)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ownerID)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ownerID)
             </dd>
     
         </dl>

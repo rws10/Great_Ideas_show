@@ -15,13 +15,14 @@ namespace IdeaSite.Controllers
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Comments
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            return View(db.Comments.ToList());
+            List<Comment> comments = db.Comments.Where(com => com.ownerID == id).ToList();
+            return View(comments);
         }
 
         // GET: Comments/Details/5
-        public ActionResult Details(string id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -46,10 +47,11 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ideaName,userName,bodyOfComment,creationDate")] Comment comment)
+        public ActionResult Create([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment, int id)
         {
             if (ModelState.IsValid)
             {
+                comment.ownerID = id;
                 db.Comments.Add(comment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -59,7 +61,7 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Comments/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -78,7 +80,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ideaName,userName,bodyOfComment,creationDate")] Comment comment)
+        public ActionResult Edit([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +92,7 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Comments/Delete/5
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -107,7 +109,7 @@ namespace IdeaSite.Controllers
         // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public ActionResult DeleteConfirmed(int id)
         {
             Comment comment = db.Comments.Find(id);
             db.Comments.Remove(comment);
