@@ -180,7 +180,6 @@
     <Compile Include="Models\IdeaSiteContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Views\CommentsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -222,14 +221,12 @@
     <Content Include="Views\Ideas\Edit.cshtml" />
     <Content Include="Views\Ideas\Index.cshtml" />
     <Content Include="Views\Ideas\Approval.cshtml" />
-    <Content Include="Views\Ideas\CommentCreate.cshtml" />
     <Content Include="Views\Comments\Delete.cshtml" />
     <Content Include="Views\Comments\Details.cshtml" />
     <Content Include="Views\Comments\Edit.cshtml" />
-    <Content Include="Views\Comments\Index.cshtml" />
     <Content Include="Views\Shared\_CommentCreate.cshtml" />
-    <Content Include="Views\Ideas\CommentsIndex.cshtml" />
-    <Content Include="Views\Ideas\CommentsCreate.cshtml" />
+    <Content Include="Views\Comments\Create.cshtml" />
+    <Content Include="Views\Comments\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
