@@ -28,7 +28,7 @@
                 @Html.LabelFor(model => model.ideaName, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.ideaName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ideaName, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.ideaName, "will be automatically added (idea name)", new { @class = "text-danger" })
                 </div>
             </div>
     
@@ -36,7 +36,7 @@
                 @Html.LabelFor(model => model.userName, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.userName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.userName, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.userName, "will be automatically added (user name)", new { @class = "text-danger" })
                 </div>
             </div>
     

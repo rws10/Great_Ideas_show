@@ -114,6 +114,7 @@ namespace IdeaSite.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Idea idea = db.Ideas.Find(id);
+            db.Comments.RemoveRange(db.Comments.Where(com => com.ownerID == id));
             db.Ideas.Remove(idea);
             db.SaveChanges();
             return RedirectToAction("Index");

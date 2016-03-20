@@ -86,7 +86,7 @@ namespace IdeaSite.Controllers
             {
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index/");
+                return RedirectToAction("Index/"+comment.ownerID);
             }
             return View(comment);
         }
@@ -114,7 +114,7 @@ namespace IdeaSite.Controllers
             Comment comment = db.Comments.Find(id);
             db.Comments.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index/"+comment.ownerID);
         }
 
         protected override void Dispose(bool disposing)
