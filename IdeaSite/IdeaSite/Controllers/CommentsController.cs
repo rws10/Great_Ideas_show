@@ -15,10 +15,9 @@ namespace IdeaSite.Controllers
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Comments
-        public ActionResult Index(int id)
+        public ActionResult Index()
         {
-            List<Comment> comments = db.Comments.Where(com => com.ownerID == id).ToList();
-            return View(comments);
+            return View(db.Comments.ToList());
         }
 
         // GET: Comments/Details/5
@@ -47,14 +46,16 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment, int id)
+        public ActionResult Create([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID,ownerName,ownerDiscription,ownerIdea")] Comment comment, Idea idea)
         {
             if (ModelState.IsValid)
             {
-                comment.ownerID = id;
+                comment.ownerID = idea.ideaID;
+                comment.ownerName = idea.name;
+                comment.ownerDescription = idea.description;
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index/" + id);
+                return RedirectToAction("Index");
             }
 
             return View(comment);
@@ -80,13 +81,13 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment, int id)
+        public ActionResult Edit([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID")] Comment comment)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index/"+comment.ownerID);
+                return RedirectToAction("Index");
             }
             return View(comment);
         }
@@ -114,7 +115,7 @@ namespace IdeaSite.Controllers
             Comment comment = db.Comments.Find(id);
             db.Comments.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Index/"+comment.ownerID);
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

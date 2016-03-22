@@ -1,7 +1,7 @@
 ﻿<!-- This page seems a little confusing. I've tried to make it easier on the eyes and order the information in
     a way that is more natural.-->
 
-
+@using IdeaSite.Models;
 @model IEnumerable<IdeaSite.Models.Idea>
 
 @{
@@ -57,24 +57,24 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (Idea idea in @Model)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.Display(idea.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.description)
+                @Html.Display(idea.description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.creationDate)
+                
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ideaID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ideaID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ideaID }) |
-                @Html.ActionLink("Add Comment", "Create", "Comments", new { id = item.ideaID }, null) |
-                @Html.ActionLink("See Comments", "Index", "Comments", new { id = item.ideaID }, null)
+                @Html.ActionLink("Edit", "Edit", new { id = idea.ideaID }) |
+                @Html.ActionLink("Details", "Details", new { id = idea.ideaID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = idea.ideaID }) |
+                @Html.ActionLink("Add Comment", "Create", "Comments", idea, null) |
+                @Html.ActionLink("See Comments", "Index", "Comments", idea, null)
             </td>
         </tr>
     }

@@ -170,6 +170,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603222242339_init.cs" />
+    <Compile Include="Migrations\201603222242339_init.Designer.cs">
+      <DependentUpon>201603222242339_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603222317097_init1.cs" />
+    <Compile Include="Migrations\201603222317097_init1.Designer.cs">
+      <DependentUpon>201603222317097_init1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603222346310_init2.cs" />
+    <Compile Include="Migrations\201603222346310_init2.Designer.cs">
+      <DependentUpon>201603222346310_init2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Idea.cs" />
@@ -223,6 +235,11 @@
     <Content Include="Views\Comments\Details.cshtml" />
     <Content Include="Views\Comments\Edit.cshtml" />
     <Content Include="Views\Comments\Index.cshtml" />
+    <Content Include="Views\__Comments\Create.cshtml" />
+    <Content Include="Views\__Comments\Delete.cshtml" />
+    <Content Include="Views\__Comments\Details.cshtml" />
+    <Content Include="Views\__Comments\Edit.cshtml" />
+    <Content Include="Views\__Comments\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -234,6 +251,17 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201603222242339_init.resx">
+      <DependentUpon>201603222242339_init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603222317097_init1.resx">
+      <DependentUpon>201603222317097_init1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603222346310_init2.resx">
+      <DependentUpon>201603222346310_init2.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

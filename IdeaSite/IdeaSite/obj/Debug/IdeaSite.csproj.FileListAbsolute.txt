@@ -136,3 +136,7 @@ C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\bin\Microsoft.Owin.Security.Micr
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csprojResolveAssemblyReference.cache
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.dll
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.pdb
+C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.init.resources
+C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csproj.GenerateResource.Cache
+C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.init1.resources
+C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.init2.resources

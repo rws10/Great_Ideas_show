@@ -1,0 +1,72 @@
+﻿@model IEnumerable<IdeaSite.Models.Comment>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ideaName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bodyOfComment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.creationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ownerID)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.ownerIdea.ideaID)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ideaName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.bodyOfComment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.creationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ownerID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ownerIdea.ideaID)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ideaID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ideaID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ideaID })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

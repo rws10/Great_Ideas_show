@@ -23,9 +23,12 @@ namespace IdeaSite.Models
 
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
-        public string creationDate { get; set; }
+        public DateTime creationDate { get; set; }
 
         public int ownerID { get; set; }
+        public string ownerName { get; set; }
+        public string ownerDescription { get; set; }
+        public Idea ownerIdea { get; set; }
 
         //public string loginID { get; set; }
 

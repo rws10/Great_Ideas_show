@@ -1,4 +1,6 @@
-﻿@model IEnumerable<IdeaSite.Models.Comment>
+﻿@using IdeaSite.Models
+
+@model IEnumerable<IdeaSite.Models.Comment>
 
 @{
     ViewBag.Title = "Index";
@@ -12,6 +14,8 @@
     <title>Index</title>
 </head>
 <body>
+
+
     
     <table class="table">
         <tr>
@@ -24,6 +28,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.bodyOfComment)
             </th>
+            <td>
+                @Html.DisplayNameFor(model => model.creationDate)
+            </td>
             <th>
             <th></th>
         </tr>

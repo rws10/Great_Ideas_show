@@ -30,7 +30,7 @@ namespace IdeaSite.Models
         //public string submitter { get; set; }
 
         // Is the idea Submitted, Active, Rejected, or Archived?
-        // This needs to be adjusted as the idea's status changes. 
+        // This needs to be adjusted as the idea's status changes. n
         // On submission it needs to be "Submitted"
         // On approval it needs to be "Approved"
         // On archival it needs to be "Archived"
