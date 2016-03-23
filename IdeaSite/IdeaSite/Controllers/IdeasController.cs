@@ -183,7 +183,7 @@ namespace IdeaSite.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Idea idea = db.Ideas.Find(id);
-            db.Comments.RemoveRange(db.Comments.Where(com => com.ownerID == id));
+            db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
             var appSettings = ConfigurationManager.AppSettings;
             // store path to server location of the file storage

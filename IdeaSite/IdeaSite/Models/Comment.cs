@@ -11,7 +11,10 @@ namespace IdeaSite.Models
     public class Comment
     {
         [Key]
+        public int ID { get; set; }
+
         public int ideaID { get; set; }
+
         [Display(Name = "Idea")]
         public string ideaName { get; set; }
 
@@ -25,7 +28,7 @@ namespace IdeaSite.Models
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime creationDate { get; set; }
 
-        public int ownerID { get; set; }
+       
 
         // these are useless and are not used
         //public string ownerName { get; set; }

@@ -17,7 +17,7 @@ namespace IdeaSite.Controllers
         // GET: Comments
         public ActionResult Index(Idea idea)
         {
-            List<Comment> comments = db.Comments.Where(com => com.ownerID == idea.ID).ToList();
+            List<Comment> comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
             ViewBag.idea = idea;
             return View(comments);
         }
@@ -56,7 +56,7 @@ namespace IdeaSite.Controllers
                 comment.creationDate = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index/"+id);
+                return RedirectToAction("Index", comment.ideaID);
             }
 
             return View(comment);
@@ -69,11 +69,14 @@ namespace IdeaSite.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Comment comment = db.Comments.Find(id);
+
             if (comment == null)
             {
                 return HttpNotFound();
             }
+
             return View(comment);
         }
 
@@ -89,7 +92,10 @@ namespace IdeaSite.Controllers
                 //comment.creationDate = DateTime.Now;
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Details/", "IdeaController", +comment.ideaID);
+
+                Idea idea = db.Ideas.Find(comment.ideaID);
+
+                return RedirectToAction("Index", idea);
                 //return RedirectToAction("Index/"+comment.ownerID);
             }
             return View(comment);
@@ -102,7 +108,9 @@ namespace IdeaSite.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Comment comment = db.Comments.Find(id);
+
             if (comment == null)
             {
                 return HttpNotFound();

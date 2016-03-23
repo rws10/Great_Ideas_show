@@ -19,7 +19,7 @@
 <span>Idea: @ViewBag.idea.name</span> <br />
 <span>Description: @ViewBag.idea.description</span> <br />
 <span>Date Posted: @ViewBag.idea.creationDate</span> <br />
-int id = @ViewBag.idea.ID;
+<!--int id = ViewBag.idea.ID;-->
 
 
 
@@ -57,16 +57,14 @@ int id = @ViewBag.idea.ID;
                 @Html.DisplayFor(modelItem => item.creationDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", "Comments", new { id=item.ideaID }, null) |
-                @Html.ActionLink("Details", "Details", new { id=item.ideaID }) |
-                @Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ideaID }, null)
+                @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null) |
+                @*@Html.ActionLink("Details", "Details", new { id=item.ideaID }) |*@
+                @Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ID }, null)
             </td>
         </tr>
     }
-
-        <p>
             @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)
-        </p>
+       
     </table>
 
 
