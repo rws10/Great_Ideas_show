@@ -1,26 +1,19 @@
 ﻿<!-- This page seems a little confusing. I've tried to make it easier on the eyes and order the information in
     a way that is more natural.-->
-
-@using IdeaSite.Models;
 @model IEnumerable<IdeaSite.Models.Idea>
-
 @{
     ViewBag.Title = "Index";
 }
-
 <!--We should probably come up with a better title-->
 <h1>Great Ideas</h1>
 <br />
-
 <h3>How You Can Contribute</h3>
 <!--An unwanted newline is printed here-->
 ​<p>
     If you have an idea to improve current processes or believe a process could be improved post it here!
 </p>
-    
 
 <h3>Before submitting Your Idea...</h3>
-
 <p>
     Please remember to search first to ensure your idea has not already been submitted!
     <br />
@@ -33,7 +26,6 @@
     <br />
     &nbsp; &nbsp; <font size="2"><b>Note: New discussions will not be displayed below until they are approved.</b></font>
     <br /><br />
-
     <h3>Still can't find what you were looking for?</h3>
     <b>Create your idea.</b>
     <br />
@@ -57,34 +49,35 @@
         <th></th>
     </tr>
 
-    @foreach (Idea idea in @Model)
+    @foreach (var item in Model)
     {
         <tr>
             <td>
-                @Html.Display(idea.name)
+                @Html.DisplayFor(modelItem => item.name)
             </td>
             <td>
-                @Html.Display(idea.description)
+                @Html.DisplayFor(modelItem => item.description)
             </td>
             <td>
-                
+                @Html.DisplayFor(modelItem => item.creationDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = idea.ideaID }) |
-                @Html.ActionLink("Details", "Details", new { id = idea.ideaID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = idea.ideaID }) |
-                @Html.ActionLink("Add Comment", "Create", "Comments", idea, null) |
-                @Html.ActionLink("See Comments", "Index", "Comments", idea, null)
+                @Html.ActionLink("Edit", "Edit", new { id = item.ideaID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ideaID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ideaID }) |
+                @Html.ActionLink("Add Comment", "Create", "Comments", item, null) |
+                @Html.ActionLink("See Comments", "Index", "Comments", item, null)
             </td>
         </tr>
     }
 
 </table>
 
-<p> <!--Made the Florida public records law more of a footnote-->
+<p>
+    <!--Made the Florida public records law more of a footnote-->
     <font size="1">
-    <b>
-        Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).
-        Most written communications to or from state employees are public records obtainable by request.
-    </b>
+        <b>
+            Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).
+            Most written communications to or from state employees are public records obtainable by request.
+        </b>
 </p>

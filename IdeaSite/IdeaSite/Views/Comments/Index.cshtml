@@ -16,14 +16,16 @@
 <body>
 
 
-<span>This should print the ideaID: @ViewBag.idea.ideaID</span>
+<span>IDea: @ViewBag.idea.name</span> <br />
+<span>Description: @ViewBag.idea.description</span> <br />
+<span>Date Posted: @ViewBag.idea.creationDate</span> <br />
+int idd = @ViewBag.idea.ideaID;
+
+
 
 
     <table class="table">
         <tr>
-            <td>
-                @Html.DisplayNameFor(model => model.ownerDescription)
-            </td>
             <th>
                 @Html.DisplayNameFor(model => model.ideaName)
             </th>
@@ -43,9 +45,6 @@
     @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ownerDescription)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ideaName)
             </td>
             <td>
@@ -64,7 +63,13 @@
             </td>
         </tr>
     }
-    
+
+        <p>
+            @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ideaID }, null)
+        </p>
     </table>
+
+
+   
 </body>
 </html>

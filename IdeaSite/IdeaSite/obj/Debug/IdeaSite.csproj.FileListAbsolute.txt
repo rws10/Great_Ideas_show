@@ -140,3 +140,4 @@ C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.in
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csproj.GenerateResource.Cache
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.init1.resources
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.init2.resources
+C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.init3.resources

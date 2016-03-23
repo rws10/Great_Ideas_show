@@ -26,9 +26,11 @@ namespace IdeaSite.Models
         public DateTime creationDate { get; set; }
 
         public int ownerID { get; set; }
-        public string ownerName { get; set; }
-        public string ownerDescription { get; set; }
-        public Idea ownerIdea { get; set; }
+
+        // these are useless and are not used
+        //public string ownerName { get; set; }
+        //public string ownerDescription { get; set; }
+        //public Idea ownerIdea { get; set; }
 
         //public string loginID { get; set; }
 

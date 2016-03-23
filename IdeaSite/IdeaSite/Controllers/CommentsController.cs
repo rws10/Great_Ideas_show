@@ -17,8 +17,9 @@ namespace IdeaSite.Controllers
         // GET: Comments
         public ActionResult Index(Idea idea)
         {
+            List<Comment> comments = db.Comments.Where(com => com.ownerID == idea.ideaID).ToList();
             ViewBag.idea = idea;
-            return View(db.Comments.ToList());
+            return View(comments);
         }
 
         // GET: Comments/Details/5
@@ -47,13 +48,12 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID,ownerName,ownerDiscription,ownerIdea")] Comment comment, Idea idea)
+        public ActionResult Create([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,creationDate,ownerID,ownerName,ownerDiscription,ownerIdea")] Comment comment, int id)
         {
             if (ModelState.IsValid)
             {
-                comment.ownerID = idea.ideaID;
-                comment.ownerName = idea.name;
-                comment.ownerDescription = idea.description;
+                comment.ownerID = id;
+                comment.creationDate = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
