@@ -16,10 +16,10 @@
 <body>
 
 
-<span>IDea: @ViewBag.idea.name</span> <br />
+<span>Idea: @ViewBag.idea.name</span> <br />
 <span>Description: @ViewBag.idea.description</span> <br />
 <span>Date Posted: @ViewBag.idea.creationDate</span> <br />
-int idd = @ViewBag.idea.ideaID;
+int id = @ViewBag.idea.ID;
 
 
 
@@ -65,7 +65,7 @@ int idd = @ViewBag.idea.ideaID;
     }
 
         <p>
-            @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ideaID }, null)
+            @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)
         </p>
     </table>
 

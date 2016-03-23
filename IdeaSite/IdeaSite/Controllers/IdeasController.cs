@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using IdeaSite.Models;
+using System.Configuration;
+using System.IO;
+using System.Diagnostics;
 
 namespace IdeaSite.Controllers
 {
@@ -32,6 +35,26 @@ namespace IdeaSite.Controllers
             {
                 return HttpNotFound();
             }
+
+            /* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
+             * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
+             * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
+             * YOUR MACHINE*/
+            var appSettings = ConfigurationManager.AppSettings;
+
+            // store path to server location of the file storage
+            var connectionInfo = appSettings["serverPath"];
+
+            // combine the server location and the name of the new folder to be created
+            var ideaFolder = string.Format("{0}{1}", connectionInfo, id);
+            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
+
+            // Store the files from the desired attachment folder
+            var files = dir.GetFiles();
+
+            ViewBag.path = ideaFolder;
+            ViewBag.files = files;
+
             return View(idea);
         }
 
@@ -47,13 +70,58 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ideaID,name,description,category,creationDate,statusCode,denialReason")] Idea idea)
+        public ActionResult Create([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea, /*IEnumerable<*/HttpPostedFileBase/*>*/ upload/*s*/)
         {
             if (ModelState.IsValid)
             {
+                
+
                 idea.creationDate = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
+
+                var appSettings = ConfigurationManager.AppSettings;
+
+                // store path to server location of the file storage
+                var connectionInfo = appSettings["serverPath"];
+
+                // combine the server location and the name of the new folder to be created
+                var storagePath = string.Format(@"{0}{1}", connectionInfo, idea.ID);
+
+                DirectoryInfo di = Directory.CreateDirectory(storagePath);
+
+                try
+                {
+                    // loop through the uploads and pull out each file from it.
+                    /*for (int i = 0; i < uploads.Count(); ++i)
+                    {*/
+                    if (upload/*s.ElementAt(i)*/ != null && upload/*s.ElementAt(i)*/.ContentLength > 0)
+                    {
+                        // store the name of the file
+                        var name = Path.GetFileName(upload/*s.ElementAt(i)*/.FileName);
+
+                        // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
+                        var attachment = new Attachment
+                        {
+                            fileName = string.Format(storagePath, name),
+                            ID = idea.ID
+                        };
+                        upload/*s.ElementAt(i)*/.SaveAs(attachment.fileName);
+                    }
+                    /*else
+                    {
+                        di.Delete();
+                    }
+                     }*/
+                }
+
+                catch
+                {
+                    Debug.WriteLine("Upload failed");
+                    ViewBag.Message = "Upload failed";
+                    return RedirectToAction("Create");
+                }
+
                 return RedirectToAction("Index");
             }
 
@@ -80,7 +148,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ideaID,name,description,category,creationDate,statusCode,denialReason")] Idea idea)
+        public ActionResult Edit([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea)
         {
             if (ModelState.IsValid)
             {
@@ -116,6 +184,19 @@ namespace IdeaSite.Controllers
         {
             Idea idea = db.Ideas.Find(id);
             db.Comments.RemoveRange(db.Comments.Where(com => com.ownerID == id));
+
+            var appSettings = ConfigurationManager.AppSettings;
+            // store path to server location of the file storage
+
+            var connectionInfo = appSettings["serverPath"];
+            // combine the server location and the name of the new folder to be created
+
+            var storagePath = string.Format(@"{0}{1}", connectionInfo, idea.ID);
+            DirectoryInfo di = Directory.CreateDirectory(storagePath);
+
+            // Delete the associated directory
+            di.Delete();
+
             db.Ideas.Remove(idea);
             db.SaveChanges();
             return RedirectToAction("Index");

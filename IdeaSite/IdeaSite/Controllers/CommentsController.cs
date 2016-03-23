@@ -17,7 +17,7 @@ namespace IdeaSite.Controllers
         // GET: Comments
         public ActionResult Index(Idea idea)
         {
-            List<Comment> comments = db.Comments.Where(com => com.ownerID == idea.ideaID).ToList();
+            List<Comment> comments = db.Comments.Where(com => com.ownerID == idea.ID).ToList();
             ViewBag.idea = idea;
             return View(comments);
         }
@@ -52,11 +52,11 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                comment.ownerID = id;
+                comment.ideaID = id;
                 comment.creationDate = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index"+id);
+                return RedirectToAction("Index/"+id);
             }
 
             return View(comment);
@@ -86,10 +86,11 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                comment.creationDate = DateTime.Now;
+                //comment.creationDate = DateTime.Now;
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index"+comment.ownerID);
+                return RedirectToAction("Details/", "IdeaController", +comment.ideaID);
+                //return RedirectToAction("Index/"+comment.ownerID);
             }
             return View(comment);
         }

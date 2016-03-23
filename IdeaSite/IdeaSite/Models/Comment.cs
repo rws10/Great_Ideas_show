@@ -12,7 +12,7 @@ namespace IdeaSite.Models
     {
         [Key]
         public int ideaID { get; set; }
- 
+        [Display(Name = "Idea")]
         public string ideaName { get; set; }
 
         [Display(Name = "Name")]

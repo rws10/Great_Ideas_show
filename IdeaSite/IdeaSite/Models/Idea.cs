@@ -9,7 +9,7 @@ namespace IdeaSite.Models
 {
     public class Idea
     {
-        public int ideaID { get; set; }
+        public int ID { get; set; }
 
         // Name of the idea
         [Display(Name = "Name")]

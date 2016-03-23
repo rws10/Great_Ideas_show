@@ -51,8 +51,20 @@
         </dd>
 
     </dl>
+
+    <h2>Files</h2>
+    <table>
+        @foreach (var file in ViewBag.files as FileInfo[])
+        {
+            var filePath = string.Format("{0}\\{1}", ViewBag.path, file.Name);
+            <tr><td><a href=@filePath>@file.Name</a></td></tr>
+        }
+    </table>
+
+    <br /><br />
+
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ideaID }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
