@@ -56,7 +56,7 @@ namespace IdeaSite.Controllers
                 comment.creationDate = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index"+id);
             }
 
             return View(comment);
@@ -86,9 +86,10 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
+                comment.creationDate = DateTime.Now;
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index"+comment.ownerID);
             }
             return View(comment);
         }

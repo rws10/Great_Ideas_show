@@ -84,6 +84,7 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
+                idea.creationDate = DateTime.Now;
                 db.Entry(idea).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
