@@ -15,8 +15,9 @@ namespace IdeaSite.Controllers
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Comments
-        public ActionResult Index()
+        public ActionResult Index(Idea idea)
         {
+            ViewBag.idea = idea;
             return View(db.Comments.ToList());
         }
 

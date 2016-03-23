@@ -16,9 +16,14 @@
 <body>
 
 
-    
+<span>This should print the ideaID: @ViewBag.idea.ideaID</span>
+
+
     <table class="table">
         <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.ownerDescription)
+            </td>
             <th>
                 @Html.DisplayNameFor(model => model.ideaName)
             </th>
@@ -37,6 +42,9 @@
     
     @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ownerDescription)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ideaName)
             </td>

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<IdeaSite.Models.Comment>
 
 @{
-    Layout = null;
+    ViewBag.Title = "Index";
 }
 
 <!DOCTYPE html>
@@ -13,10 +13,16 @@
 </head>
 <body>
     <p>
-        @Html.ActionLink("Create New", "Create")
+        @{ }
     </p>
     <table class="table">
         <tr>
+            <th>
+                @Html.Display(Model.First().ownerDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userName)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.ideaName)
             </th>
@@ -26,46 +32,49 @@
             <th>
                 @Html.DisplayNameFor(model => model.bodyOfComment)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.creationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ownerID)
-            </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.ownerIdea.ideaID)
+                @Html.DisplayNameFor(model => model.ideaName)
             </th>
             <th></th>
         </tr>
     
-    @foreach (var item in Model) {
-        <tr>
+    @foreach (var item in Model)
+        r           <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ideaName)
+                @Html.DisplayNameFor(model => model.ownerDescription)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.userName)
+                @Html.DisplayNameFor(model => model.ownerDescription)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.bodyOfComment)
+                @Html.DisplayNameFor(model => model.ideaName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.creationDate)
+                @Html.DisplayNameFor(model => model.userName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ownerID)
+                @Html.DisplayNameFor(model => model.bodyOfComment)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ownerIdea.ideaID)
+                @Html.DisplayNameFor(model => model.creationDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.ideaID }) |
-                @Html.ActionLink("Details", "Details", new { id=item.ideaID }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.ideaID })
+                @Html.DisplayFor(modelItem => item.ownerDescription);
+
+
+#line default
+#line hidden
+
+#line 13 "C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\Views\Comments\Index.cshtml"
+                __o = Html.DisplayFor(modelItem => item.ideaName) |
+                @Html.DisplayNameFor(model => model.userName) |
+                @Html.DisplayNameFor(model => model.bodyOfComment)
             </td>
-        </tr>
-    }
+        </tr>"C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\Views\Comments\Index.cshtml"
+
+
+}
     
     </table>
 </body>
