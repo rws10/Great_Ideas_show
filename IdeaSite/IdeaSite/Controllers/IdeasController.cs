@@ -201,6 +201,11 @@ namespace IdeaSite.Controllers
             return RedirectToAction("Index");
         }
 
+        public FileResult Download(string filepath, string fileName)
+        {
+            return File(filepath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

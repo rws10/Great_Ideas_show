@@ -32,7 +32,7 @@
     Click the "Create New" link below to begin.
     <br/><br/>
 </p>
-<p><button type="button" class="btn btn-sm "> @Html.ActionLink("Create New", "Create")</button></p>
+<p><> @Html.ActionLink("Create New", "Create")</></p>
 <table>
     @foreach (var item in Model)
     {
@@ -50,10 +50,10 @@
         </tr>
         <tr>
             <td>
-                <button type="button" class="btn btn-sm "> @Html.ActionLink("Details", "Details", new { id = item.ID }) </button>
-                <button type="button" class="btn btn-sm "> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) </button>
-                <button type="button" class="btn btn-sm "> @Html.ActionLink("Create Comment", "Create", "Comments", item, null) </button>
-                <button type="button" class="btn btn-sm "> @Html.ActionLink("View Comments", "Index", "Comments", item, null) </button>
+                <> @Html.ActionLink("Details", "Details", new { id = item.ID }) </>
+                <> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) </>
+                <> @Html.ActionLink("Create Comment", "Create", "Comments", item, null) </>
+                <> @Html.ActionLink("View Comments", "Index", "Comments", item, null) </>
            </td>
         </tr>
 

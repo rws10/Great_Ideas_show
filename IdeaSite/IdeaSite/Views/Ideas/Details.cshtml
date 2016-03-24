@@ -57,9 +57,15 @@
         @foreach (var file in ViewBag.files as FileInfo[])
         {
             var filePath = string.Format("{0}\\{1}", ViewBag.path, file.Name);
-            <tr><td><a href=@filePath>@file.Name</a></td></tr>        
+
+            @Html.ActionLink(@file.Name, "Download", new { filepath = filePath, fileName = file.Name }, new { @target = "_blank"})
         }
+
+
+
     </table>
+
+
 
     <br /><br />
 
