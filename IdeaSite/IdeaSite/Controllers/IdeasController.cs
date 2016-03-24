@@ -70,7 +70,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea, /*IEnumerable<*/HttpPostedFileBase/*>*/ upload/*s*/)
+        public ActionResult Create([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea, /*IEnumerable<*/HttpPostedFileBase/*>*/ file/*s*/)
         {
             if (ModelState.IsValid)
             {
@@ -93,18 +93,19 @@ namespace IdeaSite.Controllers
                     // loop through the uploads and pull out each file from it.
                     /*for (int i = 0; i < uploads.Count(); ++i)
                     {*/
-                    if (upload/*s.ElementAt(i)*/ != null && upload/*s.ElementAt(i)*/.ContentLength > 0)
+                    if (file/*s.ElementAt(i)*/ != null && file/*s.ElementAt(i)*/.ContentLength > 0)
                     {
                         // store the name of the file
-                        var name = Path.GetFileName(upload/*s.ElementAt(i)*/.FileName);
+                        var name = Path.GetFileName(file/*s.ElementAt(i)*/.FileName);
 
                         // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
                         var attachment = new Attachment
                         {
-                            fileName = string.Format(storagePath, name),
+                            fileName = string.Format("{0}\\{1}", storagePath, name),
                             ID = idea.ID
                         };
-                        upload/*s.ElementAt(i)*/.SaveAs(attachment.fileName);
+
+                        file/*s.ElementAt(i)*/.SaveAs(string.Format("{0}\\{1}", storagePath, name));
                     }
                     /*else
                     {
