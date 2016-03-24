@@ -101,11 +101,14 @@ namespace IdeaSite.Controllers
                             // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
                             var file = new Models.File
                             {
-                                fileName = string.Format("{0}\\{1}", storagePath, name),
+                                storageLocation = string.Format("{0}\\{1}", storagePath, name),
                                 ID = idea.ID
                             };
 
                             files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+
+                            db.Files.Add(file);
+                            db.SaveChanges();
                         }
                     }
                 }

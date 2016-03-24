@@ -13,7 +13,7 @@ namespace IdeaSite.Models
         public int ID { get; set; }
 
         [StringLength(255)]
-        public string fileName { get; set; }
+        public string storageLocation { get; set; }
 
         public int ideaID { get; set; }
     }
