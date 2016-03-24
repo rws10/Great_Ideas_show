@@ -9,7 +9,7 @@ namespace IdeaSite.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(IdeaSite.Models.IdeaSiteContext context)

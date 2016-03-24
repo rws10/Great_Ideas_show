@@ -38,8 +38,9 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
+            ViewBag.ideaID = id;
             return View();
         }
 
@@ -56,7 +57,10 @@ namespace IdeaSite.Controllers
                 comment.creationDate = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index", comment.ideaID);
+
+                Idea idea = db.Ideas.Find(comment.ideaID);
+
+                return RedirectToAction("Index", "Comments", idea);
             }
 
             return View(comment);
