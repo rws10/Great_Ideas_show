@@ -185,16 +185,13 @@ namespace IdeaSite.Controllers
             db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
             var appSettings = ConfigurationManager.AppSettings;
+
             // store path to server location of the file storage
-
             var connectionInfo = appSettings["serverPath"];
+            
             // combine the server location and the name of the new folder to be created
-
             var storagePath = string.Format(@"{0}{1}", connectionInfo, idea.ID);
-            DirectoryInfo di = Directory.CreateDirectory(storagePath);
-
-            // Delete the associated directory
-            di.Delete();
+            Directory.Delete(storagePath, true);
 
             db.Ideas.Remove(idea);
             db.SaveChanges();
