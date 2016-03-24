@@ -358,6 +358,7 @@ img {
 .img-responsive {
   display: block;
   height: auto;
+  width: 100% \9;
   max-width: 100%;
 }
 
@@ -455,6 +456,12 @@ cite {
 
 .text-right {
   text-align: right;
+}
+
+.center-block {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .text-center {
@@ -862,6 +869,9 @@ pre code {
   padding-left: 15px;
 }
 
+.pad-down{
+    padding-top:10px;
+}
 .col-xs-1,
 .col-xs-2,
 .col-xs-3,

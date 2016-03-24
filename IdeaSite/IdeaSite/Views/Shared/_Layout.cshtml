@@ -3,11 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title> FDAC @ViewBag.Title </title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    <meta name="description" content="The description of my page" />
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -17,22 +16,29 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <!--<a class="navbar-brand" href="/Ideas/Home">Index</a>-->
+                @Html.ActionLink("Idea Forum", "Index", "Ideas", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Ideas")</li>
+                    <!--this link below doesnt go anywhere for now-->
                     <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
-                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
     <div class="container body-content">
+        <div class=”row”>
+            <div class=”col-md-12”><img src="~/Content/images/fdacs.jpg" class="img-responsive center-block pad-down" /></div>
+        </div>
         @RenderBody()
         <hr />
         <footer>
+            <!--foot note Florida public records law-->
+            <p style="font-size:12px"><b>
+             Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).
+             Most written communications to or from state employees are public records obtainable by request.
+            </b></p>
             <p>&copy; @DateTime.Now.Year - FDACS Idea Forum</p>
         </footer>
     </div>

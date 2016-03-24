@@ -2,10 +2,10 @@
     a way that is more natural.-->
 @model IEnumerable<IdeaSite.Models.Idea>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Home";
 }
 <!--We should probably come up with a better title-->
-<h1>Great Ideas</h1>
+<h1>Submitted Ideas</h1>
 <br />
 <h3>How You Can Contribute</h3>
 <!--An unwanted newline is printed here-->
@@ -16,69 +16,47 @@
 <h3>Before submitting Your Idea...</h3>
 <p>
     Please remember to search first to ensure your idea has not already been submitted!
-    <br />
+    <br/>
     The filter page enables you to sort or filter ideas by name, date, or title.
-    <br />
+    <br/>
     Approved submissions are listed on the Approved Ideas and Discussions page.
     <!--<br />
     Click the title below to comment on an idea.
     <br /><br /> -->
-    <br />
+    <br/>
     &nbsp; &nbsp; <font size="2"><b>Note: New discussions will not be displayed below until they are approved.</b></font>
-    <br /><br />
+    <br/><br/>
     <h3>Still can't find what you were looking for?</h3>
     <b>Create your idea.</b>
-    <br />
+    <br/>
     Click the "Create New" link below to begin.
-    <br /> <br />
+    <br/><br/>
 </p>
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.creationDate)
-        </th>
-        <th></th>
-    </tr>
-
+<p><button type="button" class="btn btn-sm "> @Html.ActionLink("Create New", "Create")</button></p>
+<table>
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.creationDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID }) |
-                @Html.ActionLink("Add Comment", "Create", "Comments", item, null) |
-                @Html.ActionLink("See Comments", "Index", "Comments", item, null)
-            </td>
+            <th>@Html.DisplayNameFor(model => model.name)</th>
+            <td>@Html.DisplayFor(modelItem => item.name)</td>
         </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.creationDate)</th>
+            <td>@Html.DisplayFor(modelItem => item.creationDate)</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.description)</th>
+            <td>@Html.DisplayFor(modelItem => item.description)</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" class="btn btn-sm "> @Html.ActionLink("Details", "Details", new { id = item.ID }) </button>
+                <button type="button" class="btn btn-sm "> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) </button>
+                <button type="button" class="btn btn-sm "> @Html.ActionLink("Create Comment", "Create", "Comments", item, null) </button>
+                <button type="button" class="btn btn-sm "> @Html.ActionLink("View Comments", "Index", "Comments", item, null) </button>
+           </td>
+        </tr>
+
     }
 
 </table>
-
-<p>
-    <!--Made the Florida public records law more of a footnote-->
-    <font size="1">
-        <b>
-            Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).
-            Most written communications to or from state employees are public records obtainable by request.
-        </b>
-        </font>
-</p>
