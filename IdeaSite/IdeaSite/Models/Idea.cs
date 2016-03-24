@@ -43,9 +43,9 @@ namespace IdeaSite.Models
         [Display(Name = "Reason for Denial")]
         public string denialReason { get; set; }
 
-        // The attachments on this idea
-        //[Display(Name = "Attachments")]
-        //public List<Attachment> attachments { get; set; }
+        // The files on this idea
+        //[Display(Name = "Files")]
+        //public List<File> files { get; set; }
 
         //public List<Comment> comments { get; set; }
     }

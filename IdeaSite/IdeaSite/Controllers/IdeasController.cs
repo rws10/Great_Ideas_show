@@ -49,7 +49,7 @@ namespace IdeaSite.Controllers
             var ideaFolder = string.Format("{0}{1}", connectionInfo, id);
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
-            // Store the files from the desired attachment folder
+            // Store the files from the desired file folder
             var files = dir.GetFiles();
 
             ViewBag.path = ideaFolder;
@@ -70,7 +70,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea, /*IEnumerable<*/HttpPostedFileBase/*>*/ file/*s*/)
+        public ActionResult Create([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -91,27 +91,23 @@ namespace IdeaSite.Controllers
                 try
                 {
                     // loop through the uploads and pull out each file from it.
-                    /*for (int i = 0; i < uploads.Count(); ++i)
-                    {*/
-                    if (file/*s.ElementAt(i)*/ != null && file/*s.ElementAt(i)*/.ContentLength > 0)
+                    for (int i = 0; i < files.Count(); ++i)
                     {
-                        // store the name of the file
-                        var name = Path.GetFileName(file/*s.ElementAt(i)*/.FileName);
-
-                        // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
-                        var attachment = new Attachment
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
                         {
-                            fileName = string.Format("{0}\\{1}", storagePath, name),
-                            ID = idea.ID
-                        };
+                            // store the name of the file
+                            var name = Path.GetFileName(files.ElementAt(i).FileName);
 
-                        file/*s.ElementAt(i)*/.SaveAs(string.Format("{0}\\{1}", storagePath, name));
+                            // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
+                            var file = new Models.File
+                            {
+                                fileName = string.Format("{0}\\{1}", storagePath, name),
+                                ID = idea.ID
+                            };
+
+                            files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+                        }
                     }
-                    /*else
-                    {
-                        di.Delete();
-                    }
-                     }*/
                 }
 
                 catch

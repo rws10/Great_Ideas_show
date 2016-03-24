@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace IdeaSite.Models
 {
-    public class Attachment
+    public class File
     {
         [Key]
         public int ID { get; set; }
