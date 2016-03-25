@@ -21,19 +21,19 @@ namespace IdeaSite.Models
         // What is the idea?
         [Required]
         [Display(Name = "Description")]
-        public string description { get; set; }
+        public string body { get; set; }
 
         // What is the date the idea was created?
         // This needs to be set automatically when the form is submitted
         [Required]
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
-        public DateTime creationDate { get; set; }
+        public DateTime cre_date { get; set; }
 
         // What is the name of the individual who submitted this idea?
         [Required]
-        [Display(Name = "Submitter")]
-        public string submitter { get; set; }
+        [Display(Name = "Name")]
+        public string cre_user { get; set; }
 
         // Is the idea Submitted, Active, Rejected, or Archived?
         // This needs to be adjusted as the idea's status changes. n

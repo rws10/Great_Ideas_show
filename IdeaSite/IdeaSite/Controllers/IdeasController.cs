@@ -70,11 +70,11 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Create([Bind(Include = "ID,name,body,category,cre_date,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
-                idea.creationDate = DateTime.Now;
+                idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
 
@@ -146,11 +146,11 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,name,description,category,creationDate,statusCode,denialReason")] Idea idea)
+        public ActionResult Edit([Bind(Include = "ID,name,body,category,cre_date,statusCode,denialReason")] Idea idea)
         {
             if (ModelState.IsValid)
             {
-                idea.creationDate = DateTime.Now;
+                idea.cre_date = DateTime.Now;
                 db.Entry(idea).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -26,10 +26,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.description, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.body, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.body, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.body, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -45,7 +45,7 @@
         <div class="form-group @Model.statusCode">
             @Html.LabelFor(model => model.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                This will only be visible like this for PPMO group. User will only have a text block.
+                This will only be visible like this for PPMO group. User will only have a text block to see the reason.
                 @Html.EditorFor(model => model.denialReason, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.denialReason, "", new { @class = "text-danger" })
             </div>

@@ -27,16 +27,13 @@
     <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ideaName)
+                @Html.DisplayNameFor(model => model.cre_user)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.bodyOfComment)
+                @Html.DisplayNameFor(model => model.body)
             </th>
             <td>
-                @Html.DisplayNameFor(model => model.creationDate)
+                @Html.DisplayNameFor(model => model.cre_date)
             </td>
             <th>
             <th></th>
@@ -45,16 +42,13 @@
     @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ideaName)
+                @Html.DisplayFor(modelItem => item.cre_user)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.userName)
+                @Html.DisplayFor(modelItem => item.body)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.bodyOfComment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.creationDate)
+                @Html.DisplayFor(modelItem => item.cre_date)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null) |
@@ -68,6 +62,6 @@
     </table>
 
 
-   
+    @Html.ActionLink("Back to List", "Index", "Ideas")
 </body>
 </html>

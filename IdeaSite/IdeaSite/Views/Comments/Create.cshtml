@@ -24,27 +24,20 @@
             <h4>Comment</h4>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    
             <div class="form-group">
-                @Html.LabelFor(model => model.ideaName, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.cre_user, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.ideaName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ideaName, "will be automatically added (idea name)", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.cre_user, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.cre_user, "will be automatically added (user name)", new { @class = "text-danger" })
                 </div>
             </div>
     
             <div class="form-group">
-                @Html.LabelFor(model => model.userName, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.body, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.userName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.userName, "will be automatically added (user name)", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                @Html.LabelFor(model => model.bodyOfComment, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.bodyOfComment, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.bodyOfComment, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.body, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.body, "", new { @class = "text-danger" })
                 </div>
             </div>
     
