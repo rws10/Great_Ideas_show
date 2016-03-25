@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -11,19 +12,24 @@ namespace IdeaSite.Models
     public class Comment
     {
         [Key]
+        [Required]
         public int ID { get; set; }
 
+        [Required]
         public int ideaID { get; set; }
 
+        [Required]
         [Display(Name = "Name")]
-        public string userName { get; set; }
+        public string cre_user { get; set; }
 
+        [Required]
         [Display(Name = "Comment")]
-        public string bodyOfComment { get; set; }
+        public string body { get; set; }
 
+        [Required]
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
-        public DateTime creationDate { get; set; }
+        public DateTime cre_date { get; set; }
 
        
 

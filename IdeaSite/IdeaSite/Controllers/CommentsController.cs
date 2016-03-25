@@ -54,7 +54,7 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
                 comment.ideaID = id;
-                comment.creationDate = DateTime.Now;
+                comment.cre_date = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
 
