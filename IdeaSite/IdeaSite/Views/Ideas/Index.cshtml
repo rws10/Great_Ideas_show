@@ -37,8 +37,8 @@
     @foreach (var item in Model)
     {
         <tr>
-            <th>@Html.DisplayNameFor(model => model.name)</th>
-            <td>@Html.DisplayFor(modelItem => item.name)</td>
+            <th>@Html.DisplayNameFor(model => model.title)</th>
+            <td>@Html.DisplayFor(modelItem => item.title)</td>
         </tr>
         <tr>
             <th>@Html.DisplayNameFor(model => model.creationDate)</th>
@@ -51,6 +51,7 @@
         <tr>
             <td>
                 <> @Html.ActionLink("Details", "Details", new { id = item.ID }) </>
+                <> @Html.ActionLink("Edit", "Edit", new { id = item.ID }) </>
                 <> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) </>
                 <> @Html.ActionLink("Create Comment", "Create", "Comments", item, null) </>
                 <> @Html.ActionLink("View Comments", "Index", "Comments", item, null) </>

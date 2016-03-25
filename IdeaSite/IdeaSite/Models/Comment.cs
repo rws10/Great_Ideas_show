@@ -15,9 +15,6 @@ namespace IdeaSite.Models
 
         public int ideaID { get; set; }
 
-        [Display(Name = "Idea")]
-        public string ideaName { get; set; }
-
         [Display(Name = "Name")]
         public string userName { get; set; }
 

@@ -12,8 +12,8 @@ namespace IdeaSite.Models
         public int ID { get; set; }
 
         // Name of the idea
-        [Display(Name = "Name")]
-        public string name { get; set; }
+        [Display(Name = "Title")]
+        public string title { get; set; }
 
         // What is the idea?
         [Display(Name = "Description")]
@@ -26,8 +26,8 @@ namespace IdeaSite.Models
         public DateTime creationDate { get; set; }
 
         // What is the name of the individual who submitted this idea?
-        //[Display(Name = "Submitter")]
-        //public string submitter { get; set; }
+        [Display(Name = "Submitter")]
+        public string submitter { get; set; }
 
         // Is the idea Submitted, Active, Rejected, or Archived?
         // This needs to be adjusted as the idea's status changes. n
@@ -42,10 +42,6 @@ namespace IdeaSite.Models
         // This needs to be a conditional display of only when the status is set to "Rejected"
         [Display(Name = "Reason for Denial")]
         public string denialReason { get; set; }
-
-        // The files on this idea
-        //[Display(Name = "Files")]
-        //public List<File> files { get; set; }
 
         //public List<Comment> comments { get; set; }
     }
