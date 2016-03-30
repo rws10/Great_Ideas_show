@@ -18,7 +18,6 @@ namespace IdeaSite.Models
         [Required]
         public int ideaID { get; set; }
 
-        [Required]
         [Display(Name = "Name")]
         public string cre_user { get; set; }
 
@@ -26,7 +25,6 @@ namespace IdeaSite.Models
         [Display(Name = "Comment")]
         public string body { get; set; }
 
-        [Required]
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime cre_date { get; set; }

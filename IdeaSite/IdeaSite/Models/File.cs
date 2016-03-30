@@ -16,7 +16,6 @@ namespace IdeaSite.Models
         [Required]
         public int ideaID { get; set; }
 
-        [Required]
         public DateTime cre_date { get; set; }
 
         [Required]

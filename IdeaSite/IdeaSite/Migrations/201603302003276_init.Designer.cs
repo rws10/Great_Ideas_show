@@ -13,7 +13,7 @@ namespace IdeaSite.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201603251819571_init"; }
+            get { return "201603302003276_init"; }
         }
         
         string IMigrationMetadata.Source

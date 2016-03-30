@@ -46,7 +46,7 @@ namespace IdeaSite.Controllers
             var connectionInfo = appSettings["serverPath"];
 
             // combine the server location and the name of the new folder to be created
-            var ideaFolder = string.Format("{0}{1}", connectionInfo, id);
+            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
             // Store the files from the desired file folder
@@ -70,10 +70,11 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,name,body,category,cre_date,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Create([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
+                idea.cre_user ="test";
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
@@ -84,7 +85,7 @@ namespace IdeaSite.Controllers
                 var connectionInfo = appSettings["serverPath"];
 
                 // combine the server location and the name of the new folder to be created
-                var storagePath = string.Format(@"{0}{1}", connectionInfo, idea.ID);
+                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
 
                 DirectoryInfo di = Directory.CreateDirectory(storagePath);
 
@@ -102,6 +103,7 @@ namespace IdeaSite.Controllers
                             var file = new Models.File
                             {
                                 storageLocation = string.Format("{0}\\{1}", storagePath, name),
+                                cre_date = DateTime.Now,
                                 ID = idea.ID
                             };
 
@@ -146,13 +148,54 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,name,body,category,cre_date,statusCode,denialReason")] Idea idea)
+        public ActionResult Edit([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
-                idea.cre_date = DateTime.Now;
                 db.Entry(idea).State = EntityState.Modified;
                 db.SaveChanges();
+
+                var appSettings = ConfigurationManager.AppSettings;
+
+                // store path to server location of the file storage
+                var connectionInfo = appSettings["serverPath"];
+
+                // combine the server location and the name of the new folder to be created
+                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+
+                try
+                {
+                    // loop through the uploads and pull out each file from it.
+                    for (int i = 0; i < files.Count(); ++i)
+                    {
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                        {
+                            // store the name of the file
+                            var name = Path.GetFileName(files.ElementAt(i).FileName);
+
+                            // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
+                            var file = new Models.File
+                            {
+                                storageLocation = string.Format("{0}\\{1}", storagePath, name),
+                                cre_date = DateTime.Now,
+                                ID = idea.ID
+                            };
+
+                            files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+
+                            db.Files.Add(file);
+                            db.SaveChanges();
+                        }
+                    }
+                }
+
+                catch
+                {
+                    Debug.WriteLine("Upload failed");
+                    ViewBag.Message = "Upload failed";
+                    return RedirectToAction("Edit");
+                }
+
                 return RedirectToAction("Index");
             }
             return View(idea);

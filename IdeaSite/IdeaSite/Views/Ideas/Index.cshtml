@@ -37,6 +37,10 @@
     @foreach (var item in Model)
     {
         <tr>
+            <th>@Html.DisplayNameFor(model => model.cre_user)</th>
+            <td>@Html.DisplayFor(modelItem => item.cre_user)</td>
+        </tr>
+        <tr>
             <th>@Html.DisplayNameFor(model => model.title)</th>
             <td>@Html.DisplayFor(modelItem => item.title)</td>
         </tr>

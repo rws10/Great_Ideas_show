@@ -25,13 +25,11 @@ namespace IdeaSite.Models
 
         // What is the date the idea was created?
         // This needs to be set automatically when the form is submitted
-        [Required]
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime cre_date { get; set; }
 
         // What is the name of the individual who submitted this idea?
-        [Required]
         [Display(Name = "Name")]
         public string cre_user { get; set; }
 
