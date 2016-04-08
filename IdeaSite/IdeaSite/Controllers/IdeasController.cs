@@ -152,7 +152,17 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(idea).State = EntityState.Modified;
+                //db.Entry(idea).State = EntityState.Modified;
+                var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == idea.ID);
+                if (currentIdea == null)
+                {
+                    return HttpNotFound();
+                }
+
+                currentIdea.title = idea.title;
+                currentIdea.body = idea.body;
+                currentIdea.statusCode = idea.statusCode;
+
                 db.SaveChanges();
 
                 var appSettings = ConfigurationManager.AppSettings;
@@ -232,8 +242,12 @@ namespace IdeaSite.Controllers
             var connectionInfo = appSettings["serverPath"];
             
             // combine the server location and the name of the new folder to be created
-            var storagePath = string.Format(@"{0}{1}", connectionInfo, idea.ID);
-            Directory.Delete(storagePath, true);
+            var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+
+            if (Directory.Exists(storagePath))
+            {
+                Directory.Delete(storagePath, true);
+            }
 
             db.Ideas.Remove(idea);
             db.SaveChanges();

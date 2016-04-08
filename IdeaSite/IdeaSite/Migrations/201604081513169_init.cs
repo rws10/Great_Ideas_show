@@ -13,7 +13,7 @@ namespace IdeaSite.Migrations
                     {
                         ID = c.Int(nullable: false, identity: true),
                         ideaID = c.Int(nullable: false),
-                        cre_user = c.String(nullable: false),
+                        cre_user = c.String(),
                         body = c.String(nullable: false),
                         cre_date = c.DateTime(nullable: false),
                     })
