@@ -179,6 +179,7 @@
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Idea.cs" />
     <Compile Include="Models\IdeaSiteContext.cs" />
+    <Compile Include="Models\Mail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
