@@ -68,3 +68,4 @@ C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.Migrations.in
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csproj.GenerateResource.Cache
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.dll
 C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.pdb
+C:\Users\alex\Source\Team_Zed\IdeaSite\IdeaSite\obj\Debug\IdeaSite.csprojResolveAssemblyReference.cache
