@@ -18,8 +18,18 @@ namespace IdeaSite.Controllers
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Ideas
-        public ActionResult Index()
+        public ActionResult Index(string searchBy, string search)
         {
+            if (searchBy == "Title")
+            {
+                //return View(db.Ideas.ToList());
+                //List<Idea> ideas = db.Ideas.Contains(search).ToList();
+                return View(db.Ideas.Where(x => x.title.Contains(search) || search == null).ToList());
+            }
+            else if (searchBy == "Description")
+            {
+                return View(db.Ideas.Where(x => x.body.Contains(search) || search == null).ToList());
+            }
             return View(db.Ideas.ToList());
         }
 

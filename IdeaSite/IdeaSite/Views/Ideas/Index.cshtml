@@ -33,6 +33,14 @@
     <br/><br/>
 </p>
 <p><> @Html.ActionLink("Create New", "Create")</></p>
+<p>
+    @using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
+    {
+    <b>Search By:</b> @Html.RadioButton("searchBy", "Title", true) <text>Title</text>
+    @Html.RadioButton("searchBy", "Description") <text>Description</text><br />
+    @Html.TextBox("search") <input type="submit" value="Search" />
+    }
+</p>
 <table>
     @foreach (var item in Model)
     {
