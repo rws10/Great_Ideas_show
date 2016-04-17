@@ -21,7 +21,7 @@ namespace IdeaSite.Controllers
         public ActionResult Index(string searchBy, string search)
         {
             IEnumerable<Idea> results = new List<Idea>();
-            string[] sep = new string[] { (" ") }; // may use other separaters later
+            //string[] sep = new string[] { (" ") };
             string[] searchTerms;
             if (search != null)
             {
@@ -303,5 +303,92 @@ namespace IdeaSite.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+
+        // GET: Ideas/Edit/5
+        public ActionResult Approval(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Idea idea = db.Ideas.Find(id);
+            if (idea == null)
+            {
+                return HttpNotFound();
+            }
+            return View(idea);
+        }
+
+        // POST: Ideas/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Approval([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        {
+            if (ModelState.IsValid)
+            {
+                //db.Entry(idea).State = EntityState.Modified;
+                var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == idea.ID);
+                if (currentIdea == null)
+                {
+                    return HttpNotFound();
+                }
+
+                currentIdea.title = idea.title;
+                currentIdea.body = idea.body;
+                currentIdea.statusCode = idea.statusCode;
+
+                db.SaveChanges();
+
+                var appSettings = ConfigurationManager.AppSettings;
+
+                // store path to server location of the file storage
+                var connectionInfo = appSettings["serverPath"];
+
+                // combine the server location and the name of the new folder to be created
+                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+
+                try
+                {
+                    // loop through the uploads and pull out each file from it.
+                    for (int i = 0; i < files.Count(); ++i)
+                    {
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                        {
+                            // store the name of the file
+                            var name = Path.GetFileName(files.ElementAt(i).FileName);
+
+                            // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
+                            var file = new Models.File
+                            {
+                                storageLocation = string.Format("{0}\\{1}", storagePath, name),
+                                cre_date = DateTime.Now,
+                                ID = idea.ID
+                            };
+
+                            files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+
+                            db.Files.Add(file);
+                            db.SaveChanges();
+                        }
+                    }
+                }
+
+                catch
+                {
+                    Debug.WriteLine("Upload failed");
+                    ViewBag.Message = "Upload failed";
+                    return RedirectToAction("Edit");
+                }
+
+                return RedirectToAction("Index");
+            }
+            return View(idea);
+        }
+
+
     }
 }
