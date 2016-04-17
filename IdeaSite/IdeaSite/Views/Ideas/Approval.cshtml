@@ -59,14 +59,14 @@
 
     </dl>
     <p>
-        @using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
+        @using (Html.BeginForm("Approval", "Ideas", FormMethod.Get))
         {
             <b>Approve or Deny: </b> @Html.RadioButton("approveOrDeny", "Approve", true) <text>Approve</text>
             @Html.RadioButton("approveOrDeny", "Deny") <text>Deny</text><br />
             //@Html.TextBox("Reason: ") <input type="submit" value="Search" />
         }
     </p>
-    @using (Html.BeginForm("Edit", "Ideas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("Index", "Ideas", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
 
@@ -92,39 +92,6 @@
             </div>
          </div>
     }
-
-
-
-            <h2>Files</h2>
-            <table>
-                <tr>
-                    <th>File Name</th>
-                    <th>Link</th>
-                </tr>
-                @foreach (var file in ViewBag.files as FileInfo[])
-                {
-                    var filePath = string.Format("{0}\\{1}", ViewBag.path, file.Name);
-                    <tr>
-                        <td>
-                            @file.Name
-                        </td>
-                        <td>
-                            @Html.ActionLink("Download", "Download", new { filepath = filePath, fileName = file.Name }, new { @target = "_blank" })
-                        </td>
-                    </tr>
-                }
-            </table>
-
-            <br /><br />
-
-
-
-
-
-
-
-
-
 
             <div>
                 @Html.ActionLink("Back to List", "Index")

@@ -244,6 +244,7 @@ namespace IdeaSite.Controllers
 
                 return RedirectToAction("Index");
             }
+            //ViewBag.files = files;
             return View(idea);
         }
 
@@ -363,49 +364,9 @@ namespace IdeaSite.Controllers
 
                 db.SaveChanges();
 
-                var appSettings = ConfigurationManager.AppSettings;
-
-                // store path to server location of the file storage
-                var connectionInfo = appSettings["serverPath"];
-
-                // combine the server location and the name of the new folder to be created
-                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-
-                try
-                {
-                    // loop through the uploads and pull out each file from it.
-                    for (int i = 0; i < files.Count(); ++i)
-                    {
-                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
-                        {
-                            // store the name of the file
-                            var name = Path.GetFileName(files.ElementAt(i).FileName);
-
-                            // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
-                            var file = new Models.File
-                            {
-                                storageLocation = string.Format("{0}\\{1}", storagePath, name),
-                                cre_date = DateTime.Now,
-                                ID = idea.ID
-                            };
-
-                            files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
-
-                            db.Files.Add(file);
-                            db.SaveChanges();
-                        }
-                    }
-                }
-
-                catch
-                {
-                    Debug.WriteLine("Upload failed");
-                    ViewBag.Message = "Upload failed";
-                    return RedirectToAction("Edit");
-                }
-
                 return RedirectToAction("Index");
             }
+            ViewBag.files = files;
             return View(idea);
         }
     }
