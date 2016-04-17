@@ -20,17 +20,43 @@ namespace IdeaSite.Controllers
         // GET: Ideas
         public ActionResult Index(string searchBy, string search)
         {
-            if (searchBy == "Title")
+            string[] sep = new string[] { (" ") }; // may use other separaters later
+            string[] searchTerms;
+            if (search != null)
             {
-                //return View(db.Ideas.ToList());
-                //List<Idea> ideas = db.Ideas.Contains(search).ToList();
-                return View(db.Ideas.Where(x => x.title.Contains(search) || search == null).ToList());
+                //searchTerms = search.Split(sep, StringSplitOptions.None);
+                searchTerms = search.Split(' ');
             }
-            else if (searchBy == "Description")
+            else
             {
-                return View(db.Ideas.Where(x => x.body.Contains(search) || search == null).ToList());
+                searchTerms = null;
             }
-            return View(db.Ideas.ToList());
+            //List<Idea> results = new List<Idea>();
+            //List<Idea> results = new IEnumerable<Idea>;
+            IEnumerable<Idea> results = new List<Idea>();
+
+            if (searchBy == "Title" && search != null)
+            {  
+                for (int i = 0; i < searchTerms.Length; ++i)
+                {
+                    var term = searchTerms[i];
+                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
+                }
+                return View(results);
+            }
+            else if (searchBy == "Description" && search != null)
+            {
+                for (int i = 0; i < searchTerms.Length; ++i)
+                {
+                    var term = searchTerms[i];
+                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
+                }
+                return View(results);
+            }
+            else
+            {
+                return View(db.Ideas.ToList());
+            }     
         }
 
         // GET: Ideas/Details/5
