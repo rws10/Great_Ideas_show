@@ -67,6 +67,7 @@
                 <> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) </>
                 <> @Html.ActionLink("Create Comment", "Create", "Comments", item, null) </>
                 <> @Html.ActionLink("View Comments", "Index", "Comments", item, null) </>
+                <> @Html.ActionLink("Approve/Deny", "Approval", new { id = item.ID }) </>
            </td>
         </tr>
 

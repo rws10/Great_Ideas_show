@@ -34,7 +34,7 @@ namespace IdeaSite.Controllers
             }
 
             if (searchBy == "Title" && search != null)
-            {  
+            {
                 for (int i = 0; i < searchTerms.Length; ++i)
                 {
                     var term = searchTerms[i];
@@ -56,7 +56,7 @@ namespace IdeaSite.Controllers
             else
             {
                 return View(db.Ideas.ToList());
-            }     
+            }
         }
 
         // GET: Ideas/Details/5
@@ -110,7 +110,7 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                idea.cre_user ="test";
+                idea.cre_user = "test";
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
@@ -276,7 +276,7 @@ namespace IdeaSite.Controllers
 
             // store path to server location of the file storage
             var connectionInfo = appSettings["serverPath"];
-            
+
             // combine the server location and the name of the new folder to be created
             var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
 
@@ -318,6 +318,26 @@ namespace IdeaSite.Controllers
             {
                 return HttpNotFound();
             }
+
+            /* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
+             * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
+             * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
+             * YOUR MACHINE*/
+            var appSettings = ConfigurationManager.AppSettings;
+
+            // store path to server location of the file storage
+            var connectionInfo = appSettings["serverPath"];
+
+            // combine the server location and the name of the new folder to be created
+            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
+
+            // Store the files from the desired file folder
+            var files = dir.GetFiles();
+
+            ViewBag.path = ideaFolder;
+            ViewBag.files = files;
+
             return View(idea);
         }
 
@@ -388,7 +408,5 @@ namespace IdeaSite.Controllers
             }
             return View(idea);
         }
-
-
     }
 }
