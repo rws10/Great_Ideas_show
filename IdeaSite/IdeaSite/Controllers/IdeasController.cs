@@ -20,6 +20,7 @@ namespace IdeaSite.Controllers
         // GET: Ideas
         public ActionResult Index(string searchBy, string search)
         {
+            IEnumerable<Idea> results = new List<Idea>();
             string[] sep = new string[] { (" ") }; // may use other separaters later
             string[] searchTerms;
             if (search != null)
@@ -31,9 +32,6 @@ namespace IdeaSite.Controllers
             {
                 searchTerms = null;
             }
-            //List<Idea> results = new List<Idea>();
-            //List<Idea> results = new IEnumerable<Idea>;
-            IEnumerable<Idea> results = new List<Idea>();
 
             if (searchBy == "Title" && search != null)
             {  
@@ -42,6 +40,7 @@ namespace IdeaSite.Controllers
                     var term = searchTerms[i];
                     results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
                 }
+                results = results.Distinct();
                 return View(results);
             }
             else if (searchBy == "Description" && search != null)
@@ -51,6 +50,7 @@ namespace IdeaSite.Controllers
                     var term = searchTerms[i];
                     results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
                 }
+                results = results.Distinct();
                 return View(results);
             }
             else
