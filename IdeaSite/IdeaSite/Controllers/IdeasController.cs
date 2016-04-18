@@ -20,6 +20,7 @@ namespace IdeaSite.Controllers
         // GET: Ideas
         public ActionResult Index(string searchBy, string search)
         {
+
             IEnumerable<Idea> results = new List<Idea>();
             //string[] sep = new string[] { (" ") };
             string[] searchTerms;
@@ -31,7 +32,7 @@ namespace IdeaSite.Controllers
             List<int[]> matches = new List<int[]>();
             foreach (Idea idea in ideas)
             {
-                int [] match = new int[2];
+                int[] match = new int[2];
                 match[0] = idea.ID;
                 match[1] = 0;
                 matches.Add(match);
@@ -44,7 +45,18 @@ namespace IdeaSite.Controllers
                     var term = searchTerms[i];
                     results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
                 }
+            }
+            else if (searchBy == "Description" && search != null)
+            {
+                for (int i = 0; i < searchTerms.Length; ++i)
+                {
+                    var term = searchTerms[i];
+                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
+                }
+            }
 
+            if (search != null)
+            {
                 foreach (Idea idea in results)
                 {
                     foreach (var match in matches)
@@ -55,7 +67,6 @@ namespace IdeaSite.Controllers
 
                 matches.OrderBy(x => x[1]);
                 results.Distinct();
-                //IEnumerable<Idea> finalResults = new List<Idea>();
                 IEnumerable<Idea> finalResults = new List<Idea>();
 
                 for (int i = 0; i < matches.Count(); ++i)
@@ -63,48 +74,14 @@ namespace IdeaSite.Controllers
                     foreach (var idea in results)
                     {
                         finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
-                        /*
-                        if (idea.ID == matches[i][1])
-                        {
-                            finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
-                        }
-                        */
-
                     }
                 }
                 finalResults = finalResults.Distinct();
                 return View(finalResults);
-                //results = results.Distinct();
-                //return View(results);
             }
-
-/*
-            if (searchBy == "Title" && search != null)
-            {
-                for (int i = 0; i < searchTerms.Length; ++i)
-                {
-                    var term = searchTerms[i];
-                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
-                }
-                results = results.Distinct();
-                return View(results);
-            }
-*/
-            else if (searchBy == "Description" && search != null)
-            {
-                for (int i = 0; i < searchTerms.Length; ++i)
-                {
-                    var term = searchTerms[i];
-                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
-                }
-                results = results.Distinct();
-                return View(results);
-            }
-            else
-            {
-                return View(db.Ideas.ToList());
-            }
+            else { return View(db.Ideas.ToList()); }
         }
+
 
         // GET: Ideas/Details/5
         public ActionResult Details(int? id)
