@@ -20,28 +20,31 @@ namespace IdeaSite.Controllers
         // GET: Ideas
         public ActionResult Index(string searchBy, string search)
         {
+
             IEnumerable<Idea> results = new List<Idea>();
-            string[] sep = new string[] { (" ") }; // may use other separaters later
+            //string[] sep = new string[] { (" ") };
             string[] searchTerms;
-            if (search != null)
+
+            if (search != null) { searchTerms = search.Split(' '); }
+            else { searchTerms = null; }
+
+            var ideas = db.Ideas.ToList();
+            List<int[]> matches = new List<int[]>();
+            foreach (Idea idea in ideas)
             {
-                //searchTerms = search.Split(sep, StringSplitOptions.None);
-                searchTerms = search.Split(' ');
-            }
-            else
-            {
-                searchTerms = null;
+                int[] match = new int[2];
+                match[0] = idea.ID;
+                match[1] = 0;
+                matches.Add(match);
             }
 
             if (searchBy == "Title" && search != null)
-            {  
+            {
                 for (int i = 0; i < searchTerms.Length; ++i)
                 {
                     var term = searchTerms[i];
                     results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
                 }
-                results = results.Distinct();
-                return View(results);
             }
             else if (searchBy == "Description" && search != null)
             {
@@ -50,14 +53,35 @@ namespace IdeaSite.Controllers
                     var term = searchTerms[i];
                     results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
                 }
-                results = results.Distinct();
-                return View(results);
             }
-            else
+
+            if (search != null)
             {
-                return View(db.Ideas.ToList());
-            }     
+                foreach (Idea idea in results)
+                {
+                    foreach (var match in matches)
+                    {
+                        if (idea.ID == match[0]) { ++match[1]; }
+                    }
+                }
+
+                matches.OrderBy(x => x[1]);
+                results.Distinct();
+                IEnumerable<Idea> finalResults = new List<Idea>();
+
+                for (int i = 0; i < matches.Count(); ++i)
+                {
+                    foreach (var idea in results)
+                    {
+                        finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                    }
+                }
+                finalResults = finalResults.Distinct();
+                return View(finalResults);
+            }
+            else { return View(db.Ideas.ToList()); }
         }
+
 
         // GET: Ideas/Details/5
         public ActionResult Details(int? id)
@@ -110,7 +134,7 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                idea.cre_user ="test";
+                idea.cre_user = "test";
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
@@ -244,6 +268,7 @@ namespace IdeaSite.Controllers
 
                 return RedirectToAction("Index");
             }
+            //ViewBag.files = files;
             return View(idea);
         }
 
@@ -276,7 +301,7 @@ namespace IdeaSite.Controllers
 
             // store path to server location of the file storage
             var connectionInfo = appSettings["serverPath"];
-            
+
             // combine the server location and the name of the new folder to be created
             var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
 
@@ -302,6 +327,73 @@ namespace IdeaSite.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+
+        // GET: Ideas/Approve/5
+        public ActionResult Approval(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Idea idea = db.Ideas.Find(id);
+            if (idea == null)
+            {
+                return HttpNotFound();
+            }
+
+            /* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
+             * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
+             * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
+             * YOUR MACHINE*/
+            var appSettings = ConfigurationManager.AppSettings;
+
+            // store path to server location of the file storage
+            var connectionInfo = appSettings["serverPath"];
+
+            // combine the server location and the name of the new folder to be created
+            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
+
+            // Store the files from the desired file folder
+            var files = dir.GetFiles();
+
+            ViewBag.path = ideaFolder;
+            ViewBag.files = files;
+
+            return View(idea);
+        }
+
+        // POST: Ideas/Approve/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Approval([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        {
+            if (ModelState.IsValid)
+            {
+                //db.Entry(idea).State = EntityState.Modified;
+                var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == idea.ID);
+                if (currentIdea == null)
+                {
+                    return HttpNotFound();
+                }
+
+                currentIdea.statusCode = idea.statusCode;
+                currentIdea.title = idea.title;
+                currentIdea.body = idea.body;
+               
+
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            ViewBag.files = files;
+            ViewBag.idea = idea;
+            return View(idea);
         }
     }
 }

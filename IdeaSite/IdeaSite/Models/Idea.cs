@@ -45,7 +45,7 @@ namespace IdeaSite.Models
 
         // Why was this idea Denied?
         // This needs to be a conditional display of only when the status is set to "Rejected"
-        [Display(Name = "Reason for Denial")]
+        [Display(Name = "Reason for Decision")]
         public string denialReason { get; set; }
 
         //public List<Comment> comments { get; set; }
