@@ -10,12 +10,28 @@ using IdeaSite.Models;
 using System.Configuration;
 using System.IO;
 using System.Diagnostics;
+using System.Net.Mail;
 
 namespace IdeaSite.Controllers
 {
     public class IdeasController : Controller
     {
         private IdeaSiteContext db = new IdeaSiteContext();
+
+        internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
+        {
+        MailMessage msg = new MailMessage();
+        msg.From = fromAddress;
+        msg.To.Add(toAddress);
+        msg.Body = body;
+        msg.IsBodyHtml = true;
+        msg.Subject = subject;
+        SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
+        smt.Port = 587;
+        smt.Credentials = new NetworkCredential("teamzed@outlook.com", "Boobies69");
+        smt.EnableSsl = true;
+        smt.Send(msg);
+        }
 
         // GET: Ideas
         public ActionResult Index(string searchBy, string search)
@@ -157,7 +173,18 @@ namespace IdeaSite.Controllers
                     ViewBag.Message = "Upload failed";
                     return RedirectToAction("Create");
                 }
+                /*
+                string subject = string.Format("New Idea Submission: {0}", idea.title);
+                string body = string.Format("{0} has submitted an Idea on Great Ideas:\n",
+                    "{1}\n {2}\nPlease go to Great Ideas to submit approval.", 
+                    idea.cre_user, idea.title, idea.body);
 
+                MailAddress from = new MailAddress("teamzed@outlook.com");
+                MailAddress to = new MailAddress("rws10@live.com");
+
+
+                SendEmail(from, to, subject, body);
+                */
                 return RedirectToAction("Index");
             }
 
