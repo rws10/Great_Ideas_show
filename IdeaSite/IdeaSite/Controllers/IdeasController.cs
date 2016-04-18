@@ -82,7 +82,7 @@ namespace IdeaSite.Controllers
                 }
 
                 // I think these are the same
-                //matches.OrderBy(x => x[1]));
+                matches.OrderBy(x => x[1]);
                 matches = matches.OrderBy(x => x[1]).ToList();
 
                 results.Distinct();
