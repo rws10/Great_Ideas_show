@@ -29,6 +29,7 @@
 			 <td class="btn-group">
 				<button type="button" class="btn btn-default">@Html.ActionLink("Details", "Details", new { id = item.ID })</button>
 				<button type="button" class="btn btn-default">@Html.ActionLink("View Comments", "Index", "Comments", item, null)</button>
+				<button type="button" class="btn btn-default">@Html.ActionLink("approval", "Approval", new { id = item.ID })</button>
 			 </td>
 		 </tr>
 		
