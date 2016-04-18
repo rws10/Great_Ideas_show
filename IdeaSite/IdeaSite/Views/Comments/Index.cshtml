@@ -3,65 +3,56 @@
 @model IEnumerable<IdeaSite.Models.Comment>
 
 @{
-    ViewBag.Title = "Index";
+	ViewBag.Title = "IdeaComments";
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+	<meta name="viewport" content="width=device-width" />
+	<title>Index</title>
 </head>
 <body>
 
 
-<span>Idea: @ViewBag.idea.title</span> <br />
-<span>Description: @ViewBag.idea.description</span> <br />
-<span>Date Posted: @ViewBag.idea.creationDate</span> <br />
+<p><b>Idea: </b>@ViewBag.idea.title</p>
+<p><b>Date Created: </b>@ViewBag.idea.cre_date</p>
+
+<!--<span>Description: @ViewBag.idea.body</span> <br />-->
 <!--int id = ViewBag.idea.ID;-->
 
 
 
 
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.cre_user)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.body)
-            </th>
-            <td>
-                @Html.DisplayNameFor(model => model.cre_date)
-            </td>
-            <th>
-            <th></th>
-        </tr>
-    
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.cre_user)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cre_date)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null) |
-                @*@Html.ActionLink("Details", "Details", new { id=item.ideaID }) |*@
-                @Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ID }, null)
-            </td>
-        </tr>
-    }
-            @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)
-       
-    </table>
+	<table class="table">
+		<tr>
+			<th>@Html.DisplayNameFor(model => model.cre_user)</th>
+			<th>@Html.DisplayNameFor(model => model.cre_date)</th>
+			<th>@Html.DisplayNameFor(model => model.body)</th>
+		</tr>
+	
+	@foreach (var item in Model) {
+		<tr>
+			<td>@Html.DisplayFor(modelItem => item.cre_user)</td>
+			<td>@Html.DisplayFor(modelItem => item.cre_date)</td>
+			<td>@Html.DisplayFor(modelItem => item.body)</td>
+			<td>
+				<!--@Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null) |
+				<!--@Html.ActionLink("Details", "Details", new { id=item.ideaID }) -->
+				<!--@Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ID }, null)-->
+			</td>
+		</tr>
+	}
+			   
+	</table>
 
+	</br>
+	<p>Click below to create new comment</p>
+	<p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)</button></p>
+	</br>
+	</br>
+	<p><button type="button" class="btn btn-default">@Html.ActionLink("Back to List", "Index", "Ideas")</button></p>
 
-    @Html.ActionLink("Back to List", "Index", "Ideas")
 </body>
 </html>

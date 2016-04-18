@@ -1,75 +1,38 @@
-﻿<!-- This page seems a little confusing. I've tried to make it easier on the eyes and order the information in
-    a way that is more natural.-->
-@model IEnumerable<IdeaSite.Models.Idea>
+﻿@model IEnumerable<IdeaSite.Models.Idea>
 @{
-    ViewBag.Title = "Home";
+	ViewBag.Title = "Ideas";
 }
-<!--We should probably come up with a better title-->
-<h1>Submitted Ideas</h1>
-<br />
-<h3>How You Can Contribute</h3>
-<!--An unwanted newline is printed here-->
-​<p>
-    If you have an idea to improve current processes or believe a process could be improved post it here!
+
+<p>
+	@using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
+	{
+	<b>Search By:</b> @Html.RadioButton("searchBy", "Title", true) <text>Title</text>
+	@Html.RadioButton("searchBy", "Description") <text>Description</text><br />
+	@Html.TextBox("search") <input type="submit" value="Search" />
+	}
 </p>
 
-<h3>Before submitting Your Idea...</h3>
-<p>
-    Please remember to search first to ensure your idea has not already been submitted!
-    <br/>
-    The filter page enables you to sort or filter ideas by name, date, or title.
-    <br/>
-    Approved submissions are listed on the Approved Ideas and Discussions page.
-    <!--<br />
-    Click the title below to comment on an idea.
-    <br /><br /> -->
-    <br/>
-    &nbsp; &nbsp; <font size="2"><b>Note: New discussions will not be displayed below until they are approved.</b></font>
-    <br/><br/>
-    <h3>Still can't find what you were looking for?</h3>
-    <b>Create your idea.</b>
-    <br/>
-    Click the "Create New" link below to begin.
-    <br/><br/>
-</p>
-<p><> @Html.ActionLink("Create New", "Create")</></p>
-<p>
-    @using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
-    {
-    <b>Search By:</b> @Html.RadioButton("searchBy", "Title", true) <text>Title</text>
-    @Html.RadioButton("searchBy", "Description") <text>Description</text><br />
-    @Html.TextBox("search") <input type="submit" value="Search" />
-    }
-</p>
+<!-- Table for displaying approved ideas//////////////////// -->
+
+<table class="table">
+  <tr>
+	  <th>@Html.DisplayNameFor(model => model.title)</th>
+	  <th>Author</th>
+	  <th>@Html.DisplayNameFor(model => model.cre_date)</th>
+  </tr>
+	  @foreach (var item in Model)
+	  {
+		 <tr>
+			 <td>@Html.DisplayFor(modelItem => item.title)</td>
+			 <td>@Html.DisplayFor(modelItem => item.cre_user)</td>
+			 <td>@Html.DisplayFor(modelItem => item.cre_date)</td>
+			 <td class="btn-group">
+				<button type="button" class="btn btn-default">@Html.ActionLink("Details", "Details", new { id = item.ID })</button>
+				<button type="button" class="btn btn-default">@Html.ActionLink("View Comments", "Index", "Comments", item, null)</button>
+			 </td>
+		 </tr>
+		
+	  }
 <table>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.cre_user)</th>
-            <td>@Html.DisplayFor(modelItem => item.cre_user)</td>
-        </tr>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.title)</th>
-            <td>@Html.DisplayFor(modelItem => item.title)</td>
-        </tr>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.cre_date)</th>
-            <td>@Html.DisplayFor(modelItem => item.cre_date)</td>
-        </tr>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.body)</th>
-            <td>@Html.DisplayFor(modelItem => item.body)</td>
-        </tr>
-        <tr>
-            <td>
-                <> @Html.ActionLink("Details", "Details", new { id = item.ID }) </>
-                <> @Html.ActionLink("Edit", "Edit", new { id = item.ID }) </>
-                <> @Html.ActionLink("Delete", "Delete", new { id = item.ID }) </>
-                <> @Html.ActionLink("Create Comment", "Create", "Comments", item, null) </>
-                <> @Html.ActionLink("View Comments", "Index", "Comments", item, null) </>
-           </td>
-        </tr>
-
-    }
-
-</table>
+<p><b>Click below to submit new Idea</b></p>
+<p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create")</button></p>
