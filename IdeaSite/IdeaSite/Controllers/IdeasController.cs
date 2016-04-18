@@ -40,8 +40,13 @@ namespace IdeaSite.Controllers
             IEnumerable<Idea> results = new List<Idea>();
             //string[] sep = new string[] { (" ") };
             string[] searchTerms;
+            //search.Remove(' ');
 
-            if (search != null) { searchTerms = search.Split(' '); }
+            if (search != null)
+            {
+                searchTerms = search.Trim().Split(' ');
+                //for (int i = 0; i < searchTerms.Length; ++i) { searchTerms[i] = searchTerms[i].Trim(); }
+            }
             else { searchTerms = null; }
 
             var ideas = db.Ideas.ToList();
@@ -84,6 +89,7 @@ namespace IdeaSite.Controllers
                 // I think these are the same
                 matches.OrderBy(x => x[1]);
                 matches = matches.OrderBy(x => x[1]).ToList();
+                matches.Reverse();
 
                 results.Distinct();
                 IEnumerable<Idea> finalResults = new List<Idea>();
@@ -92,23 +98,44 @@ namespace IdeaSite.Controllers
                 {
                     foreach (var idea in results)
                     {
+                        /* THIS IS AN ATTEMPT TO REMOVE EMPTY SPACES. NOT WORKING CURRENTLY 
+                        while (i < searchTerms.Length)
+                        {
+                            if (searchTerms[i] == "")
+                            {
+                                ++i;
+                            }
+                            else
+                            {
+                                finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                                ++i;
+                            }
+                        }
+                        */                        
                         // if statement MAY be unnecessary.. leave for now
                         if (idea.ID == matches[i][0]){
                             finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
                         }
+                        
                     }
                 }
                 finalResults = finalResults.Distinct();
                 // not sure why the list is backwards but this fixes the issues
-                finalResults = finalResults.Reverse();
+                //finalResults = finalResults.Reverse();
 
                 return View(finalResults);
             }
-            else { return View(db.Ideas.ToList()); }
+            else
+            {
+                IEnumerable < Idea > origResults = new List<Idea>();
+                origResults = db.Ideas.ToList();
+                origResults = origResults.Reverse();
+                return View(origResults);
+            }
         }
 
 
-        // GET: Ideas/Details/5
+        // GET: Ideas/Details/
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -159,7 +186,7 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                idea.cre_user = "test";
+                idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
                 db.SaveChanges();
