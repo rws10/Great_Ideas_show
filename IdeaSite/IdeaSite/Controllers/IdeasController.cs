@@ -307,7 +307,7 @@ namespace IdeaSite.Controllers
 
 
 
-        // GET: Ideas/Edit/5
+        // GET: Ideas/Approve/5
         public ActionResult Approval(int? id)
         {
             if (id == null)
@@ -342,7 +342,7 @@ namespace IdeaSite.Controllers
             return View(idea);
         }
 
-        // POST: Ideas/Edit/5
+        // POST: Ideas/Approve/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -358,9 +358,10 @@ namespace IdeaSite.Controllers
                     return HttpNotFound();
                 }
 
+                currentIdea.statusCode = idea.statusCode;
                 currentIdea.title = idea.title;
                 currentIdea.body = idea.body;
-                currentIdea.statusCode = idea.statusCode;
+               
 
                 db.SaveChanges();
 
