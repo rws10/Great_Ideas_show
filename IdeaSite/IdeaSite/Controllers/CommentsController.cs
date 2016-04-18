@@ -42,6 +42,7 @@ namespace IdeaSite.Controllers
         public ActionResult Create(int id)
         {
             ViewBag.ideaID = id;
+            ViewBag.idea = db.Ideas.Where(x => x.ID == id).ToList();
             return View();
         }
 
