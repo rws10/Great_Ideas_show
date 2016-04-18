@@ -50,7 +50,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,cre_date,ownerID,ownerName,ownerDiscription,ownerIdea")] Comment comment, int id)
+        public ActionResult Create([Bind(Include = "ID,ideaID,cre_user,body,cre_date,")] Comment comment, int id)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ideaID,ideaName,userName,bodyOfComment,cre_date,ownerID")] Comment comment)
+        public ActionResult Edit([Bind(Include = "ID,ideaID,cre_user,body,cre_date,")] Comment comment)
         {
             if (ModelState.IsValid)
             {
