@@ -23,15 +23,22 @@ namespace IdeaSite.Controllers
             IEnumerable<Idea> results = new List<Idea>();
             //string[] sep = new string[] { (" ") };
             string[] searchTerms;
-            if (search != null)
+
+            var ideas = db.Ideas.ToList();
+            List<int[]> matches = new List<int[]>();
+            foreach (Idea idea in ideas)
             {
-                //searchTerms = search.Split(sep, StringSplitOptions.None);
-                searchTerms = search.Split(' ');
+                int [] match = new int[2];
+                match[0] = idea.ID;
+                match[1] = 0;
+                matches.Add(match);
             }
-            else
-            {
-                searchTerms = null;
-            }
+         
+
+
+
+            if (search != null) { searchTerms = search.Split(' '); }
+            else { searchTerms = null; }
 
             if (searchBy == "Title" && search != null)
             {
@@ -368,6 +375,7 @@ namespace IdeaSite.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.files = files;
+            ViewBag.idea = idea;
             return View(idea);
         }
     }
