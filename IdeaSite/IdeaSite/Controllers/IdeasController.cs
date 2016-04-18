@@ -81,7 +81,10 @@ namespace IdeaSite.Controllers
                     }
                 }
 
-                matches.OrderBy(x => x[1]);
+                // I think these are the same
+                //matches.OrderBy(x => x[1]));
+                matches = matches.OrderBy(x => x[1]).ToList();
+
                 results.Distinct();
                 IEnumerable<Idea> finalResults = new List<Idea>();
 
@@ -89,10 +92,16 @@ namespace IdeaSite.Controllers
                 {
                     foreach (var idea in results)
                     {
-                        finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                        // if statement MAY be unnecessary.. leave for now
+                        if (idea.ID == matches[i][0]){
+                            finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                        }
                     }
                 }
                 finalResults = finalResults.Distinct();
+                // not sure why the list is backwards but this fixes the issues
+                finalResults = finalResults.Reverse();
+
                 return View(finalResults);
             }
             else { return View(db.Ideas.ToList()); }
