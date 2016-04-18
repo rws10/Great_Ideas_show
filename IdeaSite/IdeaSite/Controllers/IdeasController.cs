@@ -24,6 +24,9 @@ namespace IdeaSite.Controllers
             //string[] sep = new string[] { (" ") };
             string[] searchTerms;
 
+            if (search != null) { searchTerms = search.Split(' '); }
+            else { searchTerms = null; }
+
             var ideas = db.Ideas.ToList();
             List<int[]> matches = new List<int[]>();
             foreach (Idea idea in ideas)
@@ -33,13 +36,49 @@ namespace IdeaSite.Controllers
                 match[1] = 0;
                 matches.Add(match);
             }
-         
 
+            if (searchBy == "Title" && search != null)
+            {
+                for (int i = 0; i < searchTerms.Length; ++i)
+                {
+                    var term = searchTerms[i];
+                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
+                }
 
+                foreach (Idea idea in results)
+                {
+                    foreach (var match in matches)
+                    {
+                        if (idea.ID == match[0]) { ++match[1]; }
+                    }
+                }
 
-            if (search != null) { searchTerms = search.Split(' '); }
-            else { searchTerms = null; }
+                matches.OrderBy(x => x[1]);
+                results.Distinct();
+                //IEnumerable<Idea> finalResults = new List<Idea>();
+                IEnumerable<Idea> finalResults = new List<Idea>();
 
+                for (int i = 0; i < matches.Count(); ++i)
+                {
+                    foreach (var idea in results)
+                    {
+                        finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                        /*
+                        if (idea.ID == matches[i][1])
+                        {
+                            finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                        }
+                        */
+
+                    }
+                }
+                finalResults = finalResults.Distinct();
+                return View(finalResults);
+                //results = results.Distinct();
+                //return View(results);
+            }
+
+/*
             if (searchBy == "Title" && search != null)
             {
                 for (int i = 0; i < searchTerms.Length; ++i)
@@ -50,6 +89,7 @@ namespace IdeaSite.Controllers
                 results = results.Distinct();
                 return View(results);
             }
+*/
             else if (searchBy == "Description" && search != null)
             {
                 for (int i = 0; i < searchTerms.Length; ++i)
