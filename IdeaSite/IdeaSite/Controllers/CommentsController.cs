@@ -18,7 +18,11 @@ namespace IdeaSite.Controllers
         // GET: Comments
         public ActionResult Index(Idea idea)
         {
-            List<Comment> comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
+            IEnumerable<Comment> comments = new List<Comment>();
+            //List<Comment> comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
+            comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
+            comments = comments.Reverse();
+            ViewBag.idea = idea;
             ViewBag.idea = idea;
             return View(comments);
         }
