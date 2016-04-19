@@ -285,6 +285,7 @@ namespace IdeaSite.Controllers
                 currentIdea.title = idea.title;
                 currentIdea.body = idea.body;
                 currentIdea.statusCode = idea.statusCode;
+                currentIdea.denialReason = idea.denialReason;
 
                 db.SaveChanges();
 
