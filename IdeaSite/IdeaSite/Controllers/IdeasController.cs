@@ -225,7 +225,7 @@ namespace IdeaSite.Controllers
                     ViewBag.Message = "Upload failed";
                     return RedirectToAction("Create");
                 }
-                /*
+                
                 string subject = string.Format("New Idea Submission: {0}", idea.title);
                 string body = string.Format("{0} has submitted an Idea on Great Ideas:\n",
                     "{1}\n {2}\nPlease go to Great Ideas to submit approval.", 
@@ -236,7 +236,7 @@ namespace IdeaSite.Controllers
 
 
                 SendEmail(from, to, subject, body);
-                */
+                
                 return RedirectToAction("Index");
             }
 

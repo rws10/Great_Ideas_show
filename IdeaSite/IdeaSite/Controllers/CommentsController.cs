@@ -23,6 +23,7 @@ namespace IdeaSite.Controllers
             comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
             comments = comments.Reverse();
             ViewBag.idea = idea;
+            ViewBag.idea = idea;
             return View(comments);
         }
 
