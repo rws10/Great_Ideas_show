@@ -34,7 +34,7 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas
-        public ActionResult Index(string searchBy, string search)
+        public ActionResult Index(string searchBy, string search, string sortByStatus)
         {
 
             IEnumerable<Idea> results = new List<Idea>();
@@ -76,6 +76,15 @@ namespace IdeaSite.Controllers
                 }
             }
 
+            if (sortByStatus == "All") { /* do nothing */ }
+            else { results = results.Where(x => x.statusCode == sortByStatus); }
+            
+
+
+
+
+
+
             if (search != null)
             {
                 foreach (Idea idea in results)
@@ -98,31 +107,14 @@ namespace IdeaSite.Controllers
                 {
                     foreach (var idea in results)
                     {
-                        /* THIS IS AN ATTEMPT TO REMOVE EMPTY SPACES. NOT WORKING CURRENTLY 
-                        while (i < searchTerms.Length)
+                        if (idea.ID == matches[i][0])
                         {
-                            if (searchTerms[i] == "")
-                            {
-                                ++i;
-                            }
-                            else
-                            {
-                                finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
-                                ++i;
-                            }
-                        }
-                        */                        
-                        // if statement MAY be unnecessary.. leave for now
-                        if (idea.ID == matches[i][0]){
                             finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
                         }
                         
                     }
                 }
                 finalResults = finalResults.Distinct();
-                // not sure why the list is backwards but this fixes the issues
-                //finalResults = finalResults.Reverse();
-
                 return View(finalResults);
             }
             else
