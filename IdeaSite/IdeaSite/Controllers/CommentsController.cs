@@ -96,7 +96,7 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
                 //comment.creationDate = DateTime.Now;
-                //db.Entry(comment).State = EntityState.Modified;
+                db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
 
                 Idea idea = db.Ideas.Find(comment.ideaID);
