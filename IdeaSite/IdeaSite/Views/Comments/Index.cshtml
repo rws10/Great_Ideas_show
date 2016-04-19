@@ -37,9 +37,8 @@
 			<td>@Html.DisplayFor(modelItem => item.cre_user)</td>
 			<td>@Html.DisplayFor(modelItem => item.cre_date)</td>
 			<td>@Html.DisplayFor(modelItem => item.body)</td>
-			<td>
-				<!--@Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null) |
-				<!--@Html.ActionLink("Details", "Details", new { id=item.ideaID }) -->
+			<td>@Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null)
+				<!--@Html.ActionLink("Details", "Details", new { id=item.ideaID })--> 
 				<!--@Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ID }, null)-->
 			</td>
 		</tr>
