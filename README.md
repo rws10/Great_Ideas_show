@@ -10,6 +10,10 @@ Desired (non critical) Functions:
     adding it in to the rest of the things that need to send emails
 - Time sensitive auto-actions
 
+Email information:
+teamzed@outlook.com
+Boobies69
+
 FOR JOSH:
 Looks:
 Idea:
