@@ -48,7 +48,23 @@ padding: 15px;
 /* Set height of the grid so .sidenav can be 100% (adjust if needed) 
 .row.content {height: 1500px}*/
     
-/* Set gray background color and 100% height */
-.sidenav {
-background-color: #f1f1f1;
+
+
+
+editor-label {
+     clear:both;
 }
+
+editor-label label {
+    float:right;
+    width:150px
+}
+
+editor-label input {
+    float:right;
+}
+
+a.my-class { color: #000000;}
+a.my-class:active { color: #000000;}
+a.my-class:link { color: #000000; }
+a.my-class:visited { color: #CCCCCC; }
