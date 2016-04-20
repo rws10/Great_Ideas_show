@@ -466,7 +466,7 @@ namespace IdeaSite.Controllers
                     body = string.Format(
                         "Your idea wsa not approved" +
                         "<br/><br/>{0}" +
-                        "Reason for Denial:" +
+                        "<br/><br/>Reason for Denial:" +
                         "<br/>{1}" +
                         "<br/><br/>If this is not rectified in 10 business days," +
                         "the submission will be removed and no further action will be taken." +
