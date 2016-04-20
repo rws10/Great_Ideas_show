@@ -20,17 +20,17 @@ namespace IdeaSite.Controllers
 
         internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
         {
-        MailMessage msg = new MailMessage();
-        msg.From = fromAddress;
-        msg.To.Add(toAddress);
-        msg.Body = body;
-        msg.IsBodyHtml = true;
-        msg.Subject = subject;
-        SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
-        smt.Port = 587;
-        smt.Credentials = new NetworkCredential("teamzed@outlook.com", "Boobies69");
-        smt.EnableSsl = true;
-        smt.Send(msg);
+            MailMessage msg = new MailMessage();
+            msg.From = fromAddress;
+            msg.To.Add(toAddress);
+            msg.Body = body;
+            msg.IsBodyHtml = true;
+            msg.Subject = subject;
+            SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
+            smt.Port = 587;
+            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "Boobies69");
+            smt.EnableSsl = true;
+            smt.Send(msg);
         }
 
         // GET: Ideas
@@ -105,7 +105,7 @@ namespace IdeaSite.Controllers
                         {
                             finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
                         }
-                        
+
                     }
                 }
                 finalResults = finalResults.Distinct();
@@ -113,7 +113,7 @@ namespace IdeaSite.Controllers
             }
             else
             {
-                IEnumerable < Idea > origResults = new List<Idea>();
+                IEnumerable<Idea> origResults = new List<Idea>();
                 origResults = db.Ideas.ToList();
                 origResults = origResults.Reverse();
                 return View(origResults);
@@ -219,10 +219,13 @@ namespace IdeaSite.Controllers
                     ViewBag.Message = "Upload failed";
                     return RedirectToAction("Create");
                 }
-                
+
                 string subject = string.Format("New Idea Submission: {0}", idea.title);
-                string body = string.Format("{0} has submitted an Idea on Great Ideas:\n",
-                    "{1}\n {2}\nPlease go to Great Ideas to submit approval.", 
+
+                string body = string.Format("{0} has submitted an Idea on Great Ideas:" +
+                    "<br/><br/>{1}:" +
+                    "<br/>{2}" +
+                    "<br/><br/>Please go to Great Ideas to submit approval.",
                     idea.cre_user, idea.title, idea.body);
 
                 MailAddress from = new MailAddress("teamzed@outlook.com");
@@ -230,7 +233,7 @@ namespace IdeaSite.Controllers
 
 
                 SendEmail(from, to, subject, body);
-                
+
                 return RedirectToAction("Index");
             }
 
@@ -270,10 +273,24 @@ namespace IdeaSite.Controllers
 
                 currentIdea.title = idea.title;
                 currentIdea.body = idea.body;
-                currentIdea.statusCode = idea.statusCode;
+                currentIdea.statusCode = "Submitted";
                 currentIdea.denialReason = idea.denialReason;
 
                 db.SaveChanges();
+
+                string subject = string.Format("An idea has been edited: {0}", idea.title);
+
+                string body = string.Format("{0} has Edited an Idea on Great Ideas:" +
+                    "<br/><br/>{1}:" +
+                    "<br/>{2}" +
+                    "<br/><br/>Please go to Great Ideas to submit approval.",
+                    idea.cre_user, idea.title, idea.body);
+
+                MailAddress from = new MailAddress("teamzed@outlook.com");
+                MailAddress to = new MailAddress("rws10@live.com");
+
+
+                SendEmail(from, to, subject, body);
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -436,6 +453,33 @@ namespace IdeaSite.Controllers
                 ViewBag.path = ideaFolder;
                 ViewBag.files = files;
 
+                string body;
+                if (idea.statusCode == "Approved")
+                {
+                    body = string.Format(
+                        "Your idea was approved" +
+                        "<br/><br/>{0}"
+                        , idea.body);
+                }
+                else
+                {
+                    body = string.Format(
+                        "Your idea wsa not approved" +
+                        "<br/><br/>{0}" +
+                        "Reason for Denial:" +
+                        "<br/>{1}" +
+                        "<br/><br/>If this is not rectified in 10 business days," +
+                        "the submission will be removed and no further action will be taken." +
+                        "<br/><br/>Please go to Great Ideas to resubmit your idea."
+                        , idea.body, idea.denialReason);
+                }
+
+                string subject = string.Format("New Idea Submission: {0}", idea.title);
+                MailAddress from = new MailAddress("teamzed@outlook.com");
+                MailAddress to = new MailAddress("rws10@live.com");
+
+
+                SendEmail(from, to, subject, body);
                 return RedirectToAction("Index");
             }
 

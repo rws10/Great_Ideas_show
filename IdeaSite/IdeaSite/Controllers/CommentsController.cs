@@ -7,12 +7,28 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using IdeaSite.Models;
+using System.Net.Mail;
 
 // for commit
 namespace IdeaSite.Controllers
 {
     public class CommentsController : Controller
     {
+        internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
+        {
+            MailMessage msg = new MailMessage();
+            msg.From = fromAddress;
+            msg.To.Add(toAddress);
+            msg.Body = body;
+            msg.IsBodyHtml = true;
+            msg.Subject = subject;
+            SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
+            smt.Port = 587;
+            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "Boobies69");
+            smt.EnableSsl = true;
+            smt.Send(msg);
+        }
+
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Comments
@@ -65,6 +81,18 @@ namespace IdeaSite.Controllers
                 db.SaveChanges();
 
                 Idea idea = db.Ideas.Find(comment.ideaID);
+
+                string subject = string.Format("New comment added to your idea: {0}", idea.title);
+
+                string body = string.Format("{0} has commented on your idea." +
+                    "<br/><br/>To view this comment, go to Great Ideas.",
+                    comment.cre_user);
+
+                MailAddress from = new MailAddress("teamzed@outlook.com");
+                MailAddress to = new MailAddress("rws10@live.com");
+
+
+                SendEmail(from, to, subject, body);
 
                 return RedirectToAction("Index", "Comments", idea);
             }
