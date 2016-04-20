@@ -225,7 +225,7 @@ namespace IdeaSite.Controllers
                 string body = string.Format("{0} has submitted an Idea on Great Ideas:" +
                     "<br/><br/>{1}:" +
                     "<br/>{2}" +
-                    "<br/><br/>Please go to Great Ideas to submit approval.",
+                    "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{2}\">Great Ideas</a> to submit approval.",
                     idea.cre_user, idea.title, idea.body);
 
                 MailAddress from = new MailAddress("teamzed@outlook.com");
@@ -283,8 +283,8 @@ namespace IdeaSite.Controllers
                 string body = string.Format("{0} has Edited an Idea on Great Ideas:" +
                     "<br/><br/>{1}:" +
                     "<br/>{2}" +
-                    "<br/><br/>Please go to Great Ideas to submit approval.",
-                    idea.cre_user, idea.title, idea.body);
+                    "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{3}\">Great Ideas</a> to submit approval.",
+                    idea.cre_user, idea.title, idea.body, idea.ID);
 
                 MailAddress from = new MailAddress("teamzed@outlook.com");
                 MailAddress to = new MailAddress("rws10@live.com");
@@ -470,8 +470,8 @@ namespace IdeaSite.Controllers
                         "<br/>{1}" +
                         "<br/><br/>If this is not rectified in 10 business days," +
                         "the submission will be removed and no further action will be taken." +
-                        "<br/><br/>Please go to Great Ideas to resubmit your idea."
-                        , idea.body, idea.denialReason);
+                        "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Edit/{2}\">Great Ideas</a> to resubmit your idea."
+                        , idea.body, idea.denialReason, idea.ID);
                 }
 
                 string subject = string.Format("New Idea Submission: {0}", idea.title);

@@ -85,8 +85,8 @@ namespace IdeaSite.Controllers
                 string subject = string.Format("New comment added to your idea: {0}", idea.title);
 
                 string body = string.Format("{0} has commented on your idea." +
-                    "<br/><br/>To view this comment, go to Great Ideas.",
-                    comment.cre_user);
+                    "<br/><br/>To view this comment, go to <a href=\"http://localhost:52398/Comments/Index/{1}\">Great Ideas</a>.",
+                    comment.cre_user, comment.ideaID);
 
                 MailAddress from = new MailAddress("teamzed@outlook.com");
                 MailAddress to = new MailAddress("rws10@live.com");
