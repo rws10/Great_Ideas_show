@@ -78,12 +78,6 @@ namespace IdeaSite.Controllers
 
             if (sortByStatus == "All") { /* do nothing */ }
             else { results = results.Where(x => x.statusCode == sortByStatus); }
-            
-
-
-
-
-
 
             if (search != null)
             {
@@ -371,22 +365,6 @@ namespace IdeaSite.Controllers
             return RedirectToAction("Index");
         }
 
-        public FileResult Download(string filepath, string fileName)
-        {
-            return File(filepath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-
-
         // GET: Ideas/Approve/5
         public ActionResult Approval(int? id)
         {
@@ -427,7 +405,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Approval([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Approval([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea)
         {
             if (ModelState.IsValid)
             {
@@ -439,17 +417,47 @@ namespace IdeaSite.Controllers
                 }
 
                 currentIdea.statusCode = idea.statusCode;
-                currentIdea.title = idea.title;
-                currentIdea.body = idea.body;
-               
+                currentIdea.denialReason = idea.denialReason;
 
                 db.SaveChanges();
 
+                var appSettings = ConfigurationManager.AppSettings;
+
+                // store path to server location of the file storage
+                var connectionInfo = appSettings["serverPath"];
+
+                // combine the server location and the name of the new folder to be created
+                var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+                DirectoryInfo dir = new DirectoryInfo(ideaFolder);
+
+                // Store the files from the desired file folder
+                var files = dir.GetFiles();
+
+                ViewBag.path = ideaFolder;
+                ViewBag.files = files;
+
                 return RedirectToAction("Index");
             }
-            ViewBag.files = files;
-            ViewBag.idea = idea;
+
             return View(idea);
         }
+
+        public FileResult Download(string filepath, string fileName)
+        {
+            return File(filepath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+
+
+
     }
 }

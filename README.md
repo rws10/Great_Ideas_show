@@ -10,10 +10,12 @@ Desired (non critical) Functions:
     adding it in to the rest of the things that need to send emails
 - Time sensitive auto-actions
 
+FOR JOSH:
 Looks:
 Idea:
 - index:
   - search bar in the top right corner
+  - Make the approval button only appear if the status is set to submitted.
 
 - details:
   - put the files into a table. get rid of the "Link" title
@@ -27,6 +29,8 @@ Idea:
 
 Comment:
 - index:
+  - When the comment index is called for an idea, the URL is populated with the attributes of the idea. 
+      Any large body of an idea will cause an error.
   - Have it look something like:
      Author: This Guy
      Creation Date: This time           Body: This is the body of the comment
