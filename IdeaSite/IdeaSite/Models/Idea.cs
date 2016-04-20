@@ -19,7 +19,7 @@ namespace IdeaSite.Models
         public string title { get; set; }
 
         // What is the idea?
-        [Required]
+        [Required(ErrorMessage = "Description Required")]
         [Display(Name = "Description")]
         public string body { get; set; }
 

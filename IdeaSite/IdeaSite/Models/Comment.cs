@@ -21,7 +21,7 @@ namespace IdeaSite.Models
         [Display(Name = "Name")]
         public string cre_user { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Comment Required")]
         [Display(Name = "Comment")]
         public string body { get; set; }
 
