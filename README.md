@@ -15,7 +15,8 @@ Looks:
 Idea:
 - index:
   - search bar in the top right corner
-  - Make the approval button only appear if the status is set to submitted.
+  - have the approval button only appear if the status is set to submitted.
+  - have the text box around the description fit vertically closer to the text itself.
 
 - details:
   - put the files into a table. get rid of the "Link" title
