@@ -1,47 +1,62 @@
 ﻿@model IEnumerable<IdeaSite.Models.Idea>
 @{
-    ViewBag.Title = "Ideas";
+	ViewBag.Title = "Ideas";
 }
 
-<p>
-    @using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
-    {
-        <b>Search By:</b>
-        @Html.RadioButton("searchBy", "Title", true) <text>Title</text>
-        @Html.RadioButton("searchBy", "Description") <text>Description</text><br />
-        <b>Filter By:</b>
-        @Html.RadioButton("sortByStatus", "All", true) <text>  All  </text>
-        @Html.RadioButton("sortByStatus", "Submitted") <text>  Submitted  </text>
-        @Html.RadioButton("sortByStatus", "Approved") <text>  Approved  </text>
-        @Html.RadioButton("sortByStatus", "Denied") <text>  Denied  </text><br />
-        @Html.TextBox("search") <input type="submit" value="Search" />
-    }
-</p>
+	
+	@using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
+	{
+	<div>
+		<div class="editor-label">
+		<b>Search By:</b>
+		@Html.RadioButton("searchBy", "Title", true) <text> Title </text>
+		@Html.RadioButton("searchBy", "Description") <text> Description </text>
+		</div>
+		<p>
+		<b>Filter By:</b>
+		@Html.RadioButton("sortByStatus", "All", true) <text>  All  </text>
+		@Html.RadioButton("sortByStatus", "Submitted") <text>  Submitted  </text>
+		@Html.RadioButton("sortByStatus", "Approved") <text>  Approved  </text>
+		@Html.RadioButton("sortByStatus", "Denied") <text>  Denied  </text>
+		</p>
+		<p>
+		@Html.TextBox("search") <button type="submit" class="btn btn-default btn-sm">
+		<span class="glyphicon glyphicon-search"></span> Search
+		</button>
+		</p>
+		</div>
+	}
+	
 
- 
+@foreach (var item in Model)
+	{
+	   
+	   <div class="container-fluid bsolid">
+		 <div class="row content">
+			<div class="col-md-9">
+			  <h4>Title: @Html.DisplayFor(modelItem => item.title)</h4>
+			  <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h5>
+			  <hr>
+			  <h5><span class="label label-success">Description:</span></h5>
+			  <textarea rows="4" cols="100" style="border:none" readonly>@Html.DisplayFor(modelItem => item.body)</textarea>
+			  <br>
+				<div class="btn-group">
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Details", "Details", new { id = item.ID }, new {@class =" a my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("delete", "Delete", new { id = item.ID }, new {@class =" a my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("edit", "Edit", new { id = item.ID }, new {@class ="my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("View Comments", "Index", "Comments", item, new {@class ="my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Create Comments", "Create", "Comments", item, new {@class ="my-class"})</button>
+				   @if(item.statusCode == "Submitted")
+				   {
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("approval", "Approval", new { id = item.ID }, new {@class ="my-class"})</button>
+				   }
+				</div>
+			</div>	
+		 </div>
+		 <br>
+		</div>
+		<br>
+	}
 
-<!-- Table for displaying approved ideas//////////////////// -->
-
-<table class="table">
-    <tr>
-        <th>@Html.DisplayNameFor(model => model.title)</th>
-        <th>Author</th>
-        <th>@Html.DisplayNameFor(model => model.cre_date)</th>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@Html.DisplayFor(modelItem => item.title)</td>
-            <td>@Html.DisplayFor(modelItem => item.cre_user)</td>
-            <td>@Html.DisplayFor(modelItem => item.cre_date)</td>
-            <td class="btn-group">
-                <button type="button" class="btn btn-default">@Html.ActionLink("Details", "Details", new { id = item.ID })</button>
-                <button type="button" class="btn btn-default">@Html.ActionLink("View Comments", "Index", "Comments", item, null)</button>
-                <button type="button" class="btn btn-default">@Html.ActionLink("approval", "Approval", new { id = item.ID })</button>
-            </td>
-        </tr>
-
-    }
-</table>
 <p><b>Click below to submit new Idea</b></p>
 <p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create")</button></p>
