@@ -43,13 +43,13 @@
 			  <br>
 				<div class="btn-group">
 				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Details", "Details", new { id = item.ID }, new {@class ="my-class"})</button>
-				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("delete", "Delete", new { id = item.ID }, new {@class ="my-class"})</button>
-				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("edit", "Edit", new { id = item.ID }, new {@class ="my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Delete", "Delete", new { id = item.ID }, new {@class ="my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Edit", "Edit", new { id = item.ID }, new {@class ="my-class"})</button>
 				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("View Comments", "Index", "Comments", item, new {@class ="my-class"})</button>
 				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Create Comments", "Create", "Comments", item, new {@class ="my-class"})</button>
 				   @if(item.statusCode == "Submitted")
 				   {
-				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("approval", "Approval", new { id = item.ID }, new {@class ="my-class"})</button>
+				   <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Approval", "Approval", new { id = item.ID }, new {@class ="my-class"})</button>
 				   }
 				</div>
 			</div>	

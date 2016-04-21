@@ -36,9 +36,9 @@
 		<div class="form-group @Model.statusCode">
 			@Html.LabelFor(model => model.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
 			<div class="col-md-10">
-			    <p>This will only be visible like this for PPMO group. User will only have a text block to see the reason.</p>
 				<textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.denialReason)</textarea>
 				<span class="field-validation-valid text-danger" data-valmsg-for="denialReason" data-valmsg-replace="true"></span>
+				<p>*This will only be visible like this for PPMO group. User will only have a text block to see the reason.*</p>
 			</div>
 		</div>
 

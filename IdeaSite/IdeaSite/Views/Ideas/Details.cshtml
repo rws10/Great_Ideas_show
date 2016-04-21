@@ -45,12 +45,14 @@
 					</tr>
 				}
 				</table>
-			</div>
+				<br>
 			@if(Model.statusCode == "Denied")
 			{	
-			    <h5>Reason for Denial</h5>
+			    <h5>Reason for Denial:</h5>
+
 				<textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.denialReason)</textarea>
 		    }
+			</div>
 		 </div>
 	<br>
 <p>
