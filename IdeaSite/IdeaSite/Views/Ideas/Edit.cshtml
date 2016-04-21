@@ -1,74 +1,79 @@
 ﻿@model IdeaSite.Models.Idea
 
 @{
-	ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit";
 }
 
-<h2>Edit Page</h2>
-<hr>
-<div class="container-fluid">
+<h2>Edit</h2>
+
+
 @using (Html.BeginForm("Edit", "Ideas", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-	@Html.AntiForgeryToken()
-	
-	<div class="form-horizontal">
-		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
-		@Html.HiddenFor(model => model.ID)
-		@Html.HiddenFor(model => model.cre_date)
-		@Html.HiddenFor(model => model.cre_user)
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Idea</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.cre_date)
+        @Html.HiddenFor(model => model.cre_user)
 
-		<div class="form-group">
-			<label class="control-label col-md-2" for="name">Title</label>
-			<div class="col-md-10">
-				@Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
-				@Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
-			</div>
-		</div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-		<div class="form-group">
-			<label class="control-label col-md-2" for="description">Description</label>
-			<div class="col-md-10">
-				<textarea style="border-radius: 4px; border: 1px solid #ccc;" id="body" name="body" cols="75" rows="5" value="" type="text">@Html.DisplayFor(model => model.body)</textarea>
-				<span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
-			</div>
-		</div>
-		<!--
-		<div class="form-group">
-			<label class="control-label col-md-2" for="description">Status</label>
-			<div class="col-md-10">
-				@Html.DropDownListFor(Model => Model.statusCode, Model.statusCodes, new { htmlAttributes = new { @class = "form-control" } })
-				Won't be here normally.
-				@Html.EditorFor(model => model.statusCode, new { htmlAttributes = new { @class = "form-control" } })
-				@Html.ValidationMessageFor(model => model.statusCode, "", new { @class = "text-danger" })
-			</div>
-		</div>
-		-->
-		<div class="form-group @Model.statusCode">
-			@Html.LabelFor(model => model.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
-			<div class="col-md-10">
-				This will only be visible like this for PPMO group. User will only have a text block to see the reason.
-				<textarea class="form-control text-box" id="body" name="body" rows="5" value="" type="text">@Html.DisplayFor(model => model.body)</textarea>
-				@Html.ValidationMessageFor(model => model.denialReason, "", new { @class = "text-danger" })
-			</div>
-		</div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.body, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.body, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.body, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-		<div class="form-group">
-			@Html.Label("File", new { @class = "control-label col-md-2" })
-			<div class="col-md-10">
-				<input type="file" id="files" name="files" value="" multiple="multiple" />
-			</div>
-		</div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.statusCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.statusCode)
+                <!--@Html.DropDownListFor(Model =sd> Model.sdtatusCode, Model.statusCodes, new { htmlAttributes = new { @class = "form-control" } })
+                Won't be here normally.-->
+                <!--@Html.EditorFor(model => model.statusCode, new { htmlAttributes = new { @class = "form-control" } })-->
+                <!--@Html.ValidationMessageFor(model => model.statusCode, "", new { @class = "text-danger" })-->
+            </div>
+        </div>
 
-		<div class="form-group">
-			<div class="col-md-offset-2 col-md-10">
-				<input type="submit" value="Save" class="btn btn-default" />
-			</div>
-		</div>
-		</div>
+        <div class="form-group @Model.statusCode">
+            @Html.LabelFor(model => model.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                This will only be visible like this for PPMO group. User will only have a text block to see the reason.
+                @Html.EditorFor(model => model.denialReason, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.denialReason, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("File", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" id="files" name="files" value="" multiple="multiple" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
 }
 
-</div>
 <div>
-	@Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index")
 </div>
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
