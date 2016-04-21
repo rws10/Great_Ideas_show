@@ -75,6 +75,15 @@ namespace IdeaSite.Controllers
                     results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
                 }
             }
+            else if (searchBy == "All" && search != null)
+            {
+                for (int i = 0; i < searchTerms.Length; ++i)
+                {
+                    var term = searchTerms[i];
+                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
+                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
+                }
+            }
 
             if (sortByStatus == "All") { /* do nothing */ }
             else { results = results.Where(x => x.statusCode == sortByStatus); }

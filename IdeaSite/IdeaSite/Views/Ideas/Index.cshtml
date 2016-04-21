@@ -9,7 +9,8 @@
 	<div>
 		<div class="editor-label">
 		<b>Search By:</b>
-		@Html.RadioButton("searchBy", "Title", true) <text> Title </text>
+        @Html.RadioButton("searchBy", "All", true) <text> All </text>
+		@Html.RadioButton("searchBy", "Title") <text> Title </text>
 		@Html.RadioButton("searchBy", "Description") <text> Description </text>
 		</div>
 		<p>
