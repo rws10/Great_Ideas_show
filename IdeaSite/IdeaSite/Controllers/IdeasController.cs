@@ -79,12 +79,6 @@ namespace IdeaSite.Controllers
             if (sortByStatus == "All") { /* do nothing */ }
             else { results = results.Where(x => x.statusCode == sortByStatus); }
             
-
-
-
-
-
-
             if (search != null)
             {
                 foreach (Idea idea in results)
