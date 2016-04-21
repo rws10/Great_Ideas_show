@@ -16,7 +16,7 @@ namespace IdeaSite
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Ideas", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Ideas", action = "Home", id = UrlParameter.Optional }
             );
         }
     }

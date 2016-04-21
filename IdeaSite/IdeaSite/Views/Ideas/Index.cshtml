@@ -3,7 +3,7 @@
 	ViewBag.Title = "Ideas";
 }
 
-	
+<h1>Search Page</h1>
 	@using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
 	{
 	<div>
@@ -25,7 +25,7 @@
 		<span class="glyphicon glyphicon-search"></span> Search
 		</button>
 		</p>
-		</div>
+	</div>
 	}
 	
 
@@ -34,7 +34,7 @@
 	   
 	   <div class="container-fluid bsolid">
 		 <div class="row content">
-			<div class="col-md-9">
+			<div class="col-md-12">
 			  <h4>Title: @Html.DisplayFor(modelItem => item.title)</h4>
 			  <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h5>
 			  <hr>

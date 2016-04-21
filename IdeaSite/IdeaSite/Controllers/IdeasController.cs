@@ -33,6 +33,12 @@ namespace IdeaSite.Controllers
             smt.Send(msg);
         }
 
+        //home index
+        public ActionResult Home()
+        {
+            return View();
+        }
+
         // GET: Ideas
         public ActionResult Index(string searchBy, string search, string sortByStatus)
         {
