@@ -30,9 +30,8 @@ text-box {
     max-width: 260px;
 }
 .bsolid{
-   border-top-style: outset;
-   border-bottom-style: outset;
-   border-color: grey;
+   border-style: outset;
+   border-color: black;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */

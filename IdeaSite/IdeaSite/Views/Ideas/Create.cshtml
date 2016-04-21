@@ -4,7 +4,8 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create Idea<br></h2>
+<h2>Create Idea</h2>
+<hr>
 
 
 @using (Html.BeginForm("Create", "Ideas", FormMethod.Post, new{enctype = "multipart/form-data"} ))
@@ -24,7 +25,7 @@
         <div class="form-group">
             <label class="control-label col-md-2" for="description">Description</label>
             <div class="col-md-10">
-                <textarea class="form-control text-box" id="body" name="body" rows="5" value="" type="text"></textarea>
+                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text"></textarea>
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
             </div>
         </div>
