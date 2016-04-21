@@ -9,7 +9,7 @@
 	<div>
 		<div class="editor-label">
 		<b>Search By:</b>
-        @Html.RadioButton("searchBy", "All", true) <text> All </text>
+		@Html.RadioButton("searchBy", "All", true) <text> All </text>
 		@Html.RadioButton("searchBy", "Title") <text> Title </text>
 		@Html.RadioButton("searchBy", "Description") <text> Description </text>
 		</div>
@@ -60,4 +60,4 @@
 	}
 
 <p><b>Click below to submit new Idea</b></p>
-<p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create")</button></p>
+<button type="button" class="btn btn-default btn-lg">@Html.ActionLink("Create New", "Create")</button>

@@ -1,57 +1,41 @@
 ﻿@using IdeaSite.Models
-
 @model IEnumerable<IdeaSite.Models.Comment>
 
 @{
 	ViewBag.Title = "IdeaComments";
 }
 
-<!DOCTYPE html>
+<div class="container-fluid">
+		 <div class="row content">
+			<div class="col-md-9">
+			  <h4>@ViewBag.idea.title</h4>
+			  <h5><span class="glyphicon glyphicon-time"></span> Posted by @ViewBag.idea.cre_user on @ViewBag.idea.cre_date</h5>
+			  <h5><span class="label label-success">Description:</span></h5>
+			  <textarea rows="3" cols="100" style="border:none" readonly>@ViewBag.idea.body</textarea>
+			</div>
+		 </div>
+</div>
+</hr>
+<h1>Posted Comments</h1>
+@foreach (var item in Model) 
+{
+   <hr>
+	<div class="container-fluid">
+		<div class="row content">
+			  <h4>Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h4>
+			  <textarea rows="3" cols="150" style="border:none" readonly>@Html.DisplayFor(modelItem => item.body)</textarea>
+			  <!--<div class="btn-group">
+			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, null)</button>
+			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null)</button>
+		      </div> -->
+		 </div>
+	</div>
+	<hr>
+}		   
 
-<html>
-<head>
-	<meta name="viewport" content="width=device-width" />
-	<title>Index</title>
-</head>
-<body>
 
-
-<p><b>Idea: </b>@ViewBag.idea.title</p>
-<p><b>Date Created: </b>@ViewBag.idea.cre_date</p>
-
-<!--<span>Description: @ViewBag.idea.body</span> <br />-->
-<!--int id = ViewBag.idea.ID;-->
-
-
-
-
-	<table class="table">
-		<tr>
-			<th>@Html.DisplayNameFor(model => model.cre_user)</th>
-			<th>@Html.DisplayNameFor(model => model.cre_date)</th>
-			<th>@Html.DisplayNameFor(model => model.body)</th>
-		</tr>
-	
-	@foreach (var item in Model) {
-		<tr>
-			<td>@Html.DisplayFor(modelItem => item.cre_user)</td>
-			<td>@Html.DisplayFor(modelItem => item.cre_date)</td>
-			<td>@Html.DisplayFor(modelItem => item.body)</td>
-			<td>@Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null)
-				<!--@Html.ActionLink("Details", "Details", new { id=item.ideaID })--> 
-				<!--@Html.ActionLink("Delete", "Delete", "Comments", new { id=item.ID }, null)-->
-			</td>
-		</tr>
-	}
-			   
-	</table>
-
-	</br>
 	<p>Click below to create new comment</p>
 	<p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)</button></p>
 	</br>
 	</br>
-	<p><button type="button" class="btn btn-default">@Html.ActionLink("Back to List", "Index", "Ideas")</button></p>
-
-</body>
-</html>
+	<p>@Html.ActionLink("Back to List", "Index", "Ideas")</p>

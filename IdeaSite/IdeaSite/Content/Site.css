@@ -66,4 +66,4 @@ editor-label input {
 a.my-class { color: #000000;}
 a.my-class:active { color: #000000;}
 a.my-class:link { color: #000000; }
-a.my-class:visited { color: #CCCCCC; }
+a.my-class:visited { color: #000000; }

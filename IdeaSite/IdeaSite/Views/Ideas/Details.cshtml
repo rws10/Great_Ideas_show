@@ -45,36 +45,17 @@
 					</tr>
 				}
 				</table>
-			</div>	
+			</div>
+			@if(Model.statusCode == "Denied")
+			{	
+			    <h5>Reason for Denial</h5>
+				<textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.denialReason)</textarea>
+		    }
 		 </div>
-		 <br>
+	<br>
 <p>
 	@Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
 	@Html.ActionLink("Back to List", "Index")
 </p>
 </div>
-<!--
-		<dt class="@Model.statusCode">
-			@Html.DisplayNameFor(model => model.denialReason)
-		</dt>
 
-		<dd class="@Model.statusCode">
-			@Html.DisplayFor(model => model.denialReason)
-		</dd>
-
-			<th>File Name</th>
-			<th>Link</th>
-				@foreach (var file in ViewBag.files as FileInfo[])
-				{
-					var filePath = string.Format("{0}\\{1}", ViewBag.path, file.Name);
-					<tr>
-						<td>
-							@file.Name
-						</td>
-						<td>
-							@Html.ActionLink("Download", "Download", new { filepath = filePath, fileName = file.Name }, new { @target = "_blank" })
-						</td>
-					</tr>
-				}
-
--->

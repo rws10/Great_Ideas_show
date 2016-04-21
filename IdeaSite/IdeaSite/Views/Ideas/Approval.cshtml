@@ -1,147 +1,89 @@
 ﻿@model IdeaSite.Models.Idea
 
 @{
-    ViewBag.Title = "Approval";
+	ViewBag.Title = "Approval";
 }
 
 <h2>Approval</h2>
 
 @using (Html.BeginForm("Approval", "Ideas", FormMethod.Post))
 {            
-    @Html.AntiForgeryToken()
-    <div>
-        <h4>Idea</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.cre_user)
-            </dt>
+	@Html.AntiForgeryToken()
+	<h1>Approval page</h1>
+<hr>
+<div class="container-fluid">
+		 <div class="row content">
+			<div class="col-md-9">
+			  <h2>@Html.DisplayFor(model => model.title)</h2>
+			  <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
+			  <h5>status: <span class="glyphicon glyphicon-transfer"></span> @Html.DisplayFor(model => model.statusCode)</h5>
+			  <h5><span class="label label-success">Description:</span></h5>
+			  <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
+			  <table>
+			  <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th></tr>
+			   @foreach (var file in ViewBag.files as FileInfo[])
+				{
+					var filePath = string.Format("{0}\\{1}", ViewBag.path, file.Name);
 
-            <dd>
-                @Html.DisplayFor(model => model.cre_user)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.title)
-            </dt>
+					<tr>
+					<td>@file.Name  </td> <td><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { filepath = filePath, fileName = file.Name }, new { @target = "_blank" })</td>
+					</tr>
+				}
+				</table>
 
-            <dd>
-                @Html.DisplayFor(model => model.title)
-            </dd>
+			</div>
+		 </div>
+	<br>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.body)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.body)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.cre_date)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.cre_date)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.statusCode)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.statusCode)
-            </dd>
-
-            <dt class="@Model.statusCode">
-                @Html.DisplayNameFor(model => model.denialReason)
-            </dt>
-
-            <dd class="@Model.statusCode">
-                @Html.DisplayFor(model => model.denialReason)
-            </dd>
-        </dl>
-    </div>
-
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ID)
-        @Html.HiddenFor(model => model.title)
-        @Html.HiddenFor(model => model.body)
-        @Html.HiddenFor(model => model.cre_date)
-        @Html.HiddenFor(model => model.cre_user)
-
-        <div class="form-group">
-            <table>
-                <tr>
-                    <th>File Name</th>
-                    <th>Link</th>
-                </tr>
-                @if (ViewBag.files != null)
-                {
-                    foreach (var file in ViewBag.files as FileInfo[])
-                    {
-                        var filePath = string.Format("{0}\\{1}", ViewBag.path, file.Name);
-                        <tr>
-                            <td>
-                                @file.Name
-                            </td>
-                            <td>
-                                @Html.ActionLink(" Download", "Download", new { filepath = filePath, fileName = file.Name }, new { @target = "_blank" })
-                            </td>
-                        </tr>
-                    }
-                }
-
-            </table>
-            <br /><br />
-
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <b>Approve or Deny Idea:</b> <br />
-            @Html.RadioButtonFor(model => model.statusCode, "Approved", new { id = "statusCode_Approved" })
-            <label for="statusCode_Approved">Approve</label>
-            <br />
-            @Html.RadioButtonFor(model => model.statusCode, "Denied", new { id = "statusCode_Denied" })
-            <label for="statusCode_Denied">Deny</label>
-            <br />
-
-            <div class="form-group" id="DenialReason">
-                @Html.LabelFor(model => model.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.denialReason, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.denialReason, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
-    </div>
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		@Html.HiddenFor(model => model.ID)
+		@Html.HiddenFor(model => model.title)
+		@Html.HiddenFor(model => model.body)
+		@Html.HiddenFor(model => model.cre_date)
+		@Html.HiddenFor(model => model.cre_user)
 
 
-}
-<div>
-    @Html.ActionLink("Back to List", "Index")
+			@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+			<b>Approve or Deny Idea:</b> <br />
+			@Html.RadioButtonFor(model => model.statusCode, "Approved", new { id = "statusCode_Approved" })
+			<label for="statusCode_Approved">Approve</label>
+			<br />
+			@Html.RadioButtonFor(model => model.statusCode, "Denied", new { id = "statusCode_Denied" })
+			<label for="statusCode_Denied">Deny</label>
+			<br>
+			<br>
+			<div class="form-group" id="DenialReason">
+				<h4>Reason for Denial</h4>
+				<textarea style="border: 1px solid #ccc;border-radius: 4px;" id="denialReason" name="denialReason" rows="5" cols="75" value="" type="text"></textarea>
+				<span class="field-validation-valid text-danger" data-valmsg-for="denialReason" data-valmsg-replace="true"></span>
+			    <br>
+			</div>
+			<input type="submit" value="Save" class="btn btn-default btn-sm" />
 </div>
 
+}
+<br>
+<br>
+<p>
+	@Html.ActionLink("Back to List", "Index")
+</p>
+
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/bundles/jqueryval")
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        $("#DenialReason").hide();
-        $('#statusCode_Denied').click(function()
-        {
-            if (this.checked == true)
-            {
-                $("#DenialReason").show();
-            }
-            else {
-                $("#statusCode_Denied").hide();
-            }
-        })});
+	$(document).ready(function () {
+		$("#DenialReason").hide();
+		$('#statusCode_Denied').click(function()
+		{
+			if (this.checked == true)
+			{
+				$("#DenialReason").show();
+			}
+			else {
+				$("#statusCode_Denied").hide();
+			}
+		})});
 </script>
 }
 
