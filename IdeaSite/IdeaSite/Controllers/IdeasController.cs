@@ -232,7 +232,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                SendEmail(from, to, subject, body);
+                //SendEmail(from, to, subject, body);
 
                 return RedirectToAction("Index");
             }
@@ -248,6 +248,14 @@ namespace IdeaSite.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Idea idea = db.Ideas.Find(id);
+
+            idea.statusCodes = new[]
+            {
+                new SelectListItem { Value = "Approved", Text = "Approved" },
+                new SelectListItem { Value = "Archived", Text = "Archived" },
+                new SelectListItem { Value = "Project Submission", Text = "Project Submission" },
+            };
+
             if (idea == null)
             {
                 return HttpNotFound();
@@ -273,7 +281,8 @@ namespace IdeaSite.Controllers
 
                 currentIdea.title = idea.title;
                 currentIdea.body = idea.body;
-                currentIdea.statusCode = "Submitted";
+                currentIdea.statusCode = idea.statusCode;
+                currentIdea.statusCodes = idea.statusCodes;
                 currentIdea.denialReason = idea.denialReason;
 
                 db.SaveChanges();
@@ -290,7 +299,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                SendEmail(from, to, subject, body);
+                //SendEmail(from, to, subject, body);
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -362,6 +371,7 @@ namespace IdeaSite.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Idea idea = db.Ideas.Find(id);
+            db.Files.RemoveRange(db.Files.Where(fil => fil.ideaID == id));
             db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
             var appSettings = ConfigurationManager.AppSettings;
@@ -479,7 +489,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                SendEmail(from, to, subject, body);
+                //SendEmail(from, to, subject, body);
                 return RedirectToAction("Index");
             }
 
