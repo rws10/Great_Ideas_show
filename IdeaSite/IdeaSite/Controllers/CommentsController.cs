@@ -24,7 +24,7 @@ namespace IdeaSite.Controllers
             msg.Subject = subject;
             SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
             smt.Port = 587;
-            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "Boobies69");
+            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
             smt.EnableSsl = true;
             smt.Send(msg);
         }
@@ -164,7 +164,10 @@ namespace IdeaSite.Controllers
             Comment comment = db.Comments.Find(id);
             db.Comments.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            Idea idea = db.Ideas.Find(comment.ideaID);
+
+            return RedirectToAction("Index", idea);
         }
 
         protected override void Dispose(bool disposing)

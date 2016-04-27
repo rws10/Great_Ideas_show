@@ -28,7 +28,7 @@ namespace IdeaSite.Controllers
             msg.Subject = subject;
             SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
             smt.Port = 587;
-            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "Boobies69");
+            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
             smt.EnableSsl = true;
             smt.Send(msg);
         }
@@ -143,7 +143,9 @@ namespace IdeaSite.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Idea idea = db.Ideas.Find(id);
+
             if (idea == null)
             {
                 return HttpNotFound();
@@ -247,7 +249,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                //SendEmail(from, to, subject, body);
+                SendEmail(from, to, subject, body);
 
                 return RedirectToAction("Index");
             }
@@ -262,19 +264,36 @@ namespace IdeaSite.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Idea idea = db.Ideas.Find(id);
 
-            idea.statusCodes = new[]
+            /*idea.statusCodes = new[]
             {
                 new SelectListItem { Value = "Approved", Text = "Approved" },
                 new SelectListItem { Value = "Archived", Text = "Archived" },
                 new SelectListItem { Value = "Project Submission", Text = "Project Submission" },
-            };
+            };*/
 
             if (idea == null)
             {
                 return HttpNotFound();
             }
+
+            var appSettings = ConfigurationManager.AppSettings;
+
+            // store path to server location of the file storage
+            var connectionInfo = appSettings["serverPath"];
+
+            // combine the server location and the name of the new folder to be created
+            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
+
+            // Store the files from the desired file folder
+            var files = dir.GetFiles();
+
+            ViewBag.path = ideaFolder;
+            ViewBag.files = files;
+
             return View(idea);
         }
 
@@ -314,7 +333,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                //SendEmail(from, to, subject, body);
+                SendEmail(from, to, subject, body);
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -414,7 +433,9 @@ namespace IdeaSite.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Idea idea = db.Ideas.Find(id);
+
             if (idea == null)
             {
                 return HttpNotFound();
@@ -504,7 +525,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                //SendEmail(from, to, subject, body);
+                SendEmail(from, to, subject, body);
                 return RedirectToAction("Index");
             }
 
