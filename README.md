@@ -9,10 +9,9 @@ ADDITIONS
 - Force titles to be unique
 - Change "approved" to "added"
 - Have the files uploaded listed by name
-- Have the edit page display the uploaded files
 - Have the ability to delete uploaded files from the edit page
 - Make "create new" button smaller on Homepage
-- Make the and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
+- Make the ideas and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
 - Edit comment box needs to be bigger
 - Add space between the name of the attachment and the download link
 - Popup on Homepage to acknowledge submission
@@ -26,11 +25,10 @@ ADDITIONS
 - Integrate Active Directory
 - Add Meta to check for viruses
 - Get server access
+  - In progress. ITLC papers submitted. Waiting on approval.
 BUGS
 - Can submit the same idea more than once. Possible to spam click "create new" 
   and create numerous copies of the idea.
-- Edit comment doesn't save
-
 
 FOR JOSH:
 Looks:
