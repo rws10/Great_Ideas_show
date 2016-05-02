@@ -165,10 +165,17 @@ namespace IdeaSite.Controllers
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
             // Store the files from the desired file folder
-            var files = dir.GetFiles();
-
-            ViewBag.path = ideaFolder;
-            ViewBag.files = files;
+            if (dir.Exists)
+            {
+                var files = dir.GetFiles();
+                ViewBag.files = files;
+                ViewBag.path = ideaFolder;
+            }
+            else
+            {
+                ViewBag.files = null;
+                ViewBag.path = null;
+            }
 
             return View(idea);
         }
@@ -289,10 +296,17 @@ namespace IdeaSite.Controllers
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
             // Store the files from the desired file folder
-            var files = dir.GetFiles();
-
-            ViewBag.path = ideaFolder;
-            ViewBag.files = files;
+            if (dir.Exists)
+            {
+                var files = dir.GetFiles();
+                ViewBag.files = files;
+                ViewBag.path = ideaFolder;
+            }
+            else
+            {
+                ViewBag.files = null;
+                ViewBag.path = null;
+            }
 
             return View(idea);
         }
@@ -455,10 +469,17 @@ namespace IdeaSite.Controllers
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
             // Store the files from the desired file folder
-            var files = dir.GetFiles();
-
-            ViewBag.path = ideaFolder;
-            ViewBag.files = files;
+            if (dir.Exists)
+            {
+                var files = dir.GetFiles();
+                ViewBag.files = files;
+                ViewBag.path = ideaFolder;
+            }
+            else
+            {
+                ViewBag.files = null;
+                ViewBag.path = null;
+            }
 
             return View(idea);
         }
