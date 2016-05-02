@@ -1,24 +1,40 @@
 # Team_Zed
-Here are a list of tips and such the project.
-
-Desired (non critical) Functions:
-- Have a page to view own submitted ideas.
-- Approval page
-  - fix so that the radio buttons actually change the status code.
-- Email
-  - Mostly works. need to work on formatting and 
-    adding it in to the rest of the things that need to send emails
-- Time sensitive auto-actions
-
-Email information:
+Team email:
 teamzed@outlook.com
-Boobies69
+T3@m_Z3d
+Here is a list of items that need to be done to finish the project:
+ADDITIONS
+- Make it work for IE
+- Make the entire button work for clicking action
+- Force titles to be unique
+- Change "approved" to "added"
+- Have the files uploaded listed by name
+- Have the edit page display the uploaded files
+- Have the ability to delete uploaded files from the edit page
+- Make "create new" button smaller on Homepage
+- Make the and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
+- Edit comment box needs to be bigger
+- Add space between the name of the attachment and the download link
+- Popup on Homepage to acknowledge submission
+- Add a contact us link on hte homepage
+- Add Filterby choice of archived and project submission
+- Add Javascript to update page when "FilterBy:" choice is made
+- Make "Search By:" boxes instead of radio buttons
+- Whitespace above emblem on the entrance page and Home
+- Add in the time sensitive auto-actions
+- Squeeze everything into the center of the page more. Will discuss how much
+- Integrate Active Directory
+- Add Meta to check for viruses
+- Get server access
+BUGS
+- Can submit the same idea more than once. Possible to spam click "create new" 
+  and create numerous copies of the idea.
+- Edit comment doesn't save
+
 
 FOR JOSH:
 Looks:
 Idea:
-- index:
-  - search bar in the top right corner
   - have the approval button only appear if the status is set to submitted.
   - have the text box around the description fit vertically closer to the text itself.
 
