@@ -274,6 +274,8 @@ namespace IdeaSite.Controllers
 
             Idea idea = db.Ideas.Find(id);
 
+            idea.statusCode = "Submitted";
+
             /*idea.statusCodes = new[]
             {
                 new SelectListItem { Value = "Approved", Text = "Approved" },
@@ -329,7 +331,7 @@ namespace IdeaSite.Controllers
 
                 currentIdea.title = idea.title;
                 currentIdea.body = idea.body;
-                currentIdea.statusCode = "Submitted";
+                currentIdea.statusCode = idea.statusCode;
                 currentIdea.statusCodes = idea.statusCodes;
                 currentIdea.denialReason = idea.denialReason;
 
@@ -357,6 +359,10 @@ namespace IdeaSite.Controllers
                 // combine the server location and the name of the new folder to be created
                 var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
 
+                if (!Directory.Exists(storagePath))
+                {
+                    DirectoryInfo di = Directory.CreateDirectory(storagePath);
+                }
                 try
                 {
                     // loop through the uploads and pull out each file from it.
