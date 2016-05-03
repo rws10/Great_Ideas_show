@@ -11,19 +11,15 @@ ADDITIONS
    Also, the data with the error will still be populated there if you go "back to index" and immediately go back to create new.
    However, if you repeat the same process, it will then be gone.
 - Change "approved" to "added"
-- Have the files ready to be uploaded listed by name
+- Have the files that are ready to be uploaded listed by name
 - Have the ability to delete uploaded files from the edit page
 - Make "create new" button smaller on Homepage
 - Make the ideas and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
-- Edit comment box needs to be bigger
-- Add space between the name of the attachment and the download link
 - Add a contact us link on the homepage
 - Add Filterby choice of archived and project submission
 - Add Javascript to update page when "FilterBy:" choice is made
 - Make "Search By:" boxes instead of radio buttons
-- Whitespace above emblem on the entrance page and Home
 - Add in the time sensitive auto-actions
-- Squeeze everything into the center of the page more. Will discuss how much
 - Integrate Active Directory
 - Add Meta to check for viruses
 - Get server access
@@ -33,15 +29,19 @@ BUGS
   and create numerous copies of the idea.
 
 Looks:
+Overall:
+- Squeeze everything into the center of the page more. Will discuss how much
+- Whitespace above emblem on the entrance page and Home
+
 Idea:
+-multiple:
+  - Add space between the name of the attachment and the download link
+-index:
   - have the approval button only appear if the status is set to submitted.
   - have the text box around the description fit vertically closer to the text itself.
 
 - details:
-  - put the files into a table. get rid of the "Link" title
   - cut the description text box size to about half the page before it wraps the text.
-  - have all of the attributes, except denialReason and body, display in a group, then have the denialReason display 
-        (only if the idea has been denied) followed by the description.
   - (do this last. not very important) add a link to view the comments next to "Back to list"
 
 - edit: 
@@ -51,14 +51,8 @@ Comment:
 - index:
   - When the comment index is called for an idea, the URL is populated with the attributes of the idea. 
       Any large body of an idea will cause an error.
-  - Have it look something like:
-     Author: This Guy
-     Creation Date: This time           Body: This is the body of the comment
-
-	 Author: Another Guy
-	 Creation Date: Another time        Body: This is the body of another Comment
-  - Allow for deleting a comment.
 - edit:
+  - Have the "Back to List" button take the user back to the comments index
   - Have the body display like the body of the ideas.
-- create:
-  - make it a large text box like in ideas
+- delete:
+  - Have the "Back to List" button take the user back to the comments index
