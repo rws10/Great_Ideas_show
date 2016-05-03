@@ -350,7 +350,17 @@ namespace IdeaSite.Controllers
                 currentIdea.statusCodes = idea.statusCodes;
                 currentIdea.denialReason = idea.denialReason;
 
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+
+                catch
+                {
+                    TempData["Idea"] = idea;
+                    TempData["Message"] = "Title must be a unique value";
+                    return View(idea);
+                }
 
                 string subject = string.Format("An idea has been edited: {0}", idea.title);
 
@@ -406,11 +416,11 @@ namespace IdeaSite.Controllers
 
                 catch
                 {
-                    Debug.WriteLine("Upload failed");
-                    ViewBag.Message = "Upload failed";
+                    TempData["Message"] = "The files failed to upload";
                     return RedirectToAction("Edit");
                 }
 
+                TempData["Message"] = "Your idea has been successfully created.";
                 return RedirectToAction("Index");
             }
             //ViewBag.files = files;

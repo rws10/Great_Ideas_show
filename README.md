@@ -7,15 +7,17 @@ ADDITIONS
 - Make it work for IE
 - Make the entire button work for clicking action
 - Force titles to be unique
+ * This has been done. I would like the error message to line up with the title and text box displays. 
+   Also, the data with the error will still be populated there if you go "back to index" and immediately go back to create new.
+   However, if you repeat the same process, it will then be gone.
 - Change "approved" to "added"
-- Have the files uploaded listed by name
+- Have the files ready to be uploaded listed by name
 - Have the ability to delete uploaded files from the edit page
 - Make "create new" button smaller on Homepage
 - Make the ideas and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
 - Edit comment box needs to be bigger
 - Add space between the name of the attachment and the download link
-- Popup on Homepage to acknowledge submission
-- Add a contact us link on hte homepage
+- Add a contact us link on the homepage
 - Add Filterby choice of archived and project submission
 - Add Javascript to update page when "FilterBy:" choice is made
 - Make "Search By:" boxes instead of radio buttons
@@ -30,7 +32,6 @@ BUGS
 - Can submit the same idea more than once. Possible to spam click "create new" 
   and create numerous copies of the idea.
 
-FOR JOSH:
 Looks:
 Idea:
   - have the approval button only appear if the status is set to submitted.
