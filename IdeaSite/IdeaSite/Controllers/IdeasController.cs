@@ -185,7 +185,8 @@ namespace IdeaSite.Controllers
         public ActionResult Create()
         {
             Idea tempIdea = TempData["Idea"] as Idea;
-            return View();
+
+            return View(tempIdea);
         }
 
         // POST: Ideas/Create
@@ -202,7 +203,6 @@ namespace IdeaSite.Controllers
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
 
-
                 try {
                     db.SaveChanges();
                 }
@@ -211,7 +211,7 @@ namespace IdeaSite.Controllers
                 {
                     TempData["Idea"] = idea;
                     TempData["Message"] = "Title must be a unique value";
-                    return View();
+                    return View(idea);
                 }
 
                 var appSettings = ConfigurationManager.AppSettings;

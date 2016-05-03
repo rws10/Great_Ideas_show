@@ -13,23 +13,26 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-
-        @Html.Action(actionName: "TempMessage", controllerName: "Message")
+        <div class="form-group">
+            <div class="col-md-10">
+                <div id="title-error">@Html.Action(actionName: "TempMessage", controllerName: "Message")</div>
+            </div>
+        </div>
         <div class="form-group">
             <label class="control-label col-md-2" for="name">Title</label>
             <div class="col-md-10">
-                <input class="form-control text-box" id="title" name="title" value="" type="text">
+                <input class="form-control text-box" id="title" name="title" value="@Html.DisplayFor(model => model.title)" type="text">
                 <span class="field-validation-valid text-danger" data-valmsg-for="title" data-valmsg-replace="true"></span>
-                @Html.ValidationMessageFor(model => model.title)
+                <div class="error-message">@Html.ValidationMessageFor(model => model.title)</div>
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-md-2" for="description">Description</label>
             <div class="col-md-10">
-                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text"></textarea>
+                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text">@Html.DisplayFor(model => model.body)</textarea>
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
-                <br>@Html.ValidationMessageFor(model => model.body)
+                <br><div class="error-message">@Html.ValidationMessageFor(model => model.body)</div>
             </div>
         </div>
 
