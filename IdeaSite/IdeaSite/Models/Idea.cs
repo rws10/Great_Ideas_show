@@ -14,7 +14,7 @@ namespace IdeaSite.Models
         public int ID { get; set; }
 
         // Name of the idea
-        [Required]
+        [Required(ErrorMessage = "Description Required")]
         [Display(Name = "Title")]        
         public string title { get; set; }
 
@@ -39,6 +39,7 @@ namespace IdeaSite.Models
         // On approval it needs to be "Added"
         // On archival it needs to be "Archived"
         // On rejection it needs to be "Denied"
+        // Admin needs to be able to make this "Project Submission" as well. Possibly disable edit after this?
         [Required]
         [Display(Name = "Status")]
         public string statusCode { get; set; }

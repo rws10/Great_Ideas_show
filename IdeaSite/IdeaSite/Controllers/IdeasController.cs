@@ -184,6 +184,7 @@ namespace IdeaSite.Controllers
 
         public ActionResult Create()
         {
+            Idea tempIdea = TempData["Idea"] as Idea;
             return View();
         }
 
@@ -196,10 +197,22 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
-                db.SaveChanges();
+
+
+                try {
+                    db.SaveChanges();
+                }
+
+                catch
+                {
+                    TempData["Idea"] = idea;
+                    TempData["Message"] = "Title must be a unique value";
+                    return View();
+                }
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -244,6 +257,7 @@ namespace IdeaSite.Controllers
                     return RedirectToAction("Create");
                 }
 
+                // Compose an email to send to PPMO Group
                 string subject = string.Format("New Idea Submission: {0}", idea.title);
 
                 string body = string.Format("{0} has submitted an Idea on Great Ideas:" +

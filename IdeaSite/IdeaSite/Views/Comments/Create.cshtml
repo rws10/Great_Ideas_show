@@ -3,30 +3,31 @@
 @{
     ViewBag.Title = "Create";
 }
-    
-    
-    @using (Html.BeginForm()) 
-    {
-        @Html.AntiForgeryToken()
-        
-        <div class="form-horizontal">
-            <h4>Leave comment below</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-          <div class="form-group">
-              <label class="control-label col-md-2" for="description">Comment</label>
-              <div class="col-md-10">
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Leave comment below</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label col-md-2" for="description">Comment</label>
+            <div class="col-md-10">
                 <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text"></textarea>
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
-              </div>
-          </div>
-    
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Submit" class="btn btn-default" />
-                </div>
+                <br>@Html.ValidationMessageFor(model => model.body)
             </div>
-         </div>
-    }
-    
-  <p> @Html.ActionLink("Back to List", "Index", "Comments", new { id = ViewBag.ideaID }, null) </p>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p> @Html.ActionLink("Back to List", "Index", "Comments", new { id = ViewBag.ideaID }, null) </p>

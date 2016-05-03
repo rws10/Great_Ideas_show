@@ -24,10 +24,10 @@
 		<div class="row content">
 			  <h4>Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h4>
 			  <textarea rows="3" cols="150" style="border:none" readonly>@Html.DisplayFor(modelItem => item.body)</textarea>
-			  <!--<div class="btn-group">
+			  <div class="btn-group">
 			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, null)</button>
 			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null)</button>
-		      </div> -->
+		      </div>
 		 </div>
 	</div>
 	<hr>
