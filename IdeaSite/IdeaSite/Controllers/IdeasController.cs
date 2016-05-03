@@ -252,8 +252,8 @@ namespace IdeaSite.Controllers
 
                 catch
                 {
-                    Debug.WriteLine("Upload failed");
-                    ViewBag.Message = "Upload failed";
+                    TempData["Idea"] = idea;
+                    TempData["Message"] = "One or more Files failed to upload";
                     return RedirectToAction("Create");
                 }
 
@@ -272,6 +272,7 @@ namespace IdeaSite.Controllers
 
                 SendEmail(from, to, subject, body);
 
+                TempData["Message"] = "Your idea has been successfully created.";
                 return RedirectToAction("Index");
             }
 

@@ -27,7 +27,8 @@
 		</p>
 	</div>
 	}
-	
+<!--Display message informing user of successful idea submission-->
+@Html.Action(actionName: "TempMessage", controllerName: "Message")	
 
 @foreach (var item in Model)
 	{
