@@ -48,9 +48,9 @@
 
 
 			@Html.ValidationSummary(true, "", new { @class = "text-danger" })
-			<b>Approve or Deny Idea:</b> <br />
-			@Html.RadioButtonFor(model => model.statusCode, "Approved", new { id = "statusCode_Approved" })
-			<label for="statusCode_Approved">Approve</label>
+			<b>Add or Deny Idea:</b> <br />
+			@Html.RadioButtonFor(model => model.statusCode, "Added", new { id = "statusCode_Added" })
+			<label for="statusCode_Added">Added</label>
 			<br />
 			@Html.RadioButtonFor(model => model.statusCode, "Denied", new { id = "statusCode_Denied" })
 			<label for="statusCode_Denied">Deny</label>

@@ -1,7 +1,7 @@
 ﻿    /* This makes sure that the "denialReason" attribute will be shown only if "statusCode" is set to "Rejected"*/
    .Submitted,
    .Archived, 
-   .Approved{
+   .Added{
         display : none;        
     }
 

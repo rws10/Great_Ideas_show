@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -9,7 +8,6 @@ using System.Web.Mvc;
 using IdeaSite.Models;
 using System.Configuration;
 using System.IO;
-using System.Diagnostics;
 using System.Net.Mail;
 
 namespace IdeaSite.Controllers
@@ -293,7 +291,7 @@ namespace IdeaSite.Controllers
 
             /*idea.statusCodes = new[]
             {
-                new SelectListItem { Value = "Approved", Text = "Approved" },
+                new SelectListItem { Value = "Added", Text = "Added" },
                 new SelectListItem { Value = "Archived", Text = "Archived" },
                 new SelectListItem { Value = "Project Submission", Text = "Project Submission" },
             };*/
@@ -552,17 +550,17 @@ namespace IdeaSite.Controllers
                 ViewBag.files = files;
 
                 string body;
-                if (idea.statusCode == "Approved")
+                if (idea.statusCode == "Added")
                 {
                     body = string.Format(
-                        "Your idea was approved" +
+                        "Your idea was added" +
                         "<br/><br/>{0}"
                         , idea.body);
                 }
                 else
                 {
                     body = string.Format(
-                        "Your idea wsa not approved" +
+                        "Your idea wsa not added" +
                         "<br/><br/>{0}" +
                         "<br/><br/>Reason for Denial:" +
                         "<br/>{1}" +
