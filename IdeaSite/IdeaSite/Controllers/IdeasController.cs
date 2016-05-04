@@ -28,7 +28,7 @@ namespace IdeaSite.Controllers
             smt.Port = 587;
             smt.Credentials = new NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
             smt.EnableSsl = true;
-            smt.Send(msg);
+            //smt.Send(msg);
         }
 
         //home index
@@ -151,6 +151,8 @@ namespace IdeaSite.Controllers
 
             IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
             attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
+
+            ViewBag.attachments = attachments;
             /*/* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
              * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
              * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
@@ -223,39 +225,42 @@ namespace IdeaSite.Controllers
                 var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
 
                 DirectoryInfo di = Directory.CreateDirectory(storagePath);
-
-                try
+                if (attachments != null)
                 {
-                    // loop through the uploads and pull out each attachment from it.
-                    for (int i = 0; i < attachments.Count(); ++i)
+                    try
                     {
-                        if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                        // loop through the uploads and pull out each attachment from it.
+                        for (int i = 0; i < attachments.Count(); ++i)
                         {
-                            // store the name of the attachment
-                            var name = Path.GetFileName(attachments.ElementAt(i).FileName);
-
-                            // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
-                            var attachment = new Models.Attachment
+                            if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
                             {
-                                storageLocation = string.Format("{0}\\{1}", storagePath, name),
-                                cre_date = DateTime.Now,
-                                ID = idea.ID,
-                                delete = false
-                            };
+                                // store the name of the attachment
+                                var attachmentName = Path.GetFileName(attachments.ElementAt(i).FileName);
 
-                            attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+                                // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
+                                var attachment = new Models.Attachment
+                                {
+                                    storageLocation = string.Format("{0}\\", storagePath),
+                                    name = attachmentName,
+                                    cre_date = DateTime.Now,
+                                    ideaID = idea.ID,
+                                    delete = false
+                                };
 
-                            db.Attachments.Add(attachment);
-                            db.SaveChanges();
+                                attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
+
+                                db.Attachments.Add(attachment);
+                                db.SaveChanges();
+                            }
                         }
                     }
-                }
 
-                catch
-                {
-                    TempData["Idea"] = idea;
-                    TempData["Message"] = "One or more attachments failed to upload";
-                    return RedirectToAction("Create");
+                    catch
+                    {
+                        TempData["Idea"] = idea;
+                        TempData["Message"] = "One or more attachments failed to upload";
+                        return RedirectToAction("Create");
+                    }
                 }
 
                 // Compose an email to send to PPMO Group
@@ -397,18 +402,19 @@ namespace IdeaSite.Controllers
                         if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
                         {
                             // store the name of the attachment
-                            var name = Path.GetFileName(attachments.ElementAt(i).FileName);
+                            var attachmentName = Path.GetFileName(attachments.ElementAt(i).FileName);
 
                             // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
                             var attachment = new Models.Attachment
                             {
-                                storageLocation = string.Format("{0}\\{1}", storagePath, name),
+                                storageLocation = string.Format("{0}\\", storagePath),
+                                name = attachmentName,
                                 cre_date = DateTime.Now,
-                                ID = idea.ID,
+                                ideaID = idea.ID,
                                 delete = false
                             };
 
-                            attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+                            attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
 
                             db.Attachments.Add(attachment);
                             db.SaveChanges();

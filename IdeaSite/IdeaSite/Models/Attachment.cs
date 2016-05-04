@@ -4,10 +4,11 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections;
 
 namespace IdeaSite.Models
 {
-    public class Attachment
+    public class Attachment : IEnumerable
     {
         [Key]
         [Required]
@@ -16,6 +17,8 @@ namespace IdeaSite.Models
         [Required]
         public int ideaID { get; set; }
 
+        public string name { get; set; }
+
         public DateTime cre_date { get; set; }
 
         [Required]
@@ -23,5 +26,10 @@ namespace IdeaSite.Models
         public string storageLocation { get; set; }
 
         public bool delete { get; set; }
+
+        public IEnumerator GetEnumerator()
+        {
+            return ((IEnumerable)storageLocation).GetEnumerator();
+        }
     }
 }
