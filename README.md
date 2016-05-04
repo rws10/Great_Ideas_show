@@ -13,18 +13,24 @@ Russell:
 - Have the ability to delete uploaded files from the edit page
 - Add a contact us link on the homepage
 - Add Javascript to update page when "FilterBy:" choice is made
-- Add Meta to check for viruses
+- Add Meta Scan to check for viruses in docs
+- Integrate Active Directory
+  * In progress. ITLC papers submitted. Waiting on approval.
+- Check the wording of everything. Not approved "check for duplicates and toerh things."
 
 Alex:
 - Add Filterby choice of archived and project submission
 - Make "Search By:" boxes instead of radio buttons
-- Integrate Active Directory
-  * In progress. ITLC papers submitted. Waiting on approval.
 - On the comments edit page:
   * Have the "Back to List" button take the user back to the comments index
 - On the comments delete page:
   * Have the "Back to List" button take the user back to the comments index- Get server access
+- Add a view for handling unhandled exceptions. 
+  * Reference what I did on the IdeaController/create Post for db.Savechanges().
+- See about integrating "Logfor Net"
+  * This is a log for occurences on the site. Good for when unhandled exceptions occur.
 
+Since Josh's list is so large, Alex and/or Russell should be able to help take some of the work. 
 Josh:
 - Make it work for IE
 - Make the entire button work for clicking action
