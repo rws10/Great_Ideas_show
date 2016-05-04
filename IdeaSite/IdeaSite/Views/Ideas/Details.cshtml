@@ -1,67 +1,68 @@
 ﻿@model IdeaSite.Models.Idea
 
 @{
-	ViewBag.Title = "Details";
+    ViewBag.Title = "Details";
 }
 
 @{
-   var statusIcon = " ";
-   if(Model.statusCode == "Submitted")
-   {
-	 statusIcon = "glyphicon glyphicon-transfer";
-   }
-   if(Model.statusCode == "Denied")
-   {
-	 statusIcon = "glyphicon glyphicon-remove";
-   }
-   if(Model.statusCode == "Added")
-   {
-	 statusIcon = "glyphicon glyphicon-ok";
-   }
-   if(Model.statusCode == "Archived")
-   {
-	  statusIcon = "glyphicon glyphicon-saved"; 
-   }
+    var statusIcon = " ";
+    if (Model.statusCode == "Submitted")
+    {
+        statusIcon = "glyphicon glyphicon-transfer";
+    }
+    if (Model.statusCode == "Denied")
+    {
+        statusIcon = "glyphicon glyphicon-remove";
+    }
+    if (Model.statusCode == "Added")
+    {
+        statusIcon = "glyphicon glyphicon-ok";
+    }
+    if (Model.statusCode == "Archived")
+    {
+        statusIcon = "glyphicon glyphicon-saved";
+    }
 
 }
 <h1>Details page</h1>
 <hr>
 <div class="container-fluid">
-		 <div class="row content">
-			<div class="col-md-9">
-			  <h2>@Html.DisplayFor(model => model.title)</h2>
-			  <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
-			  <h5>status: <span class="@statusIcon"></span> @Html.DisplayFor(model => model.statusCode)</h5>
-			  <h5><span class="label label-success">Description:</span></h5>
-			  <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
-                <table>
-                    <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th></tr>
-                    @if (ViewBag.attachments != null)
+    <div class="row content">
+        <div class="col-md-9">
+            <h2>@Html.DisplayFor(model => model.title)</h2>
+            <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
+            <h5>status: <span class="@statusIcon"></span> @Html.DisplayFor(model => model.statusCode)</h5>
+            <h5><span class="label label-success">Description:</span></h5>
+            <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
+
+            <table>
+                <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th></tr>
+                @if (ViewBag.attachments != null)
+                {
+                    foreach (var attachment in ViewBag.attachments)
                     {
-                        foreach (var attachment in ViewBag.attachments)
-                        {
-                            var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
+                        var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
 
                         <tr>
                             <td>@attachment.name  </td>
                             <td><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { attachmentpath = attachmentPath, attachmentName = attachment.name }, new { @target = "_blank" })</td>
                         </tr>
-                        }
                     }
-                </table>
-		<br>
-			@if(Model.statusCode == "Denied")
-			{	
-			    <h5>Reason for Denial:</h5>
+                }
+            </table>
+            <br>
+            @if (Model.statusCode == "Denied")
+            {
+                <h5>Reason for Denial:</h5>
 
-				<textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.denialReason)</textarea>
-		    }
-			</div>
-		 </div>
-	<br>
-<p>
-	@Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-	@Html.ActionLink("Back to List", "Index")
-</p>
+                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.denialReason)</textarea>
+            }
+        </div>
+    </div>
+    <br>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
 </div>
 

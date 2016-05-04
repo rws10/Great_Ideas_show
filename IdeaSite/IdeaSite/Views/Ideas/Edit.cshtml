@@ -64,12 +64,12 @@
             </tr>
             @if (ViewBag.attachments != null)
             {
-                foreach (var attachment in ViewBag.attachments as FileInfo[])
+                foreach (var attachment in ViewBag.attachments)
                 {
-                    var attachmentPath = string.Format("{0}\\{1}", ViewBag.path, attachment.Name);
+                    var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
                     <tr>
-                        <td>@attachment.Name  </td>
-                        <td class="right-col"><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { attachmentpath = attachmentPath, attachmentName = attachment.Name }, new { @target = "_blank" })</td>
+                        <td>@attachment.name  </td>
+                        <td class="right-col"><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { attachmentpath = attachmentPath, attachmentName = attachment.name }, new { @target = "_blank" })</td>
                         <td class="right-col">check boxes here</td>
                     </tr>
                 }

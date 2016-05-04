@@ -309,6 +309,11 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
 
+            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
+            attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
+
+            ViewBag.attachments = attachments;
+            /*
             var appSettings = ConfigurationManager.AppSettings;
 
             // store path to server location of the attachment storage
@@ -330,6 +335,7 @@ namespace IdeaSite.Controllers
                 ViewBag.attachments = null;
                 ViewBag.path = null;
             }
+            */
 
             return View(idea);
         }
@@ -435,8 +441,6 @@ namespace IdeaSite.Controllers
             return View(idea);
         }
 
-
-        // must delete all comments as well
         // GET: Ideas/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -458,21 +462,25 @@ namespace IdeaSite.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Idea idea = db.Ideas.Find(id);
-            db.Attachments.RemoveRange(db.Attachments.Where(fil => fil.ideaID == id));
-            db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
-            var appSettings = ConfigurationManager.AppSettings;
+            /* Create a list of the attachments associated with the idea to allow the deletion of the files 
+             * associated with them. Once all of the files are gone from each files directory, the directory is 
+             * deleted*/
+            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
+            attachments = db.Attachments.Where(attach => attach.ideaID == idea.ID).ToList();
 
-            // store path to server location of the attachment storage
-            var connectionInfo = appSettings["serverPath"];
-
-            // combine the server location and the name of the new folder to be created
-            var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-
-            if (Directory.Exists(storagePath))
+            if (attachments != null)
             {
-                Directory.Delete(storagePath, true);
+                foreach (var attachment in attachments)
+                {
+                    attachment.DeleteFile();
+                    attachment.DeleteDirectory();
+                }
+
+                db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.ideaID == id));
             }
+
+            db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
             db.Ideas.Remove(idea);
             db.SaveChanges();
@@ -494,10 +502,15 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
 
+            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
+            attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
+
+            ViewBag.attachments = attachments;
+
             /* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
              * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
              * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
-             * YOUR MACHINE*/
+             * YOUR MACHINE
             var appSettings = ConfigurationManager.AppSettings;
 
             // store path to server location of the attachment storage
@@ -519,7 +532,7 @@ namespace IdeaSite.Controllers
                 ViewBag.attachments = null;
                 ViewBag.path = null;
             }
-
+            */
             return View(idea);
         }
 

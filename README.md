@@ -9,7 +9,7 @@ Russell:
  * This has been done. I would like the error message to line up with the title and text box displays. 
    Also, the data with the error will still be populated there if you go "back to index" and immediately go back to create new.
    However, if you repeat the same process, it will then be gone.
-- Have the ability to delete uploaded files from the edit page
+- Have the ability to delete uploaded attachments from the edit page
 - Add a contact us link on the homepage
 - Add Javascript to update page when "FilterBy:" choice is made
 - Add Meta Scan to check for viruses in docs
@@ -27,12 +27,14 @@ Alex:
   * Reference what I did on the IdeaController/create Post for db.Savechanges().
 - See about integrating "Logfor Net"
   * This is a log for occurences on the site. Good for when unhandled exceptions occur.
+- 
 
 Since Josh's list is so large, Alex and/or Russell should be able to help take some of the work. 
 Josh:
 - Make it work for IE
+  * Look into doing a different bootstrap 
 - Make the entire button work for clicking action
-- Have the files that are ready to be uploaded listed by name
+- Have the attachments that are ready to be uploaded listed by name
 - Make "create new" button smaller on Homepage
 - Make the ideas and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
 - Add in the time sensitive auto-actions
@@ -60,7 +62,7 @@ Idea:
 Comment:
 - index:
   - When the comment index is called for an idea, the URL is populated with the attributes of the idea. 
-      Any large body of an idea will cause an error.
+      * Any large body of an idea will cause an error.
 - edit:
   - Have the body display like the body of the ideas.
 
