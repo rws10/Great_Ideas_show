@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IdeaSite.Models
 {
-    public class File
+    public class Attachment
     {
         [Key]
         [Required]
@@ -22,6 +22,6 @@ namespace IdeaSite.Models
         [StringLength(255)]
         public string storageLocation { get; set; }
 
-
+        public bool delete { get; set; }
     }
 }

@@ -149,31 +149,33 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
 
-            /* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
+            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
+            attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
+            /*/* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
              * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
              * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
-             * YOUR MACHINE*/
+             * YOUR MACHINE
             var appSettings = ConfigurationManager.AppSettings;
 
-            // store path to server location of the file storage
+            // store path to server location of the attachment storage
             var connectionInfo = appSettings["serverPath"];
 
             // combine the server location and the name of the new folder to be created
             var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
-            // Store the files from the desired file folder
+            // Store the attachments from the desired attachment folder
             if (dir.Exists)
             {
-                var files = dir.GetFiles();
-                ViewBag.files = files;
+                var attachments = dir.GetFiles();
+                ViewBag.attachments = attachments;
                 ViewBag.path = ideaFolder;
             }
             else
             {
-                ViewBag.files = null;
+                ViewBag.attachments = null;
                 ViewBag.path = null;
-            }
+            }*/
 
             return View(idea);
         }
@@ -192,7 +194,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Create([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> attachments)
         {
             if (ModelState.IsValid)
             {
@@ -214,7 +216,7 @@ namespace IdeaSite.Controllers
 
                 var appSettings = ConfigurationManager.AppSettings;
 
-                // store path to server location of the file storage
+                // store path to server location of the attachment storage
                 var connectionInfo = appSettings["serverPath"];
 
                 // combine the server location and the name of the new folder to be created
@@ -224,25 +226,26 @@ namespace IdeaSite.Controllers
 
                 try
                 {
-                    // loop through the uploads and pull out each file from it.
-                    for (int i = 0; i < files.Count(); ++i)
+                    // loop through the uploads and pull out each attachment from it.
+                    for (int i = 0; i < attachments.Count(); ++i)
                     {
-                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                        if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
                         {
-                            // store the name of the file
-                            var name = Path.GetFileName(files.ElementAt(i).FileName);
+                            // store the name of the attachment
+                            var name = Path.GetFileName(attachments.ElementAt(i).FileName);
 
-                            // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
-                            var file = new Models.File
+                            // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
+                            var attachment = new Models.Attachment
                             {
                                 storageLocation = string.Format("{0}\\{1}", storagePath, name),
                                 cre_date = DateTime.Now,
-                                ID = idea.ID
+                                ID = idea.ID,
+                                delete = false
                             };
 
-                            files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+                            attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
 
-                            db.Files.Add(file);
+                            db.Attachments.Add(attachment);
                             db.SaveChanges();
                         }
                     }
@@ -251,7 +254,7 @@ namespace IdeaSite.Controllers
                 catch
                 {
                     TempData["Idea"] = idea;
-                    TempData["Message"] = "One or more Files failed to upload";
+                    TempData["Message"] = "One or more attachments failed to upload";
                     return RedirectToAction("Create");
                 }
 
@@ -303,23 +306,23 @@ namespace IdeaSite.Controllers
 
             var appSettings = ConfigurationManager.AppSettings;
 
-            // store path to server location of the file storage
+            // store path to server location of the attachment storage
             var connectionInfo = appSettings["serverPath"];
 
             // combine the server location and the name of the new folder to be created
             var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
-            // Store the files from the desired file folder
+            // Store the attachments from the desired attachment folder
             if (dir.Exists)
             {
-                var files = dir.GetFiles();
-                ViewBag.files = files;
+                var attachments = dir.GetFiles();
+                ViewBag.attachments = attachments;
                 ViewBag.path = ideaFolder;
             }
             else
             {
-                ViewBag.files = null;
+                ViewBag.attachments = null;
                 ViewBag.path = null;
             }
 
@@ -331,7 +334,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Edit([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> attachments)
         {
             if (ModelState.IsValid)
             {
@@ -376,7 +379,7 @@ namespace IdeaSite.Controllers
 
                 var appSettings = ConfigurationManager.AppSettings;
 
-                // store path to server location of the file storage
+                // store path to server location of the attachment storage
                 var connectionInfo = appSettings["serverPath"];
 
                 // combine the server location and the name of the new folder to be created
@@ -388,25 +391,26 @@ namespace IdeaSite.Controllers
                 }
                 try
                 {
-                    // loop through the uploads and pull out each file from it.
-                    for (int i = 0; i < files.Count(); ++i)
+                    // loop through the uploads and pull out each attachment from it.
+                    for (int i = 0; i < attachments.Count(); ++i)
                     {
-                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                        if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
                         {
-                            // store the name of the file
-                            var name = Path.GetFileName(files.ElementAt(i).FileName);
+                            // store the name of the attachment
+                            var name = Path.GetFileName(attachments.ElementAt(i).FileName);
 
-                            // create new object to reference the loaction of the new file and the ID of the idea to which it belongs.
-                            var file = new Models.File
+                            // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
+                            var attachment = new Models.Attachment
                             {
                                 storageLocation = string.Format("{0}\\{1}", storagePath, name),
                                 cre_date = DateTime.Now,
-                                ID = idea.ID
+                                ID = idea.ID,
+                                delete = false
                             };
 
-                            files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
+                            attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, name));
 
-                            db.Files.Add(file);
+                            db.Attachments.Add(attachment);
                             db.SaveChanges();
                         }
                     }
@@ -414,14 +418,14 @@ namespace IdeaSite.Controllers
 
                 catch
                 {
-                    TempData["Message"] = "The files failed to upload";
+                    TempData["Message"] = "The attachments failed to upload";
                     return RedirectToAction("Edit");
                 }
 
                 TempData["Message"] = "Your idea has been successfully created.";
                 return RedirectToAction("Index");
             }
-            //ViewBag.files = files;
+            //ViewBag.attachments = attachments;
             return View(idea);
         }
 
@@ -448,12 +452,12 @@ namespace IdeaSite.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Idea idea = db.Ideas.Find(id);
-            db.Files.RemoveRange(db.Files.Where(fil => fil.ideaID == id));
+            db.Attachments.RemoveRange(db.Attachments.Where(fil => fil.ideaID == id));
             db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
             var appSettings = ConfigurationManager.AppSettings;
 
-            // store path to server location of the file storage
+            // store path to server location of the attachment storage
             var connectionInfo = appSettings["serverPath"];
 
             // combine the server location and the name of the new folder to be created
@@ -490,23 +494,23 @@ namespace IdeaSite.Controllers
              * YOUR MACHINE*/
             var appSettings = ConfigurationManager.AppSettings;
 
-            // store path to server location of the file storage
+            // store path to server location of the attachment storage
             var connectionInfo = appSettings["serverPath"];
 
             // combine the server location and the name of the new folder to be created
             var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
             DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
-            // Store the files from the desired file folder
+            // Store the attachments from the desired attachment folder
             if (dir.Exists)
             {
-                var files = dir.GetFiles();
-                ViewBag.files = files;
+                var attachments = dir.GetFiles();
+                ViewBag.attachments = attachments;
                 ViewBag.path = ideaFolder;
             }
             else
             {
-                ViewBag.files = null;
+                ViewBag.attachments = null;
                 ViewBag.path = null;
             }
 
@@ -536,18 +540,18 @@ namespace IdeaSite.Controllers
 
                 var appSettings = ConfigurationManager.AppSettings;
 
-                // store path to server location of the file storage
+                // store path to server location of the attachment storage
                 var connectionInfo = appSettings["serverPath"];
 
                 // combine the server location and the name of the new folder to be created
                 var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
                 DirectoryInfo dir = new DirectoryInfo(ideaFolder);
 
-                // Store the files from the desired file folder
-                var files = dir.GetFiles();
+                // Store the attachments from the desired attachment folder
+                var attachments = dir.GetFiles();
 
                 ViewBag.path = ideaFolder;
-                ViewBag.files = files;
+                ViewBag.attachments = attachments;
 
                 string body;
                 if (idea.statusCode == "Added")
@@ -582,9 +586,9 @@ namespace IdeaSite.Controllers
             return View(idea);
         }
 
-        public FileResult Download(string filepath, string fileName)
+        public FileResult Download(string attachmentpath, string attachmentName)
         {
-            return File(filepath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+            return File(attachmentpath, System.Net.Mime.MediaTypeNames.Application.Octet, attachmentName);
         }
 
         protected override void Dispose(bool disposing)

@@ -24,6 +24,6 @@ namespace IdeaSite.Models
 
         public System.Data.Entity.DbSet<IdeaSite.Models.Comment> Comments { get; set; }
 
-        public System.Data.Entity.DbSet<IdeaSite.Models.File> Files { get; set; }
+        public System.Data.Entity.DbSet<IdeaSite.Models.Attachment> Attachments { get; set; }
     }
 }
