@@ -12,7 +12,7 @@ namespace IdeaSite.Controllers
 
         // GET: Attachment
         [ChildActionOnly]
-        public ActionResult Details(int ideaID)
+        public ActionResult Display(int ideaID)
         {
             IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
             attachments = db.Attachments.Where(attachment => attachment.ideaID == ideaID).ToList();
