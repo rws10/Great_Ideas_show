@@ -149,36 +149,6 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
 
-            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
-            attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
-
-            ViewBag.attachments = attachments;
-            /*/* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
-             * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
-             * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
-             * YOUR MACHINE
-            var appSettings = ConfigurationManager.AppSettings;
-
-            // store path to server location of the attachment storage
-            var connectionInfo = appSettings["serverPath"];
-
-            // combine the server location and the name of the new folder to be created
-            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
-
-            // Store the attachments from the desired attachment folder
-            if (dir.Exists)
-            {
-                var attachments = dir.GetFiles();
-                ViewBag.attachments = attachments;
-                ViewBag.path = ideaFolder;
-            }
-            else
-            {
-                ViewBag.attachments = null;
-                ViewBag.path = null;
-            }*/
-
             return View(idea);
         }
 
@@ -309,11 +279,11 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
 
-            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
+            /*IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
             attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
 
             ViewBag.attachments = attachments;
-            /*
+            
             var appSettings = ConfigurationManager.AppSettings;
 
             // store path to server location of the attachment storage
@@ -502,37 +472,6 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
 
-            IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
-            attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
-
-            ViewBag.attachments = attachments;
-
-            /* BEFORE RUNNING THIS, GO TO WEB.CONFIG (THE SECOND ONE).
-             * THERE WILL BE A LIST OF KEY/VALUE PAIRS IN APPSETTINGS.
-             * CHANGE THE VALUE OF KEY "serverPath" TO SOMEWHERE ON 
-             * YOUR MACHINE
-            var appSettings = ConfigurationManager.AppSettings;
-
-            // store path to server location of the attachment storage
-            var connectionInfo = appSettings["serverPath"];
-
-            // combine the server location and the name of the new folder to be created
-            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
-
-            // Store the attachments from the desired attachment folder
-            if (dir.Exists)
-            {
-                var attachments = dir.GetFiles();
-                ViewBag.attachments = attachments;
-                ViewBag.path = ideaFolder;
-            }
-            else
-            {
-                ViewBag.attachments = null;
-                ViewBag.path = null;
-            }
-            */
             return View(idea);
         }
 
