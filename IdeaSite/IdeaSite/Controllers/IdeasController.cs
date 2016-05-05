@@ -45,7 +45,8 @@ namespace IdeaSite.Controllers
             //string[] sep = new string[] { (" ") };
             string[] searchTerms;
             //search.Remove(' ');
-
+            // before splitting add space after " and before "
+            // don't forget to handle one " without closing "
             if (search != null)
             {
                 searchTerms = search.Trim().Split(' ');
