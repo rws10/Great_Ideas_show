@@ -39,7 +39,6 @@ namespace IdeaSite.Controllers
             comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
             comments = comments.Reverse();
             ViewBag.idea = idea;
-            ViewBag.idea = idea;
             return View(comments);
         }
 
@@ -91,8 +90,9 @@ namespace IdeaSite.Controllers
                 MailAddress from = new MailAddress("teamzed@outlook.com");
                 MailAddress to = new MailAddress("rws10@live.com");
 
-
-                SendEmail(from, to, subject, body);
+                // need to add error handling when unable to connect to internet
+                // or outlook. 
+                //SendEmail(from, to, subject, body);
 
                 return RedirectToAction("Index", "Comments", idea);
             }

@@ -37,25 +37,34 @@ namespace IdeaSite.Controllers
             return View();
         }
 
-        // GET: Ideas
-        public ActionResult Index(string searchBy, string search, string sortByStatus)
+        public IEnumerable<Idea> SearchByTerms(string searchBy, string search)
         {
-
             IEnumerable<Idea> results = new List<Idea>();
-            //string[] sep = new string[] { (" ") };
             string[] searchTerms;
-            //search.Remove(' ');
-            // before splitting add space after " and before "
-            // don't forget to handle one " without closing "
-            if (search != null)
+            searchTerms = search.Trim().Split(' ');
+            for (int i = 0; i < searchTerms.Length; ++i)
             {
-                searchTerms = search.Trim().Split(' ');
-                //for (int i = 0; i < searchTerms.Length; ++i) { searchTerms[i] = searchTerms[i].Trim(); }
+                var term = searchTerms[i];
+                if (searchBy == "Title") { results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList()); }
+                else if (searchBy == "Description") { results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList()); }
+                else if (searchBy == "All")
+                {
+                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
+                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
+                }
             }
-            else { searchTerms = null; }
 
             var ideas = db.Ideas.ToList();
             List<int[]> matches = new List<int[]>();
+            foreach (Idea idea in results)
+            {
+                foreach (var match in matches)
+                {
+                    if (idea.ID == match[0]) { ++match[1]; }
+                }
+            }
+            // I think these are the same
+
             foreach (Idea idea in ideas)
             {
                 int[] match = new int[2];
@@ -63,77 +72,43 @@ namespace IdeaSite.Controllers
                 match[1] = 0;
                 matches.Add(match);
             }
-
-            if (searchBy == "Title" && search != null)
+            matches.OrderBy(x => x[1]);
+            matches = matches.OrderBy(x => x[1]).ToList();
+            matches.Reverse();
+            results.Distinct();
+            IEnumerable<Idea> finalResults = new List<Idea>();
+            for (int i = 0; i < matches.Count(); ++i)
             {
-                for (int i = 0; i < searchTerms.Length; ++i)
+                foreach (var idea in results)
                 {
-                    var term = searchTerms[i];
-                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
-                }
-            }
-            else if (searchBy == "Description" && search != null)
-            {
-                for (int i = 0; i < searchTerms.Length; ++i)
-                {
-                    var term = searchTerms[i];
-                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
-                }
-            }
-            else if (searchBy == "All" && search != null)
-            {
-                for (int i = 0; i < searchTerms.Length; ++i)
-                {
-                    var term = searchTerms[i];
-                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
-                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
-                }
-            }
-
-            if (sortByStatus == "All") { /* do nothing */ }
-            else { results = results.Where(x => x.statusCode == sortByStatus); }
-
-            if (search != null)
-            {
-                foreach (Idea idea in results)
-                {
-                    foreach (var match in matches)
+                    if (idea.ID == matches[i][0])
                     {
-                        if (idea.ID == match[0]) { ++match[1]; }
+                        finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
                     }
                 }
-
-                // I think these are the same
-                matches.OrderBy(x => x[1]);
-                matches = matches.OrderBy(x => x[1]).ToList();
-                matches.Reverse();
-
-                results.Distinct();
-                IEnumerable<Idea> finalResults = new List<Idea>();
-
-                for (int i = 0; i < matches.Count(); ++i)
-                {
-                    foreach (var idea in results)
-                    {
-                        if (idea.ID == matches[i][0])
-                        {
-                            finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
-                        }
-
-                    }
-                }
-                finalResults = finalResults.Distinct();
-                return View(finalResults);
             }
-            else
-            {
-                IEnumerable<Idea> origResults = new List<Idea>();
-                origResults = db.Ideas.ToList();
-                origResults = origResults.Reverse();
-                return View(origResults);
-            }
+            finalResults = finalResults.Distinct();
+            return finalResults;
         }
 
+        /*
+        public IEnumerable<Idea> MatchSearchResults()
+        {
+
+        }
+        */
+
+
+        // GET: Ideas
+        public ActionResult Index(string searchBy, string search, string sortByStatus)
+        {
+            IEnumerable<Idea> results;
+            if (search != null) { results = SearchByTerms(searchBy, search); }
+            else { results = db.Ideas.ToList(); }
+            if (sortByStatus != "All") { results = results.Where(x => x.statusCode == sortByStatus); }
+            results = results.Reverse();
+            return View(results);
+        }
 
         // GET: Ideas/Details/
         public ActionResult Details(int? id)
