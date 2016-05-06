@@ -18,6 +18,7 @@ namespace IdeaSite.Controllers
 
         internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
         {
+
             MailMessage msg = new MailMessage();
             msg.From = fromAddress;
             msg.To.Add(toAddress);
@@ -42,6 +43,7 @@ namespace IdeaSite.Controllers
             IEnumerable<Idea> results = new List<Idea>();
             string[] searchTerms;
             searchTerms = search.Trim().Split(' ');
+            // new function before ^^ to find terms from string & phrases
             for (int i = 0; i < searchTerms.Length; ++i)
             {
                 var term = searchTerms[i];
@@ -90,14 +92,23 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas
-        public ActionResult Index(string searchBy, string search, string sortByStatus)
+        public ActionResult Index(string searchBy, string search, string[] sortByStatus)
         {
             IEnumerable<Idea> results = db.Ideas;
+            IEnumerable<Idea> finalResults = new List<Idea>();
             results = results.Reverse();
-            if (searchBy == null && search == null && sortByStatus == null) { return View(results); }
+            // This handles the first run of the index. Since the default checkbox is set to Accepted,
+            // The default (first run with parameters of null) view is to show Accepted ideas
+            // Checkboxes will maintain their "checked" status across searches
+            if (searchBy == null && search == null && sortByStatus == null)
+            {
+                return View(finalResults.Concat(results.Where(x => x.statusCode == "Accepted")));
+            }
             if (search != null && search != "") { results = SearchByTerms(searchBy, search); }
-            if (sortByStatus != "All") { results = results.Where(x => x.statusCode == sortByStatus); }
-            return View(results);
+            if (sortByStatus[0] == "true") { finalResults = finalResults.Concat(results.Where(x => x.statusCode == "Submitted")); }
+            if (sortByStatus[1] == "true") { finalResults = finalResults.Concat(results.Where(x => x.statusCode == "Accepted")); }
+            if (sortByStatus[2] == "true") { finalResults = finalResults.Concat(results.Where(x => x.statusCode == "Denied")); }
+            return View(finalResults);
         }
 
         // GET: Ideas/Details/
