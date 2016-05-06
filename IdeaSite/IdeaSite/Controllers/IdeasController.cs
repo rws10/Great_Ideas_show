@@ -53,18 +53,17 @@ namespace IdeaSite.Controllers
                     results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
                 }
             }
+            return MatchSearchResults(results);         
+        }
 
+        public IEnumerable<Idea> MatchSearchResults(IEnumerable<Idea> results)
+        {
             var ideas = db.Ideas.ToList();
             List<int[]> matches = new List<int[]>();
             foreach (Idea idea in results)
             {
-                foreach (var match in matches)
-                {
-                    if (idea.ID == match[0]) { ++match[1]; }
-                }
-            }
-            // I think these are the same
-
+                foreach (var match in matches) { if (idea.ID == match[0]) { ++match[1]; } }
+            }           
             foreach (Idea idea in ideas)
             {
                 int[] match = new int[2];
@@ -72,7 +71,6 @@ namespace IdeaSite.Controllers
                 match[1] = 0;
                 matches.Add(match);
             }
-            matches.OrderBy(x => x[1]);
             matches = matches.OrderBy(x => x[1]).ToList();
             matches.Reverse();
             results.Distinct();
@@ -91,22 +89,14 @@ namespace IdeaSite.Controllers
             return finalResults;
         }
 
-        /*
-        public IEnumerable<Idea> MatchSearchResults()
-        {
-
-        }
-        */
-
-
         // GET: Ideas
         public ActionResult Index(string searchBy, string search, string sortByStatus)
         {
-            IEnumerable<Idea> results;
-            if (search != null) { results = SearchByTerms(searchBy, search); }
-            else { results = db.Ideas.ToList(); }
-            if (sortByStatus != "All") { results = results.Where(x => x.statusCode == sortByStatus); }
+            IEnumerable<Idea> results = db.Ideas;
             results = results.Reverse();
+            if (searchBy == null && search == null && sortByStatus == null) { return View(results); }
+            if (search != null && search != "") { results = SearchByTerms(searchBy, search); }
+            if (sortByStatus != "All") { results = results.Where(x => x.statusCode == sortByStatus); }
             return View(results);
         }
 
@@ -133,7 +123,6 @@ namespace IdeaSite.Controllers
         public ActionResult Create()
         {
             Idea tempIdea = TempData["Idea"] as Idea;
-
             return View(tempIdea);
         }
 
