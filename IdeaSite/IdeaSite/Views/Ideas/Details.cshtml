@@ -36,7 +36,7 @@
             <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
 
             <!--Call the partial view for displaying the attachments-->
-            @Html.Action("Details", "Attachment", new {ideaID = Model.ID})
+            @Html.Action("Display", "Attachment", new {ideaID = Model.ID})
 
             <br>
             @if (Model.statusCode == "Denied")
