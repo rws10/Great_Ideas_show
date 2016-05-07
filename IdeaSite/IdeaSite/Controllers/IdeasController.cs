@@ -29,6 +29,7 @@ namespace IdeaSite.Controllers
             smt.Port = 587;
             smt.Credentials = new NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
             smt.EnableSsl = true;
+            // emails disabled because there is no error handling for a bad connection.
             //smt.Send(msg);
         }
 
@@ -38,27 +39,29 @@ namespace IdeaSite.Controllers
             return View();
         }
 
-        public IEnumerable<Idea> SearchByTerms(string searchBy, string search)
+        private IEnumerable<Idea> SearchByTerms(IEnumerable<Idea> _results, string searchBy, string search)
         {
-            IEnumerable<Idea> results = new List<Idea>();
+            //IEnumerable<Idea> results = new List<Idea>();
+            IEnumerable<Idea> results = _results;
+            IEnumerable<Idea> finalResults = new List<Idea>();
             string[] searchTerms;
             searchTerms = search.Trim().Split(' ');
             // new function before ^^ to find terms from string & phrases
             for (int i = 0; i < searchTerms.Length; ++i)
             {
                 var term = searchTerms[i];
-                if (searchBy == "Title") { results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList()); }
-                else if (searchBy == "Description") { results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList()); }
+                if (searchBy == "Title") { finalResults = results.Where(x => x.title.Contains(term)).ToList(); }
+                else if (searchBy == "Description") { finalResults = results.Where(x => x.body.Contains(term)).ToList(); }
                 else if (searchBy == "All")
                 {
-                    results = results.Concat(db.Ideas.Where(x => x.title.Contains(term)).ToList());
-                    results = results.Concat(db.Ideas.Where(x => x.body.Contains(term)).ToList());
+                    finalResults = results.Where(x => x.title.Contains(term)).ToList();
+                    finalResults = finalResults.Concat(results.Where(x => x.body.Contains(term)).ToList());
                 }
             }
-            return MatchSearchResults(results);         
+            return MatchSearchResults(finalResults);         
         }
 
-        public IEnumerable<Idea> MatchSearchResults(IEnumerable<Idea> results)
+        private IEnumerable<Idea> MatchSearchResults(IEnumerable<Idea> results)
         {
             var ideas = db.Ideas.ToList();
             List<int[]> matches = new List<int[]>();
@@ -83,7 +86,7 @@ namespace IdeaSite.Controllers
                 {
                     if (idea.ID == matches[i][0])
                     {
-                        finalResults = finalResults.Concat(db.Ideas.Where(x => x.ID == idea.ID).ToList());
+                        finalResults = finalResults.Concat(results.Where(x => x.ID == idea.ID).ToList());
                     }
                 }
             }
@@ -94,21 +97,22 @@ namespace IdeaSite.Controllers
         // GET: Ideas
         public ActionResult Index(string searchBy, string search, string[] sortByStatus)
         {
-            IEnumerable<Idea> results = db.Ideas;
-            IEnumerable<Idea> finalResults = new List<Idea>();
-            results = results.Reverse();
+            IEnumerable<Idea> results = new List<Idea>();
             // This handles the first run of the index. Since the default checkbox is set to Accepted,
             // The default (first run with parameters of null) view is to show Accepted ideas
             // Checkboxes will maintain their "checked" status across searches
             if (searchBy == null && search == null && sortByStatus == null)
             {
-                return View(finalResults.Concat(results.Where(x => x.statusCode == "Accepted")));
+                results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted"));
+                results = results.Reverse();
+                return View(results);
             }
-            if (search != null && search != "") { results = SearchByTerms(searchBy, search); }
-            if (sortByStatus[0] == "true") { finalResults = finalResults.Concat(results.Where(x => x.statusCode == "Submitted")); }
-            if (sortByStatus[1] == "true") { finalResults = finalResults.Concat(results.Where(x => x.statusCode == "Accepted")); }
-            if (sortByStatus[2] == "true") { finalResults = finalResults.Concat(results.Where(x => x.statusCode == "Denied")); }
-            return View(finalResults);
+            if (sortByStatus[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
+            if (sortByStatus[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
+            if (sortByStatus[2] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied")); }
+            if (search != null && search != "") { results = SearchByTerms(results, searchBy, search); }
+            else { results = results.Reverse(); } // the search above already reverses the results
+            return View(results);
         }
 
         // GET: Ideas/Details/
