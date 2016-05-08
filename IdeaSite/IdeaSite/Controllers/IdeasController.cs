@@ -48,9 +48,9 @@ namespace IdeaSite.Controllers
             for (int i = 0; i < search.Length; ++i)
             {
                 //if (search[i] == '"') { searchTermsList.Add(" \" "); }
-                if (search[i] == ' ') { /* do nothing */ }
-                else { searchTermsList.Add(search[i].ToString()); }
-                //searchTermsList.Add(search[i].ToString());
+                //if (search[i] == ' ') { /* do nothing */ }
+                //else { searchTermsList.Add(search[i].ToString()); }
+                searchTermsList.Add(search[i].ToString());
             }
             String phrase = "";
             List<String> phraseL = new List<String>();
@@ -84,6 +84,9 @@ namespace IdeaSite.Controllers
             String[] searchTerms = new String[searchPhraseList.Count()];
             int pos = 0;
             foreach (String term in searchPhraseList) { searchTerms[pos++] = term; }
+            var removeSpaces = new List<String>(searchTerms);
+            removeSpaces.Remove(" ");
+            searchTerms = removeSpaces.ToArray();
             return searchTerms;
         }
 
