@@ -9,6 +9,7 @@ using IdeaSite.Models;
 using System.Configuration;
 using System.IO;
 using System.Net.Mail;
+using System.Text;
 
 namespace IdeaSite.Controllers
 {
@@ -39,13 +40,62 @@ namespace IdeaSite.Controllers
             return View();
         }
 
+
+        private string[] SeparateSearchTerms(string search)
+        {
+            // split search terms by spaces
+            List<String> searchTermsList = new List<String>();
+            for (int i = 0; i < search.Length; ++i)
+            {
+                //if (search[i] == '"') { searchTermsList.Add(" \" "); }
+                if (search[i] == ' ') { /* do nothing */ }
+                else { searchTermsList.Add(search[i].ToString()); }
+                //searchTermsList.Add(search[i].ToString());
+            }
+            String phrase = "";
+            List<String> phraseL = new List<String>();
+            Queue<String> phraseQ = new Queue<String>();
+            List<String> searchPhraseList = new List<String>();
+            bool flag = false;
+            foreach (String term in searchTermsList)
+            { 
+                if (term == "\"" || flag == true)
+                {
+                    flag = true;
+                    phraseQ.Enqueue(term);
+                    if (term == "\"" && phraseQ.Count > 2)
+                    {
+                        phraseQ.Dequeue();
+                        while (phraseQ.Peek() != "\"") { phraseL.Add(phraseQ.Dequeue()); }
+                        phrase = string.Join("", phraseL.ToArray());
+                        phraseQ.Clear();
+                        phraseL.Clear();
+                        flag = false;
+                    }
+                    //else { searchPhraseList.Add(phrase); }   
+                    //if (phraseQ.Count() == 0) { searchPhraseList.Add(phrase); }
+                    if (!flag) { searchPhraseList.Add(phrase); }
+                }
+                else
+                {
+                    searchPhraseList.Add(term);
+                }
+            }
+            String[] searchTerms = new String[searchPhraseList.Count()];
+            int pos = 0;
+            foreach (String term in searchPhraseList) { searchTerms[pos++] = term; }
+            return searchTerms;
+        }
+
+
         private IEnumerable<Idea> SearchByTerms(IEnumerable<Idea> _results, string searchBy, string search)
         {
             //IEnumerable<Idea> results = new List<Idea>();
             IEnumerable<Idea> results = _results;
             IEnumerable<Idea> finalResults = new List<Idea>();
             string[] searchTerms;
-            searchTerms = search.Trim().Split(' ');
+            //searchTerms = search.Trim().Split(' ');
+            searchTerms = SeparateSearchTerms(search);
             // new function before ^^ to find terms from string & phrases
             for (int i = 0; i < searchTerms.Length; ++i)
             {
