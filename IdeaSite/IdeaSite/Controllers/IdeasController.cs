@@ -43,20 +43,27 @@ namespace IdeaSite.Controllers
 
         private string[] SeparateSearchTerms(string search)
         {
-            // split search terms by spaces
+            List<String> holdKeywords = new List<String>(search.Trim().Split(' '));
+            bool flag = false;
+            foreach (String keyword in holdKeywords.ToList())
+            {
+                if (keyword.Contains("\"") && !flag) { holdKeywords.Remove(keyword); flag = true; }
+                else if (keyword.Contains("\"") && flag) { holdKeywords.Remove(keyword); flag = false; }
+                else if (flag) { holdKeywords.Remove(keyword); }
+            }
+
+
             List<String> searchTermsList = new List<String>();
             for (int i = 0; i < search.Length; ++i)
             {
-                //if (search[i] == '"') { searchTermsList.Add(" \" "); }
-                //if (search[i] == ' ') { /* do nothing */ }
-                //else { searchTermsList.Add(search[i].ToString()); }
                 searchTermsList.Add(search[i].ToString());
             }
             String phrase = "";
             List<String> phraseL = new List<String>();
             Queue<String> phraseQ = new Queue<String>();
             List<String> searchPhraseList = new List<String>();
-            bool flag = false;
+            //bool flag = false;
+            flag = false;
             foreach (String term in searchTermsList)
             { 
                 if (term == "\"" || flag == true)
@@ -86,6 +93,7 @@ namespace IdeaSite.Controllers
             foreach (String term in searchPhraseList) { searchTerms[pos++] = term; }
             var removeSpaces = new List<String>(searchTerms);
             removeSpaces.Remove(" ");
+            removeSpaces = removeSpaces.Concat(holdKeywords).ToList();
             searchTerms = removeSpaces.ToArray();
             return searchTerms;
         }
