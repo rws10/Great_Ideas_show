@@ -62,15 +62,17 @@
                 <td class="right-col" />
                 <td class="right-col"><h5><b>Delete</b></h5></td>
             </tr>
-            @if (ViewBag.attachments != null)
-            {
-                foreach (var attachment in ViewBag.attachments)
-                {
-                    var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
+
+@if (Model.attachments != null)
+{
+    for (int i = 0; i < Model.attachments.Count; i++)
+    {
+        var attachment = Model.attachments[i];
+        var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
                     <tr>
                         <td>@attachment.name  </td>
                         <td class="right-col"><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { attachmentpath = attachmentPath, attachmentName = attachment.name }, new { @target = "_blank" })</td>
-                        <td class="right-col">check boxes here</td>
+                        <td class="right-col">@Html.CheckBox(Model.attachments[i].delete, new { @checked = "checked"})</td>
                     </tr>
                 }
             }
