@@ -320,10 +320,10 @@ namespace IdeaSite.Controllers
             {
                 if (attachment.IdeaID == model.idea.ID)
                 {
-                    var editorViewModel = new FileSelectorEditorViewModel()
+                    var editorViewModel = new SelectFileEditorViewModel()
                     {
                         ID = attachment.ID,
-                        Name = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name),
+                        Name = attachment.name,
                         Selected = false
                     };
                     model.Attachs.Add(editorViewModel);

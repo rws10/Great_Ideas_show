@@ -8,11 +8,11 @@ namespace IdeaSite.Models
     public class FileSelectionViewModel
     {
         public Idea idea { get; set; }
-        public List<FileSelectorEditorViewModel> Attachs { get; set; }
+        public List<SelectFileEditorViewModel> Attachs { get; set; }
 
         public FileSelectionViewModel()
         {
-            this.Attachs = new List<FileSelectorEditorViewModel>();
+            this.Attachs = new List<SelectFileEditorViewModel>();
         }
 
 
