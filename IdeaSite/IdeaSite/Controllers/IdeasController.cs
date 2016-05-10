@@ -398,6 +398,7 @@ namespace IdeaSite.Controllers
                 {
                     // in here is where I will delete the attachments based on what was selected.
                     attachment.DeleteFile();
+                    db.Attachments.Remove(attachment);
                 }
 
                 string subject = string.Format("An idea has been edited: {0}", model.idea.title);
@@ -604,11 +605,6 @@ namespace IdeaSite.Controllers
             }
 
             return View(idea);
-        }
-
-        public FileResult Download(string attachmentpath, string attachmentName)
-        {
-            return File(attachmentpath, System.Net.Mime.MediaTypeNames.Application.Octet, attachmentName);
         }
 
         protected override void Dispose(bool disposing)

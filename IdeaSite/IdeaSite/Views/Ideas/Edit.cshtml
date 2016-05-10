@@ -40,7 +40,7 @@
             @Html.LabelFor(model => model.idea.body, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.idea.body, new { htmlAttributes = new { @class = "form-control" } })
-                <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
+                @Html.ValidationMessageFor(model => model.idea.title, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -48,18 +48,17 @@
         <div class="form-group @Model.idea.statusCode">
             @Html.LabelFor(model => model.idea.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.idea.denialReason)</textarea>
-                <span class="field-validation-valid text-danger" data-valmsg-for="denialReason" data-valmsg-replace="true"></span>
+                @Html.DisplayFor(model => model.idea.denialReason)
+                @Html.ValidationMessageFor(model => model.idea.denialReason, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <!--This table is for displaying any attachments associated with an idea.
             It allows the user to download and/or delete current attachments-->
-        <!--Add a new checkbox in its own div element:-->
+        <!--Add a new checkbox in its own div element:--
         <div>
             <input type="checkbox" id="checkall" /><span>Check All</span>
         </div>
-
+        -->
         <!--Wrap the table element in a div named "checkboxes":-->
         <div id="checkboxes">
             <table class="table">
@@ -72,7 +71,17 @@
                     </th>
                     <th></th>
                 </tr>
-                @Html.EditorFor(model => model.Attachs)
+
+            </table>
+
+            <table>
+                <tr>
+                    <th></th>
+                </tr>
+                @for (int i = 0; i < Model.Attachs.Count; i++)
+                {
+                    @Html.EditorFor(model => model.Attachs[i])
+                }
             </table>
             @*Close the "checkboxes" div element:*@
         </div>
