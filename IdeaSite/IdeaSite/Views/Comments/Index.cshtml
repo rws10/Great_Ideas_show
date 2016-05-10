@@ -22,7 +22,7 @@
 	<div class="container-fluid">
 		<div class="row content">
 			  <h4>Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h4>
-			  <textarea rows="3" cols="150" style="border:none" readonly>@Html.DisplayFor(modelItem => item.body)</textarea>
+			  @Html.DisplayFor(modelItem => item.body)
 			  <div class="btn-group">
 			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, null)</button>
 			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null)</button>
@@ -35,6 +35,6 @@
 
 	<p>Click below to create new comment</p>
 	<p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)</button></p>
-	</br>
-	</br>
+	<br>
+	<br>
 	<p>@Html.ActionLink("Back to List", "Index", "Ideas")</p>

@@ -22,6 +22,7 @@ namespace IdeaSite.Models
         public string cre_user { get; set; }
 
         [Required(ErrorMessage = "Comment Required")]
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Comment")]
         public string body { get; set; }
 

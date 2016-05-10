@@ -31,7 +31,7 @@
         <div class="form-group">
             <label class="control-label col-md-2" for="description">Description</label>
             <div class="col-md-10">
-                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text">@Html.DisplayFor(model => model.body)</textarea>
+                @Html.EditorFor(model => model.body)
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
                 <br><div class="error-message">@Html.ValidationMessageFor(model => model.body)</div>
             </div>

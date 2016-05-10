@@ -15,11 +15,13 @@ namespace IdeaSite.Models
 
         // Name of the idea
         [Required(ErrorMessage = "Description Required")]
+        
         [Display(Name = "Title")]        
         public string title { get; set; }
 
         // What is the idea?
         [Required(ErrorMessage = "Description Required")]
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Description")]
         public string body { get; set; }
 
@@ -48,9 +50,10 @@ namespace IdeaSite.Models
 
         // Why was this idea Denied?
         // This needs to be a conditional display of only when the status is set to "Rejected"
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Reason for Decision")]
         public string denialReason { get; set; }
 
-        //public List<Comment> comments { get; set; }
+        public virtual List<Attachment> attachments { get; set; }
     }
 }
