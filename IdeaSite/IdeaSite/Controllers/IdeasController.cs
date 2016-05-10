@@ -44,9 +44,10 @@ namespace IdeaSite.Controllers
 
         private string[] SeparateSearchTerms(string search)
         {
-            List<String> holdKeywords = new List<String>(search.Trim().Split(' '));
+            //List<String> holdKeywords = new List<String>(search.Trim().Split(' '));
+            List<String> holdKeywords = new List<String>(search.Split(' '));
             bool flag = false;
-            foreach (String keyword in holdKeywords.ToList())
+            foreach (String keyword in holdKeywords.ToList()) 
             {
                 if (keyword.Contains("\"") && !flag) { holdKeywords.Remove(keyword); flag = true; }
                 else if (keyword.Contains("\"") && flag) { holdKeywords.Remove(keyword); flag = false; }
@@ -109,15 +110,17 @@ namespace IdeaSite.Controllers
             //searchTerms = search.Trim().Split(' ');
             searchTerms = SeparateSearchTerms(search);
             // new function before ^^ to find terms from string & phrases
+
+            finalResults = results;
             for (int i = 0; i < searchTerms.Length; ++i)
             {
                 var term = searchTerms[i];
-                if (searchBy == "Title") { finalResults = results.Where(x => x.title.Contains(term)).ToList(); }
-                else if (searchBy == "Description") { finalResults = results.Where(x => x.body.Contains(term)).ToList(); }
+                if (searchBy == "Title") { finalResults = finalResults.Where(x => x.title.Contains(term)).ToList(); }
+                else if (searchBy == "Description") { finalResults = finalResults.Where(x => x.body.Contains(term)).ToList(); }
                 else if (searchBy == "All")
                 {
-                    finalResults = results.Where(x => x.title.Contains(term)).ToList();
-                    finalResults = finalResults.Concat(results.Where(x => x.body.Contains(term)).ToList());
+                    finalResults = finalResults.Where(x => x.title.Contains(term) || x.body.Contains(term)).ToList();
+                    //finalResults = finalResults.Concat(finalResults.Where(x => x.body.Contains(term)).ToList());
                 }
             }
             return MatchSearchResults(finalResults);
@@ -173,6 +176,7 @@ namespace IdeaSite.Controllers
             if (sortByStatus[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
             if (sortByStatus[2] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied")); }
             if (search != null && search != "") { results = SearchByTerms(results, searchBy, search); }
+            //if (search != null && search != "") { results = results.Concat(SearchByTerms(results, searchBy, search)); /*results = results.Distinct();*/ }
             else { results = results.Reverse(); } // the search above already reverses the results
             return View(results);
         }
