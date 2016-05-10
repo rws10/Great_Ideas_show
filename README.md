@@ -9,7 +9,6 @@ Russell:
  * This has been done. I would like the error message to line up with the title and text box displays. 
    Also, the data with the error will still be populated there if you go "back to index" and immediately go back to create new.
    However, if you repeat the same process, it will then be gone.
-- Have the ability to delete uploaded attachments from the edit page
 - Add a contact us link on the homepage
 - Add Javascript to update page when "FilterBy:" choice is made
 - Add Meta Scan to check for viruses in docs
@@ -56,6 +55,8 @@ Idea:
   - cut the description text box size to about half the page before it wraps the text.
 
 - edit: 
+  - possibly look into fixing the display of the attachments. Nothing about the attachments that already exist 
+    should be editable other than the check box. I'm going to try to mess with it once I get the rest of my stuff done.
 *Russell can probably do this
   - make the status into a dropdown with only the choices descriped in the model.
 
