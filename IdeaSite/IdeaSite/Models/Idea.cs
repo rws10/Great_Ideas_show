@@ -15,6 +15,7 @@ namespace IdeaSite.Models
 
         // Name of the idea
         [Required(ErrorMessage = "Description Required")]
+        
         [Display(Name = "Title")]        
         public string title { get; set; }
 

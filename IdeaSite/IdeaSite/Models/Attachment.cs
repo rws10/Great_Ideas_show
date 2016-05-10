@@ -15,8 +15,9 @@ namespace IdeaSite.Models
         [Required]
         public int ID { get; set; }
 
-        [Required]
-        public int ideaID { get; set; }
+        public int IdeaID { get; set; }
+
+        public virtual Idea ownIdea { get; set; }
 
         public string name { get; set; }
 

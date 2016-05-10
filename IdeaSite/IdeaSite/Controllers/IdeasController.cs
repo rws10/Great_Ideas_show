@@ -10,6 +10,7 @@ using System.Configuration;
 using System.IO;
 using System.Net.Mail;
 using System.Text;
+using System.Data.Entity;
 
 namespace IdeaSite.Controllers
 {
@@ -65,7 +66,7 @@ namespace IdeaSite.Controllers
             //bool flag = false;
             flag = false;
             foreach (String term in searchTermsList)
-            { 
+            {
                 if (term == "\"" || flag == true)
                 {
                     flag = true;
@@ -119,7 +120,7 @@ namespace IdeaSite.Controllers
                     finalResults = finalResults.Concat(results.Where(x => x.body.Contains(term)).ToList());
                 }
             }
-            return MatchSearchResults(finalResults);         
+            return MatchSearchResults(finalResults);
         }
 
         private IEnumerable<Idea> MatchSearchResults(IEnumerable<Idea> results)
@@ -129,7 +130,7 @@ namespace IdeaSite.Controllers
             foreach (Idea idea in results)
             {
                 foreach (var match in matches) { if (idea.ID == match[0]) { ++match[1]; } }
-            }           
+            }
             foreach (Idea idea in ideas)
             {
                 int[] match = new int[2];
@@ -207,7 +208,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> attachments)
+        public ActionResult Create([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -216,7 +217,8 @@ namespace IdeaSite.Controllers
                 idea.cre_date = DateTime.Now;
                 db.Ideas.Add(idea);
 
-                try {
+                try
+                {
                     db.SaveChanges();
                 }
 
@@ -236,17 +238,17 @@ namespace IdeaSite.Controllers
                 var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
 
                 DirectoryInfo di = Directory.CreateDirectory(storagePath);
-                if (attachments != null)
+                if (files != null)
                 {
                     try
                     {
                         // loop through the uploads and pull out each attachment from it.
-                        for (int i = 0; i < attachments.Count(); ++i)
+                        for (int i = 0; i < files.Count(); ++i)
                         {
-                            if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                            if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
                             {
                                 // store the name of the attachment
-                                var attachmentName = Path.GetFileName(attachments.ElementAt(i).FileName);
+                                var attachmentName = Path.GetFileName(files.ElementAt(i).FileName);
 
                                 // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
                                 var attachment = new Models.Attachment
@@ -254,12 +256,17 @@ namespace IdeaSite.Controllers
                                     storageLocation = string.Format("{0}\\", storagePath),
                                     name = attachmentName,
                                     cre_date = DateTime.Now,
-                                    ideaID = idea.ID,
+                                    ownIdea = idea,
                                     delete = false
                                 };
 
-                                attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
+                                files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
 
+                                if (idea.attachments == null)
+                                {
+                                    idea.attachments = new List<Models.Attachment>();
+                                }
+                                idea.attachments.Add(attachment);
                                 db.Attachments.Add(attachment);
                                 db.SaveChanges();
                             }
@@ -304,9 +311,24 @@ namespace IdeaSite.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Idea idea = db.Ideas.Find(id);
+            var model = new FileSelectionViewModel();
 
-            idea.statusCode = "Submitted";
+            model.idea = db.Ideas.Find(id);
+            model.idea.statusCode = "Submitted";
+
+            foreach (var attachment in db.Attachments)
+            {
+                if (attachment.IdeaID == model.idea.ID)
+                {
+                    var editorViewModel = new FileSelectorEditorViewModel()
+                    {
+                        ID = attachment.ID,
+                        Name = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name),
+                        Selected = false
+                    };
+                    model.Attachs.Add(editorViewModel);
+                }
+            }
 
             /*idea.statusCodes = new[]
             {
@@ -315,40 +337,12 @@ namespace IdeaSite.Controllers
                 new SelectListItem { Value = "Project Submission", Text = "Project Submission" },
             };*/
 
-            if (idea == null)
+            if (model.idea == null)
             {
                 return HttpNotFound();
             }
 
-            /*IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
-            attachments = db.Attachments.Where(attachment => attachment.ideaID == idea.ID).ToList();
-
-            ViewBag.attachments = attachments;
-            
-            var appSettings = ConfigurationManager.AppSettings;
-
-            // store path to server location of the attachment storage
-            var connectionInfo = appSettings["serverPath"];
-
-            // combine the server location and the name of the new folder to be created
-            var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-            DirectoryInfo dir = new DirectoryInfo(ideaFolder);
-
-            // Store the attachments from the desired attachment folder
-            if (dir.Exists)
-            {
-                var attachments = dir.GetFiles();
-                ViewBag.attachments = attachments;
-                ViewBag.path = ideaFolder;
-            }
-            else
-            {
-                ViewBag.attachments = null;
-                ViewBag.path = null;
-            }
-            */
-
-            return View(idea);
+            return View(model);
         }
 
         // POST: Ideas/Edit/5
@@ -356,42 +350,59 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> attachments)
+        public ActionResult Edit(FileSelectionViewModel model, IEnumerable<HttpPostedFileBase> attachments)
         {
             if (ModelState.IsValid)
             {
-                //db.Entry(idea).State = EntityState.Modified;
-                var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == idea.ID);
+                db.Entry(model.idea).State = EntityState.Modified;
+                var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == model.idea.ID);
                 if (currentIdea == null)
                 {
                     return HttpNotFound();
                 }
 
-                currentIdea.title = idea.title;
-                currentIdea.body = idea.body;
-                currentIdea.statusCode = idea.statusCode;
-                currentIdea.statusCodes = idea.statusCodes;
-                currentIdea.denialReason = idea.denialReason;
+                currentIdea.title = model.idea.title;
+                currentIdea.body = model.idea.body;
+                currentIdea.statusCode = model.idea.statusCode;
+                currentIdea.statusCodes = model.idea.statusCodes;
+                currentIdea.denialReason = model.idea.denialReason;
+
+                
 
                 try
                 {
                     db.SaveChanges();
                 }
-
                 catch
                 {
-                    TempData["Idea"] = idea;
+                    TempData["Idea"] = model.idea;
                     TempData["Message"] = "Title must be a unique value";
-                    return View(idea);
+                    return View(model.idea);
                 }
 
-                string subject = string.Format("An idea has been edited: {0}", idea.title);
+                // get the ids of the items selected:
+                var selectedIds = model.getSelectedIds();
+
+                // Use the ids to retrieve the records for the selected people
+                // from the database:
+                var selectedAttachments = from x in db.Attachments
+                                          where selectedIds.Contains(x.ID)
+                                          select x;
+
+                // Process according to your requirements:
+                foreach (var attachment in selectedAttachments)
+                {
+                    // in here is where I will delete the attachments based on what was selected.
+                    attachment.DeleteFile();
+                }
+
+                string subject = string.Format("An idea has been edited: {0}", model.idea.title);
 
                 string body = string.Format("{0} has Edited an Idea on Great Ideas:" +
                     "<br/><br/>{1}:" +
                     "<br/>{2}" +
                     "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{3}\">Great Ideas</a> to submit approval.",
-                    idea.cre_user, idea.title, idea.body, idea.ID);
+                    model.idea.cre_user, model.idea.title, model.idea.body, model.idea.ID);
 
                 MailAddress from = new MailAddress("teamzed@outlook.com");
                 MailAddress to = new MailAddress("rws10@live.com");
@@ -405,12 +416,13 @@ namespace IdeaSite.Controllers
                 var connectionInfo = appSettings["serverPath"];
 
                 // combine the server location and the name of the new folder to be created
-                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, model.idea.ID, model.idea.title);
 
                 if (!Directory.Exists(storagePath))
                 {
                     DirectoryInfo di = Directory.CreateDirectory(storagePath);
                 }
+
                 try
                 {
                     // loop through the uploads and pull out each attachment from it.
@@ -427,29 +439,34 @@ namespace IdeaSite.Controllers
                                 storageLocation = string.Format("{0}\\", storagePath),
                                 name = attachmentName,
                                 cre_date = DateTime.Now,
-                                ideaID = idea.ID,
+                                ownIdea = model.idea,
                                 delete = false
                             };
 
                             attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
 
+                            if (model.idea.attachments == null)
+                            {
+                                model.idea.attachments = new List<Models.Attachment>();
+                            }
+                            model.idea.attachments.Add(attachment);
                             db.Attachments.Add(attachment);
-                            db.SaveChanges();
                         }
                     }
                 }
 
-                catch
+                catch(Exception ex)
                 {
                     TempData["Message"] = "The attachments failed to upload";
                     return RedirectToAction("Edit");
                 }
 
-                TempData["Message"] = "Your idea has been successfully created.";
+                db.SaveChanges();
+                TempData["Message"] = "Your idea has been successfully submitted.";
                 return RedirectToAction("Index");
             }
             //ViewBag.attachments = attachments;
-            return View(idea);
+            return View(model);
         }
 
         // GET: Ideas/Delete/5
@@ -478,7 +495,7 @@ namespace IdeaSite.Controllers
              * associated with them. Once all of the files are gone from each files directory, the directory is 
              * deleted*/
             IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
-            attachments = db.Attachments.Where(attach => attach.ideaID == idea.ID).ToList();
+            attachments = db.Attachments.Where(attach => attach.ownIdea.ID == idea.ID).ToList();
 
             if (attachments != null)
             {
@@ -488,7 +505,7 @@ namespace IdeaSite.Controllers
                     attachment.DeleteDirectory();
                 }
 
-                db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.ideaID == id));
+                db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.ownIdea.ID == id));
             }
 
             db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
