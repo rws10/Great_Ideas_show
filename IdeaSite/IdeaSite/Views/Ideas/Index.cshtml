@@ -49,8 +49,9 @@
                 <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h5>
                 <hr>
                 <h5><span class="label label-success">Description:</span></h5>
-                <textarea rows="3" cols="150" style="border:none" readonly>@Html.DisplayFor(modelItem => item.body)</textarea>
-                <br>
+                @Html.DisplayFor(modelItem => item.body)
+                <br />
+                <br />
                 <div class="btn-group">
                     <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "my-class" })</button>
                     <button type="button" class="btn btn-default btn-sm">@Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "my-class" })</button>

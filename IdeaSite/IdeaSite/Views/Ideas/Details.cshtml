@@ -33,7 +33,7 @@
             <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
             <h5>status: <span class="@statusIcon"></span> @Html.DisplayFor(model => model.statusCode)</h5>
             <h5><span class="label label-success">Description:</span></h5>
-            <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
+            @Html.DisplayFor(model => model.body)
 
             <!--Call the partial view for displaying the attachments-->
             @Html.Action("Display", "Attachment", new {ideaID = Model.ID})
@@ -42,8 +42,7 @@
             @if (Model.statusCode == "Denied")
             {
                 <h5>Reason for Denial:</h5>
-
-                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text" readonly>@Html.DisplayFor(model => model.denialReason)</textarea>
+                @Html.DisplayFor(model => model.denialReason)
             }
         </div>
     </div>
