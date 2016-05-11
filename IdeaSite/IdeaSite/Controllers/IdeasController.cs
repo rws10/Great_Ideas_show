@@ -219,19 +219,19 @@ namespace IdeaSite.Controllers
 
                 idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
-                db.Ideas.Add(idea);
+                
 
-                try
-                {
-                    db.SaveChanges();
-                }
+                var ideas = db.Ideas.Where(IDEA => IDEA.title == idea.title).ToList();
 
-                catch
+                if (ideas.Count > 0)
                 {
                     TempData["Idea"] = idea;
                     TempData["Message"] = "Title must be a unique value";
                     return View(idea);
                 }
+
+                db.Ideas.Add(idea);
+                db.SaveChanges();
 
                 var appSettings = ConfigurationManager.AppSettings;
 
