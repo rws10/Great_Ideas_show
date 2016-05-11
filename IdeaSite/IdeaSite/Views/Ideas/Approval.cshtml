@@ -9,21 +9,18 @@
 @using (Html.BeginForm("Approval", "Ideas", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    <h1>Approval page</h1>
     <hr>
     <div class="container-fluid">
         <div class="row content">
             <div class="col-md-9">
-                <h2>@Html.DisplayFor(model => model.title)</h2>
+                <h3>@Html.DisplayFor(model => model.title)</h3>
                 <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
-                <h5>status: <span class="glyphicon glyphicon-transfer"></span> @Html.DisplayFor(model => model.statusCode)</h5>
+                <h5>Status: <span class="glyphicon glyphicon-transfer"></span> @Html.DisplayFor(model => model.statusCode)</h5>
                 <h5><span class="label label-success">Description:</span></h5>
                 <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
 
                 <!--Call the partial view for displaying the attachments-->
-                <!--Commented out due to incomplete Attachment Controller. Attachment controller must have
-                    a Details get method to run this partial view. -->
-                @*@Html.Action("Details", "Attachment", new { ideaID = Model.ID })*@
+                @Html.Action("Display", "Attachment", new { ideaID = Model.ID })
 
             </div>
         </div>
@@ -69,6 +66,7 @@
 
         $(document).ready(function () {
             $("#DenialReason").hide();
+
             $('#statusCode_Denied').click(function () {
                 if (this.checked == true) {
                     $("#DenialReason").show();
@@ -84,12 +82,10 @@
                 if (this.checked == true) {
                     $("#DenialReason").hide();
                     document.getElementById("denialReason").required = false;
-
                 }
                 else {
                     $("#statusCode_Accepted").hide();
                 }
-
             })
         });
     </script>

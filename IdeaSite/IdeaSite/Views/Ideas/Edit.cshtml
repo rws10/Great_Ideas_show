@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit Page</h2>
+<h2>Edit</h2>
 <hr>
 
 
@@ -38,7 +38,7 @@
         <!--Edit box for the body of the idea-->
         <div class="form-group">
             @Html.LabelFor(model => model.idea.body, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10 multiline-field">
                 @Html.EditorFor(model => model.idea.body, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.idea.title, "", new { @class = "text-danger" })
             </div>
@@ -54,14 +54,15 @@
         </div>
         <!--This table is for displaying any attachments associated with an idea.
             It allows the user to download and/or delete current attachments-->
-        <!--Add a new checkbox in its own div element:--
+        <!--Add a new checkbox in its own div element:-->
         <div>
-            <input type="checkbox" id="checkall" /><span>Check All</span>
+            <input type="checkbox" id="checkall" /><span>Select All</span>
         </div>
-        -->
+
         <!--Wrap the table element in a div named "checkboxes":-->
         <div id="checkboxes">
             <table class="table">
+                <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th><th></th></tr>
                 <tr>
                     <th>
                         Name
@@ -69,40 +70,13 @@
                     <th>
                         Delete
                     </th>
-                    <th></th>
                 </tr>
-
-                @Html.EditorFor(model => model.Attachs, @"~\Views\Shared\EditorTemplates\SelectFileEditorModelView")
-
+                    @Html.EditorFor(model => model.Attachs, @"~\Views\Shared\EditorTemplates\SelectFileEditorModelView")
             </table>
-
-            <table></table>
             @*Close the "checkboxes" div element:*@
         </div>
         <hr />
         <br />
-
-        <!--<table>
-            <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th></tr>
-            <tr>
-                <td></td>
-                <td class="right-col" />
-                <td class="right-col"><h5><b>Delete</b></h5></td>
-            </tr>-->
-        @*@if (Model.idea.attachments != null)
-            {
-                for (int i = 0; i < Model.idea.attachments.Count; i++)
-                {
-                    var attachment = Model.idea.attachments[i];
-                    var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
-                                <tr>
-                                    <td>@attachment.name  </td>
-                                    <td class="right-col"><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { attachmentpath = attachmentPath, attachmentName = attachment.name }, new { @target = "_blank" })</td>
-                                    <td class="right-col">@Html.CheckBox(Model.idea.attachments[i].delete, new { @checked = "checked"})</td>
-                                </tr>
-                            }
-                        }
-                    </table>*@
         <br>
 
         <!--Button used to upload any new attachments-->

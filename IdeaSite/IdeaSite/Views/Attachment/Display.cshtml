@@ -1,8 +1,8 @@
-﻿<table>
-    <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th></tr>
+﻿<table class="table">
+    <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th><th></th></tr>
     @if (ViewBag.attachments != null)
     {
-        for(int i = 0; i < ViewBag.attachments.Count; i++)
+        for (int i = 0; i < ViewBag.attachments.Count; i++)
         {
             var attachment = ViewBag.attachments[i];
             var attachmentPath = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name);
