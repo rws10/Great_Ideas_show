@@ -1,0 +1,49 @@
+﻿@model IdeaSite.Models.Mail
+
+@{
+    ViewBag.Title = "WriteNew";
+}
+
+<h2>Support Email</h2>
+<hr />
+
+@using (Html.BeginForm("WriteNew", "Mails", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.From)
+    @Html.HiddenFor(model => model.To)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.Subject)
+
+    <input id="From" name="From" value="blank" type="hidden">
+    <input id="To" name="To" value="blank" type="hidden">
+    <input id="Subject" name="Subject" value="Help Request From Great Ideas" type="hidden">
+
+    <div class="form-horizontal">
+        <h4>Mail</h4>
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Body, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

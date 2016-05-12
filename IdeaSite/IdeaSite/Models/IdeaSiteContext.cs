@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
 
 namespace IdeaSite.Models
 {
@@ -20,10 +16,12 @@ namespace IdeaSite.Models
             //Database.SetInitializer<IdeaSiteContext>(null);
         }
 
-        public System.Data.Entity.DbSet<IdeaSite.Models.Idea> Ideas { get; set; }
+        public DbSet<Idea> Ideas { get; set; }
 
-        public System.Data.Entity.DbSet<IdeaSite.Models.Comment> Comments { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
-        public System.Data.Entity.DbSet<IdeaSite.Models.Attachment> Attachments { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
+
+        public DbSet<Mail> Mails { get; set; }
     }
 }
