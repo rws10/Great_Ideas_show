@@ -13,11 +13,24 @@ namespace IdeaSite.Controllers
             return View("Error");
         }
         
+        public ViewResult Forbidden()
+        {
+            Response.StatusCode = 403;
+            return View("Forbidden");
+        }
+
         public ViewResult NotFound()
         {
-            Response.StatusCode = 404;  //you may want to set this to 200
+            Response.StatusCode = 404;
             return View("NotFound");
         }
-         
+
+        public ViewResult InternalServerError()
+        {
+            Response.StatusCode = 404;
+            return View("InternalServerError");
+        }
+
+
     }
 }
