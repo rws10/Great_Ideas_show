@@ -114,6 +114,7 @@ namespace IdeaSite.Controllers
             finalResults = results;
             for (int i = 0; i < searchTerms.Length; ++i)
             {
+                // set to finalResults.Where (results => whatever) to allow a less strict searchs
                 var term = searchTerms[i];
                 if (searchBy == "Title") { finalResults = finalResults.Where(x => x.title.Contains(term)).ToList(); }
                 else if (searchBy == "Description") { finalResults = finalResults.Where(x => x.body.Contains(term)).ToList(); }
