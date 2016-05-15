@@ -1,19 +1,19 @@
-﻿    /* This makes sure that the "denialReason" attribute will be shown only if "statusCode" is set to "Rejected"*/
-   .Submitted,
-   .Archived, 
-   .Added{
-        display : none;        
-    }
+﻿/* This makes sure that the "denialReason" attribute will be shown only if "statusCode" is set to "Rejected"*/
+.Submitted,
+.Archived,
+.Added {
+    display: none;
+}
 
 body {
-    padding-top: 50px;
+    padding-top: 60px;
     padding-bottom: 20px;
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 150px;
+    padding-right: 150px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -29,43 +29,68 @@ select,
 text-box {
     max-width: 260px;
 }
-.bsolid{
-   border-style: outset;
-   border-color: black;
+
+.bsolid {
+    border-style: outset;
+    border-color: black;
+}
+
+/*Force the editorFor fields to be at least this size*/
+.multiline-field textarea {
+    width: 500px;
+    height: 106px;
+}
+
+.table {
+  width: 100%;
+  max-width: 650px;
+  margin-bottom: 20px;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
-.sidenav {
-height: auto;
-padding: 15px;
-}
+    .sidenav {
+        height: auto;
+        padding: 15px;
+    }
 
-.row.content {height: auto;} 
+    .row.content {
+        height: auto;
+    }
 }
 
 /* Set height of the grid so .sidenav can be 100% (adjust if needed) 
 .row.content {height: 1500px}*/
 
 .error-message {
-color: red;
+    color: red;
 }
-
 
 editor-label {
-     clear:both;
+    clear: both;
 }
 
-editor-label label {
-    float:right;
-    width:150px
+    editor-label label {
+        float: right;
+        width: 150px;
+    }
+
+    editor-label input {
+        float: right;
+    }
+
+a.my-class {
+    color: #000000;
 }
 
-editor-label input {
-    float:right;
-}
+    a.my-class:active {
+        color: #000000;
+    }
 
-a.my-class { color: #000000;}
-a.my-class:active { color: #000000;}
-a.my-class:link { color: #000000; }
-a.my-class:visited { color: #000000; }
+    a.my-class:link {
+        color: #000000;
+    }
+
+    a.my-class:visited {
+        color: #000000;
+    }

@@ -1,0 +1,11 @@
+﻿@model IdeaSite.Models.SelectFileEditorViewModel
+<tr>
+    <td>
+        @Html.DisplayFor(model => model.Name)
+    </td>
+    <td>
+        @Html.CheckBoxFor(model => model.Selected)
+    </td>
+        @Html.HiddenFor(model => model.ID)
+</tr>
+

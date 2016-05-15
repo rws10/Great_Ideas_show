@@ -18,23 +18,6 @@ namespace IdeaSite.Controllers
     {
         private IdeaSiteContext db = new IdeaSiteContext();
 
-        internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
-        {
-
-            MailMessage msg = new MailMessage();
-            msg.From = fromAddress;
-            msg.To.Add(toAddress);
-            msg.Body = body;
-            msg.IsBodyHtml = true;
-            msg.Subject = subject;
-            SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
-            smt.Port = 587;
-            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
-            smt.EnableSsl = true;
-            // emails disabled because there is no error handling for a bad connection.
-            //smt.Send(msg);
-        }
-
         //home index
         public ActionResult Home()
         {
@@ -220,19 +203,19 @@ namespace IdeaSite.Controllers
 
                 idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
-                db.Ideas.Add(idea);
+                
 
-                try
-                {
-                    db.SaveChanges();
-                }
+                var ideas = db.Ideas.Where(IDEA => IDEA.title == idea.title).ToList();
 
-                catch
+                if (ideas.Count > 0)
                 {
                     TempData["Idea"] = idea;
                     TempData["Message"] = "Title must be a unique value";
                     return View(idea);
                 }
+
+                db.Ideas.Add(idea);
+                db.SaveChanges();
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -287,7 +270,10 @@ namespace IdeaSite.Controllers
                 }
 
                 // Compose an email to send to PPMO Group
-                string subject = string.Format("New Idea Submission: {0}", idea.title);
+                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, "" };
+                RedirectToAction("AutoEmail", "Mail", emailInfo);
+
+                /*string subject = string.Format("New Idea Submission: {0}", idea.title);
 
                 string body = string.Format("{0} has submitted an Idea on Great Ideas:" +
                     "<br/><br/>{1}:" +
@@ -299,7 +285,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                SendEmail(from, to, subject, body);
+                SendEmail(from, to, subject, body);*/
 
                 TempData["Message"] = "Your idea has been successfully created.";
                 return RedirectToAction("Index");
@@ -325,10 +311,10 @@ namespace IdeaSite.Controllers
             {
                 if (attachment.IdeaID == model.idea.ID)
                 {
-                    var editorViewModel = new FileSelectorEditorViewModel()
+                    var editorViewModel = new SelectFileEditorViewModel()
                     {
                         ID = attachment.ID,
-                        Name = string.Format("{0}\\{1}", attachment.storageLocation, attachment.name),
+                        Name = attachment.name,
                         Selected = false
                     };
                     model.Attachs.Add(editorViewModel);
@@ -399,6 +385,7 @@ namespace IdeaSite.Controllers
                 {
                     // in here is where I will delete the attachments based on what was selected.
                     attachment.DeleteFile();
+                    db.Attachments.Remove(attachment);
                 }
 
                 string subject = string.Format("An idea has been edited: {0}", model.idea.title);
@@ -413,7 +400,7 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                SendEmail(from, to, subject, body);
+                //SendEmail(from, to, subject, body);
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -600,16 +587,18 @@ namespace IdeaSite.Controllers
                 MailAddress to = new MailAddress("rws10@live.com");
 
 
-                SendEmail(from, to, subject, body);
+                //SendEmail(from, to, subject, body);
                 return RedirectToAction("Index");
             }
 
             return View(idea);
         }
 
-        public FileResult Download(string attachmentpath, string attachmentName)
+        // GET: Ideas/Create
+
+        public ActionResult SupportEmail()
         {
-            return File(attachmentpath, System.Net.Mime.MediaTypeNames.Application.Octet, attachmentName);
+            return View();
         }
 
         protected override void Dispose(bool disposing)

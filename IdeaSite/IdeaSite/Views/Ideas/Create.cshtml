@@ -4,9 +4,8 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create Idea</h2>
-<hr>
-
+<h2>Create New Idea</h2>
+<hr />
 
 @using (Html.BeginForm("Create", "Ideas", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -30,7 +29,7 @@
 
         <div class="form-group">
             <label class="control-label col-md-2" for="description">Description</label>
-            <div class="col-md-10">
+            <div class="col-md-10 multiline-field">
                 @Html.EditorFor(model => model.body)
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
                 <br><div class="error-message">@Html.ValidationMessageFor(model => model.body)</div>
