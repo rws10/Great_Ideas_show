@@ -81,20 +81,10 @@ namespace IdeaSite.Controllers
 
                 Idea idea = db.Ideas.Find(comment.ideaID);
 
-                string subject = string.Format("New comment added to your idea: {0}", idea.title);
-
-                string body = string.Format("{0} has commented on your idea." +
-                    "<br/><br/>To view this comment, go to <a href=\"http://localhost:52398/Comments/Index/{1}\">Great Ideas</a>.",
-                    comment.cre_user, comment.ideaID);
-
-                MailAddress from = new MailAddress("teamzed@outlook.com");
-                MailAddress to = new MailAddress("rws10@live.com");
-
-                // need to add error handling when unable to connect to internet
-                // or outlook. 
-                //SendEmail(from, to, subject, body);
-
-                return RedirectToAction("Index", "Comments", idea);
+                List<string> emailInfo = new List<string> { "5", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
+                TempData["EmailInfo"] = emailInfo;
+                TempData["IdeaID"] = idea.ID;
+                return RedirectToAction("AutoEmail", "Mails");
             }
 
             return View(comment);

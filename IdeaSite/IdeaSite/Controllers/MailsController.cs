@@ -21,10 +21,11 @@ namespace IdeaSite.Controllers
         // GET: Mails/Create
         public ActionResult WriteNew()
         {
-            Mail mail= new Mail{
-              Subject = "Great Ideas help request",
-              From = "teamzed@outlook.com",
-              To = "rws10@live.com"
+            Mail mail = new Mail
+            {
+                Subject = "Great Ideas help request",
+                From = "teamzed@outlook.com",
+                To = "rws10@live.com"
             };
             return View(mail);
         }
@@ -48,31 +49,34 @@ namespace IdeaSite.Controllers
 
                 SendEmailInBackgroundThread(mailMsg);
 
+                TempData["Message"] = "Your message was submitted successfully.";
                 return RedirectToAction("Index", "Ideas");
             }
 
             return View(mail);
         }
 
-        public ActionResult AutoEmail(List<string> emailInfo)
+        public ActionResult AutoEmail()
         {
             MailMessage mailMsg = new MailMessage();
+            List<string> emailInfo = TempData["EmailInfo"] as List<string>;
             string subject;
             string body;
             switch (Int32.Parse(emailInfo[0]))
             {
+                // Compose an email to send to PPMO Group for Idea Creation
                 case 1:
-                    // Compose an email to send to PPMO Group for Idea Creation
                     subject = string.Format("New Idea Submission: {0}", emailInfo[1]);
 
                     body = string.Format("{0} has submitted an Idea on Great Ideas:" +
                         "<br/><br/>{1}:" +
                         "<br/>{2}" +
-                        "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{2}\">Great Ideas</a> to submit approval.",
-                        emailInfo[3], emailInfo[1], emailInfo[2]);
+                        "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{3}\">Great Ideas</a> to submit approval.",
+                        emailInfo[3], emailInfo[1], emailInfo[2], Int32.Parse(emailInfo[4]));
                     TempData["Message"] = "Your idea has been successfully created.";
-
                     break;
+
+                // Compose an email to send to PPMO Group for an Edited Idea
                 case 2:
                     subject = string.Format("An idea has been edited: {0}", emailInfo[1]);
 
@@ -80,35 +84,43 @@ namespace IdeaSite.Controllers
                         "<br/><br/>{1}:" +
                         "<br/>{2}" +
                         "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{3}\">Great Ideas</a> to submit approval.",
-                        emailInfo[3], emailInfo[1], emailInfo[2]);
+                        emailInfo[3], emailInfo[1], emailInfo[2], int.Parse(emailInfo[4]));
+                    TempData["Message"] = "Your idea has been successfully submitted.";
                     break;
+
+                // Compose an email to send to user whose idea was accepted
                 case 3:
                     subject = string.Format("New Idea Submission: {0}", emailInfo[1]);
                     body = string.Format(
-                            "Your idea was added" +
+                            "Your idea was accepted" +
                             "<br/><br/>{0}"
                             , emailInfo[2]);
+                    TempData["Message"] = "Your acceptance was successful.";
                     break;
 
+                // Compose an email to send to user whose idea was not accepted
                 case 4:
                     subject = string.Format("New Idea Submission: {0}", emailInfo[1]);
                     body = string.Format(
-                                                "Your idea wsa not added" +
+                                                "Your idea was not accepted" +
                                                 "<br/><br/>{0}" +
                                                 "<br/><br/>Reason for Denial:" +
                                                 "<br/>{1}" +
                                                 "<br/><br/>If this is not rectified in 10 business days," +
                                                 "the submission will be removed and no further action will be taken." +
                                                 "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Edit/{2}\">Great Ideas</a> to resubmit your idea."
-                                                , emailInfo[2], emailInfo[4]);
+                                                , emailInfo[2], emailInfo[4], int.Parse(emailInfo[5]));
+                    TempData["Message"] = "Your denial was successful.";
                     break;
 
+                // Compose an email to send to the owner of an idea that was commented on
                 default:
                     subject = string.Format("New comment added to your idea: {0}", emailInfo[1]);
 
                     body = string.Format("{0} has commented on your idea." +
                         "<br/><br/>To view this comment, go to <a href=\"http://localhost:52398/Comments/Index/{1}\">Great Ideas</a>.",
                         emailInfo[3], int.Parse(emailInfo[4]));
+                    TempData["Message"] = "Your idea has been successfully submitted.";
                     break;
             }
 
@@ -120,6 +132,13 @@ namespace IdeaSite.Controllers
             mailMsg.IsBodyHtml = true;
 
             SendEmailInBackgroundThread(mailMsg);
+
+            if (Int32.Parse(emailInfo[0]) == 5)
+            {
+                int ideaID = (int)TempData["IdeaID"];
+                Idea idea = db.Ideas.Find(ideaID);
+                return RedirectToAction("Index", "Comments", idea);
+            }
 
             return RedirectToAction("Index", "Ideas");
         }
