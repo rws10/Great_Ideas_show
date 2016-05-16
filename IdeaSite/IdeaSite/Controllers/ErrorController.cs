@@ -31,6 +31,12 @@ namespace IdeaSite.Controllers
             return View("InternalServerError");
         }
 
+        public ViewResult Unauthorized()
+        {
+            Response.StatusCode = 401;
+            return View("Unauthorized");
+        }
+
 
     }
 }

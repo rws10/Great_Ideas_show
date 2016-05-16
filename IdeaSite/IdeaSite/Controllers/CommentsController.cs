@@ -45,15 +45,18 @@ namespace IdeaSite.Controllers
         // GET: Comments/Details/5
         public ActionResult Details(int? id)
         {
+            /* ERROR HANDLING SET TO GLOBAL
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Comment comment = db.Comments.Find(id);
+           
             if (comment == null)
             {
                 return HttpNotFound();
             }
+            */
+            Comment comment = db.Comments.Find(id);
             return View(comment);
         }
 
@@ -103,18 +106,18 @@ namespace IdeaSite.Controllers
         // GET: Comments/Edit/5
         public ActionResult Edit(int? id)
         {
+            /* ERROR HANDLING SET TO GLOBAL
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            Comment comment = db.Comments.Find(id);
-
+         
             if (comment == null)
             {
                 return HttpNotFound();
             }
-
+            */
+            Comment comment = db.Comments.Find(id);
             return View(comment);
         }
 
@@ -142,17 +145,18 @@ namespace IdeaSite.Controllers
         // GET: Comments/Delete/5
         public ActionResult Delete(int? id)
         {
+            /* ERROR HANDLING SET TO GLOBAL
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            Comment comment = db.Comments.Find(id);
+            }            
 
             if (comment == null)
             {
                 return HttpNotFound();
             }
+            */
+            Comment comment = db.Comments.Find(id);
             return View(comment);
         }
 

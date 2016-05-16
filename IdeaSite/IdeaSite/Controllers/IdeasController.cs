@@ -168,17 +168,20 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Details/
         public ActionResult Details(int? id)
         {
+            /*
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            */
 
             Idea idea = db.Ideas.Find(id);
-
+            /*
             if (idea == null)
             {
                 return HttpNotFound();
             }
+            */
 
             return View(idea);
         }
