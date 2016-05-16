@@ -218,9 +218,6 @@ namespace IdeaSite.Controllers
                     return View(idea);
                 }
 
-                db.Ideas.Add(idea);
-                db.SaveChanges();
-
                 var appSettings = ConfigurationManager.AppSettings;
 
                 // store path to server location of the attachment storage
@@ -273,28 +270,14 @@ namespace IdeaSite.Controllers
                     }
                 }
 
+                db.Ideas.Add(idea);
+                db.SaveChanges();
+
                 // Compose an email to send to PPMO Group
-                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, "" };
-                RedirectToAction("AutoEmail", "Mail", emailInfo);
-
-                /*string subject = string.Format("New Idea Submission: {0}", idea.title);
-
-                string body = string.Format("{0} has submitted an Idea on Great Ideas:" +
-                    "<br/><br/>{1}:" +
-                    "<br/>{2}" +
-                    "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{2}\">Great Ideas</a> to submit approval.",
-                    idea.cre_user, idea.title, idea.body);
-
-                MailAddress from = new MailAddress("teamzed@outlook.com");
-                MailAddress to = new MailAddress("rws10@live.com");
-
-
-                SendEmail(from, to, subject, body);*/
-
-                TempData["Message"] = "Your idea has been successfully created.";
-                return RedirectToAction("Index");
+                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
+                TempData["EmailInfo"] = emailInfo;
+                return RedirectToAction("AutoEmail", "Mails");
             }
-
             return View(idea);
         }
 
@@ -339,6 +322,13 @@ namespace IdeaSite.Controllers
                 return HttpNotFound();
             }
             */
+
+            var tempModel = TempData["Model"] as FileSelectionViewModel;
+            
+            // Test to see if there was a redirection because of a duplicate title
+            if (tempModel != null) {
+                model = tempModel;
+            }
             return View(model);
         }
 
@@ -352,10 +342,21 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(model.idea).State = EntityState.Modified;
+
                 var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == model.idea.ID);
+
                 if (currentIdea == null)
                 {
                     return HttpNotFound();
+                }
+
+                var ideas = db.Ideas.Where(IDEA => IDEA.title == model.idea.title).ToList();
+
+                if (ideas.Count > 0)
+                {
+                    TempData["Model"] = model;
+                    TempData["Message"] = "Title must be a unique value";
+                    return View(model);
                 }
 
                 currentIdea.title = model.idea.title;
@@ -363,19 +364,6 @@ namespace IdeaSite.Controllers
                 currentIdea.statusCode = model.idea.statusCode;
                 currentIdea.statusCodes = model.idea.statusCodes;
                 currentIdea.denialReason = model.idea.denialReason;
-
-                
-
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch
-                {
-                    TempData["Idea"] = model.idea;
-                    TempData["Message"] = "Title must be a unique value";
-                    return View(model.idea);
-                }
 
                 // get the ids of the items selected:
                 var selectedIds = model.getSelectedIds();
@@ -394,76 +382,14 @@ namespace IdeaSite.Controllers
                     db.Attachments.Remove(attachment);
                 }
 
-                string subject = string.Format("An idea has been edited: {0}", model.idea.title);
-
-                string body = string.Format("{0} has Edited an Idea on Great Ideas:" +
-                    "<br/><br/>{1}:" +
-                    "<br/>{2}" +
-                    "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{3}\">Great Ideas</a> to submit approval.",
-                    model.idea.cre_user, model.idea.title, model.idea.body, model.idea.ID);
-
-                MailAddress from = new MailAddress("teamzed@outlook.com");
-                MailAddress to = new MailAddress("rws10@live.com");
-
-
-                //SendEmail(from, to, subject, body);
-
-                var appSettings = ConfigurationManager.AppSettings;
-
-                // store path to server location of the attachment storage
-                var connectionInfo = appSettings["serverPath"];
-
-                // combine the server location and the name of the new folder to be created
-                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, model.idea.ID, model.idea.title);
-
-                if (!Directory.Exists(storagePath))
-                {
-                    DirectoryInfo di = Directory.CreateDirectory(storagePath);
-                }
-
-                try
-                {
-                    // loop through the uploads and pull out each attachment from it.
-                    for (int i = 0; i < attachments.Count(); ++i)
-                    {
-                        if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
-                        {
-                            // store the name of the attachment
-                            var attachmentName = Path.GetFileName(attachments.ElementAt(i).FileName);
-
-                            // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
-                            var attachment = new Models.Attachment
-                            {
-                                storageLocation = string.Format("{0}\\", storagePath),
-                                name = attachmentName,
-                                cre_date = DateTime.Now,
-                                ownIdea = model.idea,
-                                delete = false
-                            };
-
-                            attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
-
-                            if (model.idea.attachments == null)
-                            {
-                                model.idea.attachments = new List<Models.Attachment>();
-                            }
-                            model.idea.attachments.Add(attachment);
-                            db.Attachments.Add(attachment);
-                        }
-                    }
-                }
-
-                catch(Exception ex)
-                {
-                    TempData["Message"] = "The attachments failed to upload";
-                    return RedirectToAction("Edit");
-                }
-
                 db.SaveChanges();
-                TempData["Message"] = "Your idea has been successfully submitted.";
-                return RedirectToAction("Index");
+
+                List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString()};
+
+                // Compose an email to send to PPMO Group and return to index
+                TempData["EmailInfo"] = emailInfo;
+                return RedirectToAction("AutoEmail", "Mails");
             }
-            //ViewBag.attachments = attachments;
             return View(model);
         }
 
@@ -513,6 +439,8 @@ namespace IdeaSite.Controllers
 
             db.Ideas.Remove(idea);
             db.SaveChanges();
+
+            TempData["Message"] = "The idea was successfully deleted.";
             return RedirectToAction("Index");
         }
 
@@ -554,7 +482,7 @@ namespace IdeaSite.Controllers
 
                 db.SaveChanges();
 
-                var appSettings = ConfigurationManager.AppSettings;
+                /*var appSettings = ConfigurationManager.AppSettings;
 
                 // store path to server location of the attachment storage
                 var connectionInfo = appSettings["serverPath"];
@@ -566,37 +494,24 @@ namespace IdeaSite.Controllers
                 // Store the attachments from the desired attachment folder
                 var attachments = dir.GetFiles();
 
-                ViewBag.path = ideaFolder;
-                ViewBag.attachments = attachments;
+                //ViewBag.path = ideaFolder;
+                //ViewBag.attachments = attachments;*/
 
-                string body;
-                if (idea.statusCode == "Added")
+                List<string> emailInfo;
+
+                // Prepare email based on s
+                if (idea.statusCode == "Accepted")
                 {
-                    body = string.Format(
-                        "Your idea was added" +
-                        "<br/><br/>{0}"
-                        , idea.body);
+                    emailInfo = new List<string> { "3", idea.title, idea.body, idea.cre_user};
                 }
                 else
                 {
-                    body = string.Format(
-                        "Your idea wsa not added" +
-                        "<br/><br/>{0}" +
-                        "<br/><br/>Reason for Denial:" +
-                        "<br/>{1}" +
-                        "<br/><br/>If this is not rectified in 10 business days," +
-                        "the submission will be removed and no further action will be taken." +
-                        "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Edit/{2}\">Great Ideas</a> to resubmit your idea."
-                        , idea.body, idea.denialReason, idea.ID);
+                    emailInfo = new List<string> { "4", idea.title, idea.body, idea.cre_user, idea.denialReason, idea.ID.ToString()};
                 }
 
-                string subject = string.Format("New Idea Submission: {0}", idea.title);
-                MailAddress from = new MailAddress("teamzed@outlook.com");
-                MailAddress to = new MailAddress("rws10@live.com");
-
-
-                //SendEmail(from, to, subject, body);
-                return RedirectToAction("Index");
+                // Compose an email to send to PPMO Group and return to index
+                TempData["EmailInfo"] = emailInfo;
+                return RedirectToAction("AutoEmail", "Mails");
             }
 
             return View(idea);
@@ -604,10 +519,10 @@ namespace IdeaSite.Controllers
 
         // GET: Ideas/Create
 
-        public ActionResult SupportEmail()
+        /*public ActionResult SupportEmail()
         {
             return View();
-        }
+        }*/
 
         protected override void Dispose(bool disposing)
         {

@@ -25,8 +25,8 @@ Alex:
 
 Since Josh's list is so large, Alex and/or Russell should be able to help take some of the work. 
 Josh:
-- Make it work for IE
-  * Look into doing a different bootstrap 
+- Follow ADA Format
+ * Label on name on form
 - Make the entire button work for clicking action
 - Have the attachments that are ready to be uploaded listed by name
 - Make "create new" button smaller on Homepage
