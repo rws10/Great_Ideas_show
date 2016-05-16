@@ -169,6 +169,7 @@ namespace IdeaSite.Controllers
         public ActionResult Details(int? id)
         {
             /*
+            // REMOVING ERROR CHECKING USES THE GLOBAL ERROR HANDLING
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -300,11 +301,12 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Edit/5
         public ActionResult Edit(int? id)
         {
+            /* ERROR HANDLING SET TO GLOBAL
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
+            */
             var model = new FileSelectionViewModel();
 
             model.idea = db.Ideas.Find(id);
@@ -331,11 +333,12 @@ namespace IdeaSite.Controllers
                 new SelectListItem { Value = "Project Submission", Text = "Project Submission" },
             };*/
 
+            /* ERROR HANDLING SET TO GLOBAL
             if (model.idea == null)
             {
                 return HttpNotFound();
             }
-
+            */
             return View(model);
         }
 
@@ -467,15 +470,18 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Delete/5
         public ActionResult Delete(int? id)
         {
+            /* ERROR HANDLING SET TO GLOBAL
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Idea idea = db.Ideas.Find(id);
+            
             if (idea == null)
             {
                 return HttpNotFound();
             }
+            */
+            Idea idea = db.Ideas.Find(id);
             return View(idea);
         }
 
@@ -513,18 +519,17 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Approve/5
         public ActionResult Approval(int? id)
         {
+            /* ERROR HANDLING SET TO GLOBAL
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            Idea idea = db.Ideas.Find(id);
-
             if (idea == null)
             {
                 return HttpNotFound();
             }
-
+            */
+            Idea idea = db.Ideas.Find(id);
             return View(idea);
         }
 
