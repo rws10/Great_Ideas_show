@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace IdeaSite.Controllers
 {
-    public class MailController : Controller
+    public class MailsController : Controller
     {
         private IdeaSiteContext db = new IdeaSiteContext();
 
@@ -21,7 +21,12 @@ namespace IdeaSite.Controllers
         // GET: Mails/Create
         public ActionResult WriteNew()
         {
-            return View();
+            Mail mail= new Mail{
+              Subject = "Great Ideas help request",
+              From = "teamzed@outlook.com",
+              To = "rws10@live.com"
+            };
+            return View(mail);
         }
 
         // POST: Mails/Create
@@ -35,12 +40,10 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
                 MailMessage mailMsg = new MailMessage();
-
                 mailMsg.Subject = mail.Subject;
+                mailMsg.From = new MailAddress(mail.From);
+                mailMsg.To.Add(new MailAddress(mail.To));
                 mailMsg.Body = mail.Body;
-                mailMsg.From = new MailAddress("teamzed@outlook.com");
-                mailMsg.To.Add(new MailAddress("rws10@live.com"));
-
                 mailMsg.IsBodyHtml = true;
 
                 SendEmailInBackgroundThread(mailMsg);
@@ -67,7 +70,7 @@ namespace IdeaSite.Controllers
                         "<br/>{2}" +
                         "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Approval/{2}\">Great Ideas</a> to submit approval.",
                         emailInfo[3], emailInfo[1], emailInfo[2]);
-
+                    TempData["Message"] = "Your idea has been successfully created.";
 
                     break;
                 case 2:
@@ -87,7 +90,7 @@ namespace IdeaSite.Controllers
                             , emailInfo[2]);
                     break;
 
-                default:
+                case 4:
                     subject = string.Format("New Idea Submission: {0}", emailInfo[1]);
                     body = string.Format(
                                                 "Your idea wsa not added" +
@@ -98,6 +101,14 @@ namespace IdeaSite.Controllers
                                                 "the submission will be removed and no further action will be taken." +
                                                 "<br/><br/>Please go to <a href=\"http://localhost:52398/Ideas/Edit/{2}\">Great Ideas</a> to resubmit your idea."
                                                 , emailInfo[2], emailInfo[4]);
+                    break;
+
+                default:
+                    subject = string.Format("New comment added to your idea: {0}", emailInfo[1]);
+
+                    body = string.Format("{0} has commented on your idea." +
+                        "<br/><br/>To view this comment, go to <a href=\"http://localhost:52398/Comments/Index/{1}\">Great Ideas</a>.",
+                        emailInfo[3], int.Parse(emailInfo[4]));
                     break;
             }
 
@@ -110,7 +121,7 @@ namespace IdeaSite.Controllers
 
             SendEmailInBackgroundThread(mailMsg);
 
-            return new EmptyResult();
+            return RedirectToAction("Index", "Ideas");
         }
 
 

@@ -270,8 +270,8 @@ namespace IdeaSite.Controllers
                 }
 
                 // Compose an email to send to PPMO Group
-                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, "" };
-                RedirectToAction("AutoEmail", "Mail", emailInfo);
+                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user};
+                return RedirectToAction("AutoEmail", "Mails", emailInfo);
 
                 /*string subject = string.Format("New Idea Submission: {0}", idea.title);
 
@@ -287,8 +287,7 @@ namespace IdeaSite.Controllers
 
                 SendEmail(from, to, subject, body);*/
 
-                TempData["Message"] = "Your idea has been successfully created.";
-                return RedirectToAction("Index");
+                //return RedirectToAction("Index");
             }
 
             return View(idea);
