@@ -9,6 +9,11 @@
 {
     @Html.AntiForgeryToken()
 
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.ideaID)
+    @Html.HiddenFor(model => model.cre_date)
+    @Html.HiddenFor(model => model.cre_user)
+
     <div class="form-horizontal">
         <h4>Leave comment below</h4>
         <hr />

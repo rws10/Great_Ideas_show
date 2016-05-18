@@ -9,6 +9,9 @@ using System.Web.Mvc;
 using IdeaSite.Models;
 using System.Net.Mail;
 using System.Threading;
+using System.DirectoryServices;
+using System.Collections.Specialized;
+using System.DirectoryServices.AccountManagement;
 
 namespace IdeaSite.Controllers
 {
@@ -21,12 +24,52 @@ namespace IdeaSite.Controllers
         // GET: Mails/Create
         public ActionResult WriteNew()
         {
+
+            string username = Environment.UserName;
+            string domain = Environment.UserDomainName;
+
+            List<string> emailAddresses = new List<string>();
+
+            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
+            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
+
+            // Add the "mail" entry
+            emailAddresses.Add(user.EmailAddress);
+
+            // Add the "proxyaddresses" entries.
+            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
+            foreach (object property in properties["proxyaddresses"])
+            {
+                emailAddresses.Add(property.ToString());
+            }
+
+            string from = null;
+
+            for (int i = 0; i < emailAddresses.Count; i++)
+            {
+                if (emailAddresses[i].Contains("@freshfromflorida.com"))
+                {
+                    from = emailAddresses[i];
+                    break;
+                }
+            }
+            
+            // test for an '@freshfromflorida.com' email address. And stop the creation of the email and stop whatever action is occuring.
+            if(from == null)
+            {
+                TempData["Message"] = "Your message has not been sent because you lack a valid email address." 
+                    + "Please contact your supervisor about obtaining an \"@FreshFromFlorida.com\" email address.";
+
+                return RedirectToAction("Index", "Ideas");
+            }
+
             Mail mail = new Mail
             {
                 Subject = "Great Ideas help request",
-                From = "teamzed@outlook.com",
+                From = from,
                 To = "rws10@live.com"
             };
+
             return View(mail);
         }
 
@@ -47,7 +90,7 @@ namespace IdeaSite.Controllers
                 mailMsg.Body = mail.Body;
                 mailMsg.IsBodyHtml = true;
 
-                SendEmailInBackgroundThread(mailMsg);
+                SendEmail(mailMsg);
 
                 TempData["Message"] = "Your message was submitted successfully.";
                 return RedirectToAction("Index", "Ideas");
@@ -126,12 +169,57 @@ namespace IdeaSite.Controllers
 
             mailMsg.Subject = subject;
             mailMsg.Body = body;
-            mailMsg.From = new MailAddress("teamzed@outlook.com");
+
+            string username = Environment.UserName;
+            string domain = Environment.UserDomainName;
+
+            List<string> emailAddresses = new List<string>();
+
+            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
+            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
+
+            // Add the "mail" entry
+            emailAddresses.Add(user.EmailAddress);
+
+            // Add the "proxyaddresses" entries.
+            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
+            foreach (object property in properties["proxyaddresses"])
+            {
+                emailAddresses.Add(property.ToString());
+            }
+
+            string from = null;
+
+            for (int i = 0; i < emailAddresses.Count; i++)
+            {
+                if (emailAddresses[i].Contains("@freshfromflorida.com"))
+                {
+                    from = emailAddresses[i];
+                    break;
+                }
+            }
+
+            // test for an '@freshfromflorida.com' email address. And stop the creation of the email and stop whatever action is occuring.
+            if (from == null)
+            {
+                TempData["Message"] = "Your message has not been sent because you lack a valid email address."
+                    + "Please contact your supervisor about obtaining a proper email address.";
+
+                return RedirectToAction("Index", "Ideas");
+            }
+
+            mailMsg.From = new MailAddress(from);
             mailMsg.To.Add(new MailAddress("rws10@live.com"));
 
             mailMsg.IsBodyHtml = true;
 
-            SendEmailInBackgroundThread(mailMsg);
+            SendEmail(mailMsg);
+
+            // redirect either to The comments index or the ideas index, based on where the email 
+            if(TempData["Message"] as string == "Your email was not sent.")
+            {
+                return RedirectToAction("Index", "Ideas");
+            }
 
             if (Int32.Parse(emailInfo[0]) == 5)
             {
@@ -151,16 +239,18 @@ namespace IdeaSite.Controllers
             {
                 /* Setting should be kept somewhere so no need to 
                    pass as a parameter (might be in web.config)       */
-                SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com ");
-                NetworkCredential networkCredential = new NetworkCredential();
-                networkCredential.UserName = mailMessage.From.ToString();
-                networkCredential.Password = "T3@m_Z3d";
-                smtpClient.Credentials = networkCredential;
+
+                SmtpClient smtpClient = new SmtpClient("relay.DOACS.State.FL.US");
+                //smtpClient.UseDefaultCredentials = true;
+/*                NetworkCredential networkCredential = new NetworkCredential();
+//               networkCredential.UserName = mailMessage.From.ToString();
+//                networkCredential.Password = "T3@m_Z3d";
+//              smtpClient.Credentials = networkCredential;
                 if (!String.IsNullOrEmpty("587"))
-                    smtpClient.Port = Convert.ToInt32("587");
+                    smtpClient.Port = Convert.ToInt32("587");*/
 
                 //If you are using gmail account then
-                smtpClient.EnableSsl = true;
+                smtpClient.EnableSsl = false;
 
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
 
@@ -168,16 +258,17 @@ namespace IdeaSite.Controllers
             }
             catch (SmtpException ex)
             {
+                TempData["Message"] = "Your email was not sent.";
                 // Code to Log error
             }
         }
 
-        public void SendEmailInBackgroundThread(MailMessage mailMessage)
+/*        public void SendEmailInBackgroundThread(MailMessage mailMessage)
         {
             Thread bgThread = new Thread(new ParameterizedThreadStart(SendEmail));
             bgThread.IsBackground = true;
             bgThread.Start(mailMessage);
-        }
+        }*/
 
         /*internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
         {

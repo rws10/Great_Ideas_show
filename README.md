@@ -46,6 +46,8 @@ Idea:
 *Russell can probably do this
   - make the status into a dropdown with only the choices described in the model.
 
+- delete:
+  - make the button for deleting the idea look like all other buttons and the same for "Back to List"
 Comment:
 - index:
   - When the comment index is called for an idea, the URL is populated with the attributes of the idea. 

@@ -2,39 +2,39 @@
 @model IEnumerable<IdeaSite.Models.Comment>
 
 @{
-	ViewBag.Title = "IdeaComments";
+    ViewBag.Title = "IdeaComments";
 }
 
 <div class="container-fluid">
-		 <div class="row content">
-			<div class="col-md-9">
-			  <h4>@ViewBag.idea.title</h4>
-			  <h5><span class="glyphicon glyphicon-time"></span> Posted by @ViewBag.idea.cre_user on @ViewBag.idea.cre_date</h5>
-			  <h5><span class="label label-success">Description:</span></h5>
-			  <textarea rows="3" cols="100" style="border:none" readonly>@ViewBag.idea.body</textarea>
-			</div>
-		 </div>
+    <div class="row content">
+        <div class="col-md-9">
+            <h4>@ViewBag.idea.title</h4>
+            <h5><span class="glyphicon glyphicon-time"></span> Posted by @ViewBag.idea.cre_user on @ViewBag.idea.cre_date</h5>
+            <h5><span class="label label-success">Description:</span></h5>
+            <textarea rows="3" cols="100" style="border:none" readonly>@ViewBag.idea.body</textarea>
+        </div>
+    </div>
 </div>
 <h1>Posted Comments</h1>
-@foreach (var item in Model) 
+@foreach (var item in Model)
 {
-   <hr>
-	<div class="container-fluid">
-		<div class="row content">
-			  <h4>Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h4>
-			  @Html.DisplayFor(modelItem => item.body)
-			  <div class="btn-group">
-			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, null)</button>
-			  <button type="button" class="btn btn-default btn-sm"> @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, null)</button>
-		      </div>
-		 </div>
-	</div>
-	<hr>
-}		   
+    <hr>
+    <div class="container-fluid">
+        <div class="row content">
+            <h4>Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h4>
+            @Html.DisplayFor(modelItem => item.body)
+            <div class="btn-group">
+                @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, new { @class = "btn btn-default btn-sm" })
+                @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, new { @class = "btn btn-default btn-sm" })
+            </div>
+        </div>
+    </div>
+    <hr>
+}
 
 
-	<p>Click below to create new comment</p>
-	<p><button type="button" class="btn btn-default">@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, null)</button></p>
-	<br>
-	<br>
-	<p>@Html.ActionLink("Back to List", "Index", "Ideas")</p>
+<p>Click below to create new comment</p>
+<p>@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, new { @class = "btn btn-default btn-sm" })</p>
+<br>
+<br>
+<p>@Html.ActionLink("Back to List", "Index", "Ideas")</p>

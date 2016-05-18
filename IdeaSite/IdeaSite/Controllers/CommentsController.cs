@@ -14,21 +14,6 @@ namespace IdeaSite.Controllers
 {
     public class CommentsController : Controller
     {
-        internal static void SendEmail(MailAddress fromAddress, MailAddress toAddress, string subject, string body)
-        {
-            MailMessage msg = new MailMessage();
-            msg.From = fromAddress;
-            msg.To.Add(toAddress);
-            msg.Body = body;
-            msg.IsBodyHtml = true;
-            msg.Subject = subject;
-            SmtpClient smt = new SmtpClient("smtp-mail.outlook.com ");
-            smt.Port = 587;
-            smt.Credentials = new NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
-            smt.EnableSsl = true;
-            smt.Send(msg);
-        }
-
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Comments
@@ -65,7 +50,22 @@ namespace IdeaSite.Controllers
         {
             ViewBag.ideaID = id;
             ViewBag.idea = db.Ideas.Where(x => x.ID == id).ToList();
-            return View();
+
+            // pull the current user's name from active directory to use it for cre_user
+            /*System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
+            string[] a = HttpContext.User.Identity.Name.Split('\\');
+            System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
+            string name = ADEntry.Properties["FullName"].Value.ToString();*/
+
+            Comment comment = new Comment
+            {
+                ideaID = id,
+                //cre_user = name,
+                cre_user = "Administrator",
+                cre_date = DateTime.Now
+            };
+
+            return View(comment);
         }
 
         // POST: Comments/Create
@@ -77,17 +77,19 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                comment.ideaID = id;
-                comment.cre_date = DateTime.Now;
                 db.Comments.Add(comment);
                 db.SaveChanges();
 
                 Idea idea = db.Ideas.Find(comment.ideaID);
 
-                List<string> emailInfo = new List<string> { "5", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
+
+                /*List<string> emailInfo = new List<string> { "5", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
                 TempData["EmailInfo"] = emailInfo;
                 TempData["IdeaID"] = idea.ID;
-                return RedirectToAction("AutoEmail", "Mails");
+                return RedirectToAction("AutoEmail", "Mails");*/
+
+                // This is only for Josh and Alex since they can't use AD
+                return RedirectToAction("Index", "Comments", idea);
             }
 
             return View(comment);
@@ -127,7 +129,6 @@ namespace IdeaSite.Controllers
                 Idea idea = db.Ideas.Find(comment.ideaID);
 
                 return RedirectToAction("Index", idea);
-                //return RedirectToAction("Index/"+comment.ownerID);
             }
             return View(comment);
         }

@@ -30,7 +30,7 @@ namespace IdeaSite.Controllers
             //List<String> holdKeywords = new List<String>(search.Trim().Split(' '));
             List<String> holdKeywords = new List<String>(search.Split(' '));
             bool flag = false;
-            foreach (String keyword in holdKeywords.ToList()) 
+            foreach (String keyword in holdKeywords.ToList())
             {
                 if (keyword.Contains("\"") && !flag) { holdKeywords.Remove(keyword); flag = true; }
                 else if (keyword.Contains("\"") && flag) { holdKeywords.Remove(keyword); flag = false; }
@@ -205,9 +205,15 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
 
+                // pull the current user's name from active directory and use it for cre_user
+                /*System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
+                string[] a = HttpContext.User.Identity.Name.Split('\\');
+                System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
+
+                idea.cre_user = ADEntry.Properties["FullName"].Value.ToString();*/
                 idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
-                
+
 
                 var ideas = db.Ideas.Where(IDEA => IDEA.title == idea.title).ToList();
 
@@ -274,9 +280,12 @@ namespace IdeaSite.Controllers
                 db.SaveChanges();
 
                 // Compose an email to send to PPMO Group
-                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
+                /*List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
                 TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails");
+                return RedirectToAction("AutoEmail", "Mails");*/
+
+                // This is only for Josh and Alex since they don't have access to AD
+                return RedirectToAction("Index", "Ideas");
             }
             return View(idea);
         }
@@ -324,9 +333,10 @@ namespace IdeaSite.Controllers
             */
 
             var tempModel = TempData["Model"] as FileSelectionViewModel;
-            
+
             // Test to see if there was a redirection because of a duplicate title
-            if (tempModel != null) {
+            if (tempModel != null)
+            {
                 model = tempModel;
             }
             return View(model);
@@ -384,11 +394,14 @@ namespace IdeaSite.Controllers
 
                 db.SaveChanges();
 
-                List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString()};
+                /*List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
 
                 // Compose an email to send to PPMO Group and return to index
                 TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails");
+                return RedirectToAction("AutoEmail", "Mails");*/
+
+                // This is only for Josh and Alex since they don't have access to AD
+                return RedirectToAction("Index", "Ideas");
             }
             return View(model);
         }
@@ -482,36 +495,26 @@ namespace IdeaSite.Controllers
 
                 db.SaveChanges();
 
-                /*var appSettings = ConfigurationManager.AppSettings;
-
-                // store path to server location of the attachment storage
-                var connectionInfo = appSettings["serverPath"];
-
-                // combine the server location and the name of the new folder to be created
-                var ideaFolder = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-                DirectoryInfo dir = new DirectoryInfo(ideaFolder);
-
-                // Store the attachments from the desired attachment folder
-                var attachments = dir.GetFiles();
-
-                //ViewBag.path = ideaFolder;
                 //ViewBag.attachments = attachments;*/
 
-                List<string> emailInfo;
+                /*List<string> emailInfo;
 
                 // Prepare email based on s
                 if (idea.statusCode == "Accepted")
                 {
-                    emailInfo = new List<string> { "3", idea.title, idea.body, idea.cre_user};
+                    emailInfo = new List<string> { "3", idea.title, idea.body, idea.cre_user };
                 }
                 else
                 {
-                    emailInfo = new List<string> { "4", idea.title, idea.body, idea.cre_user, idea.denialReason, idea.ID.ToString()};
+                    emailInfo = new List<string> { "4", idea.title, idea.body, idea.cre_user, idea.denialReason, idea.ID.ToString() };
                 }
 
                 // Compose an email to send to PPMO Group and return to index
                 TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails");
+                return RedirectToAction("AutoEmail", "Mails");*/
+
+                // This is only for Josh and Alex since they don't have access to AD
+                return RedirectToAction("Index", "Ideas");
             }
 
             return View(idea);
