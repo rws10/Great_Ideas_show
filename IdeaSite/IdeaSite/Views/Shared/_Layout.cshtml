@@ -25,21 +25,20 @@
             </div>
         </div>
     </div>
-    <div class="container body-content ">
+    <div class="container body-content col-md-20 ">
         <div class=”row”>
             <div class=”col-md-12”><img src="~/Content/images/fdacs.jpg" class="img-responsive center-block pad-down" /></div>
         </div>
         @RenderBody()
-        <hr />
-        <footer>
-            <!--foot note Florida public records law-->
+        <footer class="col-md-12">
+		<br/>
+		<hr/>
             <p style="font-size:12px">
                 <b>
                     Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).
                     Most written communications to or from state employees are public records obtainable by request.
-                    <br /><br />
+                    <br />
                     If you have any questions please email @Html.ActionLink("PPMO Support", "WriteNew", "Mails").
-
                 </b>
             </p>
             <p>&copy; @DateTime.Now.Year - FDACS Great Ideas</p>
