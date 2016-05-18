@@ -205,8 +205,8 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
 
-                // pull the current user's name from active directory and use it for cre_user
-                /*System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
+                /*// pull the current user's name from active directory and use it for cre_user
+                System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
                 string[] a = HttpContext.User.Identity.Name.Split('\\');
                 System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
 
@@ -223,6 +223,9 @@ namespace IdeaSite.Controllers
                     TempData["Message"] = "Title must be a unique value";
                     return View(idea);
                 }
+
+                db.Ideas.Add(idea);
+                db.SaveChanges();
 
                 var appSettings = ConfigurationManager.AppSettings;
 
@@ -263,7 +266,6 @@ namespace IdeaSite.Controllers
                                 }
                                 idea.attachments.Add(attachment);
                                 db.Attachments.Add(attachment);
-                                db.SaveChanges();
                             }
                         }
                     }
@@ -276,8 +278,9 @@ namespace IdeaSite.Controllers
                     }
                 }
 
-                db.Ideas.Add(idea);
+                // save the new Attachments to the Idea
                 db.SaveChanges();
+
 
                 // Compose an email to send to PPMO Group
                 /*List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
@@ -394,10 +397,11 @@ namespace IdeaSite.Controllers
 
                 db.SaveChanges();
 
-                /*List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
 
-                // Compose an email to send to PPMO Group and return to index
+                /*// Compose an email to send to PPMO Group and return to index
+                List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
                 TempData["EmailInfo"] = emailInfo;
+
                 return RedirectToAction("AutoEmail", "Mails");*/
 
                 // This is only for Josh and Alex since they don't have access to AD
@@ -497,7 +501,7 @@ namespace IdeaSite.Controllers
 
                 //ViewBag.attachments = attachments;*/
 
-                /*List<string> emailInfo;
+                List<string> emailInfo;
 
                 // Prepare email based on s
                 if (idea.statusCode == "Accepted")
@@ -510,8 +514,8 @@ namespace IdeaSite.Controllers
                 }
 
                 // Compose an email to send to PPMO Group and return to index
-                TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails");*/
+                /*TempData["EmailInfo"] = emailInfo;
+                return RedirectToAction("AutoEmail", "Mails"); */
 
                 // This is only for Josh and Alex since they don't have access to AD
                 return RedirectToAction("Index", "Ideas");

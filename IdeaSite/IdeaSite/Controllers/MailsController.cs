@@ -19,40 +19,11 @@ namespace IdeaSite.Controllers
     {
         private IdeaSiteContext db = new IdeaSiteContext();
 
-
-
         // GET: Mails/Create
         public ActionResult WriteNew()
         {
-
-            string username = Environment.UserName;
-            string domain = Environment.UserDomainName;
-
-            List<string> emailAddresses = new List<string>();
-
-            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
-            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
-
-            // Add the "mail" entry
-            emailAddresses.Add(user.EmailAddress);
-
-            // Add the "proxyaddresses" entries.
-            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
-            foreach (object property in properties["proxyaddresses"])
-            {
-                emailAddresses.Add(property.ToString());
-            }
-
-            string from = null;
-
-            for (int i = 0; i < emailAddresses.Count; i++)
-            {
-                if (emailAddresses[i].Contains("@freshfromflorida.com"))
-                {
-                    from = emailAddresses[i];
-                    break;
-                }
-            }
+            // retrieve the current user's email
+            string from = GetEmail();            
             
             // test for an '@freshfromflorida.com' email address. And stop the creation of the email and stop whatever action is occuring.
             if(from == null)
@@ -170,34 +141,8 @@ namespace IdeaSite.Controllers
             mailMsg.Subject = subject;
             mailMsg.Body = body;
 
-            string username = Environment.UserName;
-            string domain = Environment.UserDomainName;
-
-            List<string> emailAddresses = new List<string>();
-
-            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
-            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
-
-            // Add the "mail" entry
-            emailAddresses.Add(user.EmailAddress);
-
-            // Add the "proxyaddresses" entries.
-            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
-            foreach (object property in properties["proxyaddresses"])
-            {
-                emailAddresses.Add(property.ToString());
-            }
-
-            string from = null;
-
-            for (int i = 0; i < emailAddresses.Count; i++)
-            {
-                if (emailAddresses[i].Contains("@freshfromflorida.com"))
-                {
-                    from = emailAddresses[i];
-                    break;
-                }
-            }
+            // retrieve the current user's email
+            string from = GetEmail();
 
             // test for an '@freshfromflorida.com' email address. And stop the creation of the email and stop whatever action is occuring.
             if (from == null)
@@ -263,6 +208,40 @@ namespace IdeaSite.Controllers
             }
         }
 
+
+        string GetEmail()
+        {
+            string username = Environment.UserName;
+            string domain = Environment.UserDomainName;
+
+            List<string> emailAddresses = new List<string>();
+
+            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
+            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
+
+            // Add the "mail" entry
+            emailAddresses.Add(user.EmailAddress);
+
+            // Add the "proxyaddresses" entries.
+            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
+            foreach (object property in properties["proxyaddresses"])
+            {
+                emailAddresses.Add(property.ToString());
+            }
+
+            string from = null;
+
+            for (int i = 0; i < emailAddresses.Count; i++)
+            {
+                if (emailAddresses[i].Contains("@freshfromflorida.com"))
+                {
+                    from = emailAddresses[i];
+                    break;
+                }
+            }
+
+            return from;
+        }
 /*        public void SendEmailInBackgroundThread(MailMessage mailMessage)
         {
             Thread bgThread = new Thread(new ParameterizedThreadStart(SendEmail));
