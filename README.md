@@ -5,10 +5,9 @@ T3@m_Z3d
 Here is a list of items that need to be done to finish the project:
 ADDITIONS
 Russell:
-- Add a contact us link on the homepage
 - Add Meta Scan to check for viruses in docs
 - Integrate Active Directory
-  * In progress. ITLC papers submitted. Waiting on approval.
+  * In progress need to add authorization
 
 Alex:
 - Add Filterby choice of archived and project submission
@@ -29,7 +28,6 @@ Josh:
  * Label on name on form
 - Make the entire button work for clicking action
 - Have the attachments that are ready to be uploaded listed by name
-- Make "create new" button smaller on Homepage
 - Make the ideas and comments exist in a paged list. limit perhaps to 10 per page? Adjustable limit?
 - Add in the time sensitive auto-actions
 
@@ -47,7 +45,7 @@ Idea:
   - make the status into a dropdown with only the choices described in the model.
 
 - delete:
-  - make the button for deleting the idea look like all other buttons and the same for "Back to List"
+  - make the button for deleting the idea look like all other buttons
 Comment:
 - index:
   - When the comment index is called for an idea, the URL is populated with the attributes of the idea. 

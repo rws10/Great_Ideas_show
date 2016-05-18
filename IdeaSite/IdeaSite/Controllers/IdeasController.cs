@@ -191,8 +191,8 @@ namespace IdeaSite.Controllers
 
         public ActionResult Create()
         {
-            Idea tempIdea = TempData["Idea"] as Idea;
-            return View(tempIdea);
+            //Idea tempIdea = TempData["Idea"] as Idea;
+            return View();
         }
 
         // POST: Ideas/Create
@@ -205,12 +205,12 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
 
-                /*// pull the current user's name from active directory and use it for cre_user
+                // pull the current user's name from active directory and use it for cre_user
                 System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
                 string[] a = HttpContext.User.Identity.Name.Split('\\');
                 System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
 
-                idea.cre_user = ADEntry.Properties["FullName"].Value.ToString();*/
+                //idea.cre_user = ADEntry.Properties["FullName"].Value.ToString();
                 idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
 
@@ -219,7 +219,7 @@ namespace IdeaSite.Controllers
 
                 if (ideas.Count > 0)
                 {
-                    TempData["Idea"] = idea;
+                    //TempData["Idea"] = idea;
                     TempData["Message"] = "Title must be a unique value";
                     return View(idea);
                 }
@@ -272,9 +272,10 @@ namespace IdeaSite.Controllers
 
                     catch
                     {
-                        TempData["Idea"] = idea;
+                        //TempData["Idea"] = idea;
                         TempData["Message"] = "One or more attachments failed to upload";
-                        return RedirectToAction("Create");
+                        //return RedirectToAction("Create");
+                        return View(idea);
                     }
                 }
 
@@ -338,10 +339,10 @@ namespace IdeaSite.Controllers
             var tempModel = TempData["Model"] as FileSelectionViewModel;
 
             // Test to see if there was a redirection because of a duplicate title
-            if (tempModel != null)
+            /*if (tempModel != null)
             {
                 model = tempModel;
-            }
+            }*/
             return View(model);
         }
 
@@ -358,17 +359,12 @@ namespace IdeaSite.Controllers
 
                 var currentIdea = db.Ideas.FirstOrDefault(p => p.ID == model.idea.ID);
 
-                if (currentIdea == null)
-                {
-                    return HttpNotFound();
-                }
-
-                var ideas = db.Ideas.Where(IDEA => IDEA.title == model.idea.title).ToList();
+                var ideas = db.Ideas.Where(IDEA => IDEA.title == model.idea.title && IDEA.ID != model.idea.ID).ToList();
 
                 if (ideas.Count > 0)
                 {
-                    TempData["Model"] = model;
-                    TempData["Message"] = "Title must be a unique value";
+                    //TempData["Model"] = model;
+                    //TempData["Message"] = "Title must be a unique value";
                     return View(model);
                 }
 
@@ -377,6 +373,61 @@ namespace IdeaSite.Controllers
                 currentIdea.statusCode = model.idea.statusCode;
                 currentIdea.statusCodes = model.idea.statusCodes;
                 currentIdea.denialReason = model.idea.denialReason;
+
+                var appSettings = ConfigurationManager.AppSettings;
+
+                // store path to server location of the attachment storage
+                var connectionInfo = appSettings["serverPath"];
+
+                // combine the server location and the name of the new folder to be created
+                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, model.idea.ID, model.idea.title);
+
+                DirectoryInfo di = Directory.CreateDirectory(storagePath);
+                if (attachments != null)
+                {
+                    try
+                    {
+                        // loop through the uploads and pull out each attachment from it.
+                        for (int i = 0; i < attachments.Count(); ++i)
+                        {
+                            if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                            {
+                                // store the name of the attachment
+                                var attachmentName = Path.GetFileName(attachments.ElementAt(i).FileName);
+
+                                // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
+                                var attachment = new Models.Attachment
+                                {
+                                    storageLocation = string.Format("{0}\\", storagePath),
+                                    name = attachmentName,
+                                    cre_date = DateTime.Now,
+                                    ownIdea = model.idea,
+                                    delete = false
+                                };
+
+                                attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
+
+                                if (model.idea.attachments == null)
+                                {
+                                    model.idea.attachments = new List<Models.Attachment>();
+                                }
+                                model.idea.attachments.Add(attachment);
+                                db.Attachments.Add(attachment);
+                            }
+                        }
+                    }
+
+                    catch
+                    {
+                        //TempData["Idea"] = idea;
+                        TempData["Message"] = "One or more attachments failed to upload";
+                        //return RedirectToAction("Create");
+                        return View(model.idea);
+                    }
+                }
+
+                // save the new Attachments to the Idea
+                db.SaveChanges();
 
                 // get the ids of the items selected:
                 var selectedIds = model.getSelectedIds();
@@ -398,8 +449,8 @@ namespace IdeaSite.Controllers
                 db.SaveChanges();
 
 
-                /*// Compose an email to send to PPMO Group and return to index
-                List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
+                // Compose an email to send to PPMO Group and return to index
+                /*List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
                 TempData["EmailInfo"] = emailInfo;
 
                 return RedirectToAction("AutoEmail", "Mails");*/
@@ -501,7 +552,7 @@ namespace IdeaSite.Controllers
 
                 //ViewBag.attachments = attachments;*/
 
-                List<string> emailInfo;
+                /*List<string> emailInfo;
 
                 // Prepare email based on s
                 if (idea.statusCode == "Accepted")
@@ -514,8 +565,8 @@ namespace IdeaSite.Controllers
                 }
 
                 // Compose an email to send to PPMO Group and return to index
-                /*TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails"); */
+                TempData["EmailInfo"] = emailInfo;
+                return RedirectToAction("AutoEmail", "Mails");*/
 
                 // This is only for Josh and Alex since they don't have access to AD
                 return RedirectToAction("Index", "Ideas");
