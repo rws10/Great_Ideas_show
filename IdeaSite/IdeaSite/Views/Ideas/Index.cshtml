@@ -2,7 +2,7 @@
 @{
 	ViewBag.Title = "Ideas";
 }
-
+<div class="container col-md-12">
 <h1>Great Ideas</h1>
 @using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
 {
@@ -49,7 +49,9 @@
 				<h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h5>
 				<hr>
 				<h5><span class="label label-success">Description:</span></h5>
-				@Html.DisplayFor(modelItem => item.body)
+				<div id="comment">
+				   @Html.DisplayFor(modelItem => item.body)
+				</div>
 				<br />
 				<br />
 				<div class="btn-group">
@@ -71,3 +73,4 @@
 
 <p><b>Click below to submit new Idea</b></p>
 <a href="@Url.Action("Create", "Ideas")" class="btn btn-default btn-sm">Create New</a>
+</div>
