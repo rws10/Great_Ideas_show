@@ -160,7 +160,7 @@ namespace IdeaSite.Controllers
         public ActionResult Index(string searchBy, string search, string[] sortByStatus)
         {
 
-            var roles = GetRolesForUser(GetUsername(0));
+            //var roles = GetRolesForUser(GetUsername(0));
 
             //// get the domain name for the admin group
             //var appSettings = ConfigurationManager.AppSettings;
@@ -395,7 +395,6 @@ namespace IdeaSite.Controllers
                 currentIdea.title = model.idea.title;
                 currentIdea.body = model.idea.body;
                 currentIdea.statusCode = model.idea.statusCode;
-                currentIdea.statusCodes = model.idea.statusCodes;
                 currentIdea.denialReason = model.idea.denialReason;
 
                 if (attachments != null)
