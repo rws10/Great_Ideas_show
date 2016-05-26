@@ -1,0 +1,62 @@
+﻿@model IdeaSite.Models.Idea
+
+@{
+    ViewBag.Title = "Archive";
+}
+
+<h2>Archive</h2>
+
+<h3>Are you sure you want to archive this?</h3>
+<div>
+    <h4>Idea</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.cre_date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cre_date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.body)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.body)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.cre_user)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cre_user)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.attachments)
+        @Html.HiddenFor(model => model.statusCode)
+        @Html.HiddenFor(model => model.statusCodes)
+        @Html.HiddenFor(model => model.denialReason)
+        @Html.HiddenFor(model => model.title)
+        @Html.HiddenFor(model => model.body)
+        @Html.HiddenFor(model => model.cre_date)
+        @Html.HiddenFor(model => model.cre_user)
+
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Archive" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

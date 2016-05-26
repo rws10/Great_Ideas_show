@@ -1,5 +1,6 @@
 ﻿@model IdeaSite.Models.SelectFileEditorViewModel
 <tr>
+    @Html.HiddenFor(model => model.Name)
     <td>
         @Html.DisplayFor(model => model.Name)
     </td>

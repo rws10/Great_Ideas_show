@@ -17,8 +17,9 @@ namespace IdeaSite.Controllers
         private IdeaSiteContext db = new IdeaSiteContext();
 
         // GET: Comments
-        public ActionResult Index(Idea idea)
+        public ActionResult Index(int id)
         {
+            Idea idea = db.Ideas.Find(id);
             IEnumerable<Comment> comments = new List<Comment>();
             //List<Comment> comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
             comments = db.Comments.Where(com => com.ideaID == idea.ID).ToList();
@@ -30,17 +31,6 @@ namespace IdeaSite.Controllers
         // GET: Comments/Details/5
         public ActionResult Details(int? id)
         {
-            /* ERROR HANDLING SET TO GLOBAL
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-           
-            if (comment == null)
-            {
-                return HttpNotFound();
-            }
-            */
             Comment comment = db.Comments.Find(id);
             return View(comment);
         }
@@ -49,19 +39,17 @@ namespace IdeaSite.Controllers
         public ActionResult Create(int id)
         {
             ViewBag.ideaID = id;
-            ViewBag.idea = db.Ideas.Where(x => x.ID == id).ToList();
 
             // pull the current user's name from active directory to use it for cre_user
-            /*System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
-            string[] a = HttpContext.User.Identity.Name.Split('\\');
-            System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
-            string name = ADEntry.Properties["FullName"].Value.ToString();*/
-
+            //System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
+            //string[] a = HttpContext.User.Identity.Name.Split('\\');
+            //System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
+            //string name = ADEntry.Properties["FullName"].Value.ToString();
+            string name = "Administrator";
             Comment comment = new Comment
             {
                 ideaID = id,
-                //cre_user = name,
-                cre_user = "Administrator",
+                cre_user = name,
                 cre_date = DateTime.Now
             };
 
@@ -82,14 +70,11 @@ namespace IdeaSite.Controllers
 
                 Idea idea = db.Ideas.Find(comment.ideaID);
 
-
-                /*List<string> emailInfo = new List<string> { "5", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
+                List<string> emailInfo = new List<string> { "5", idea.title, idea.body, idea.cre_user, idea.ID.ToString()};
                 TempData["EmailInfo"] = emailInfo;
                 TempData["IdeaID"] = idea.ID;
-                return RedirectToAction("AutoEmail", "Mails");*/
 
-                // This is only for Josh and Alex since they can't use AD
-                return RedirectToAction("Index", "Comments", idea);
+                return RedirectToAction("AutoEmail", "Mails");
             }
 
             return View(comment);
@@ -98,17 +83,6 @@ namespace IdeaSite.Controllers
         // GET: Comments/Edit/5
         public ActionResult Edit(int? id)
         {
-            /* ERROR HANDLING SET TO GLOBAL
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-         
-            if (comment == null)
-            {
-                return HttpNotFound();
-            }
-            */
             Comment comment = db.Comments.Find(id);
             return View(comment);
         }
@@ -136,17 +110,6 @@ namespace IdeaSite.Controllers
         // GET: Comments/Delete/5
         public ActionResult Delete(int? id)
         {
-            /* ERROR HANDLING SET TO GLOBAL
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }            
-
-            if (comment == null)
-            {
-                return HttpNotFound();
-            }
-            */
             Comment comment = db.Comments.Find(id);
             return View(comment);
         }

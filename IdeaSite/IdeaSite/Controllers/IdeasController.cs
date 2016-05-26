@@ -11,9 +11,14 @@ using System.IO;
 using System.Net.Mail;
 using System.Text;
 using System.Data.Entity;
+using System.Web.UI;
+using System.Web.Services.Protocols;
+using System.Web.Security;
+using System.DirectoryServices;
 
 namespace IdeaSite.Controllers
 {
+    //[Authorize]
     public class IdeasController : Controller
     {
         private IdeaSiteContext db = new IdeaSiteContext();
@@ -144,8 +149,34 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas
+        //[Authorize(Roles = "TLADAG")]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchBy"></param>
+        /// <param name="search"></param>
+        /// <param name="sortByStatus"></param>
+        /// <returns></returns>
         public ActionResult Index(string searchBy, string search, string[] sortByStatus)
         {
+
+            var roles = GetRolesForUser(GetUsername(0));
+
+            //// get the domain name for the admin group
+            //var appSettings = ConfigurationManager.AppSettings;
+            //string group = appSettings["AdminGroup"];
+
+            //// determine if the user is an admin and carry this information to the view
+            //ViewBag.isAdmin = false;
+            //for (int i = 0; i < roles.Count(); i++)
+            //{
+            //    if (roles.ElementAt(i) == group)
+            //    {
+            //        ViewBag.isAdmin = true;
+            //        break;
+            //    }
+            //}
+
             IEnumerable<Idea> results = new List<Idea>();
             // This handles the first run of the index. Since the default checkbox is set to Accepted,
             // The default (first run with parameters of null) view is to show Accepted ideas
@@ -156,9 +187,16 @@ namespace IdeaSite.Controllers
                 results = results.Reverse();
                 return View(results);
             }
+
+            // get the name of the current user
+            //ViewBag.currentUser = GetUsername(1);
+
             if (sortByStatus[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
             if (sortByStatus[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
             if (sortByStatus[2] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied")); }
+            if (sortByStatus[3] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Archive")); }
+            if (sortByStatus[4] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Project Submission")); }
+            if (sortByStatus[5] == "true" && sortByStatus[0] == "false") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted" /*&& x.cre_user == currentUser*/)); }
             if (search != null && search != "") { results = SearchByTerms(results, searchBy, search); }
             //if (search != null && search != "") { results = results.Concat(SearchByTerms(results, searchBy, search)); /*results = results.Distinct();*/ }
             else { results = results.Reverse(); } // the search above already reverses the results
@@ -168,21 +206,7 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Details/
         public ActionResult Details(int? id)
         {
-            /*
-            // REMOVING ERROR CHECKING USES THE GLOBAL ERROR HANDLING
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            */
-
             Idea idea = db.Ideas.Find(id);
-            /*
-            if (idea == null)
-            {
-                return HttpNotFound();
-            }
-            */
 
             return View(idea);
         }
@@ -191,7 +215,6 @@ namespace IdeaSite.Controllers
 
         public ActionResult Create()
         {
-            //Idea tempIdea = TempData["Idea"] as Idea;
             return View();
         }
 
@@ -204,13 +227,7 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                // pull the current user's name from active directory and use it for cre_user
-                System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
-                string[] a = HttpContext.User.Identity.Name.Split('\\');
-                System.DirectoryServices.DirectoryEntry ADEntry = new System.DirectoryServices.DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
-
-                //idea.cre_user = ADEntry.Properties["FullName"].Value.ToString();
+                //idea.cre_user = GetUsername(1);
                 idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
 
@@ -219,77 +236,109 @@ namespace IdeaSite.Controllers
 
                 if (ideas.Count > 0)
                 {
-                    //TempData["Idea"] = idea;
                     TempData["Message"] = "Title must be a unique value";
                     return View(idea);
                 }
 
-                db.Ideas.Add(idea);
-                db.SaveChanges();
-
-                var appSettings = ConfigurationManager.AppSettings;
-
-                // store path to server location of the attachment storage
-                var connectionInfo = appSettings["serverPath"];
-
-                // combine the server location and the name of the new folder to be created
-                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
-
-                DirectoryInfo di = Directory.CreateDirectory(storagePath);
                 if (files != null)
                 {
-                    try
+                    var appSettings = ConfigurationManager.AppSettings;
+
+                    // store path to server location of the attachment storage
+                    var connectionInfo = appSettings["serverPath"];
+
+                    // combine the server location and the name of the new folder to be created
+                    var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, idea.ID, idea.title);
+
+                    // create the folder for the idea's attachments
+                    DirectoryInfo di = Directory.CreateDirectory(storagePath);
+
+                    // run each file through MetaScan and check for forbidden extensions
+                    for (int i = 0; i < files.Count(); ++i)
                     {
-                        // loop through the uploads and pull out each attachment from it.
-                        for (int i = 0; i < files.Count(); ++i)
+                        //if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                        //{
+                        //    var file = files.ElementAt(i);
+                        //    // store the name of the attachment
+
+                        //    // place the file into a bytearray for MetaScan use
+                        //    FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
+                        //    byte[] fileBytes = new byte[stream.Length];
+
+                        //    stream.Read(fileBytes, 0, fileBytes.Length);
+                        //    stream.Close();
+
+                        //    // make the file a bytearray and send to MetaScan here?
+                        //    FileService.FileService sf = new FileService.FileService();
+
+                        //    string ext = Path.GetExtension(file.FileName);
+
+                        //    bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
+
+                        //    // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
+                        //    if (!valrtn)
+                        //    {
+                        //        TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
+                        //            "Please scan them locally using McAffey before re-uploading" +
+                        //            " by editing the idea";
+
+                        //        return View(idea);
+                        //    }
+                        //}
+                    }
+
+                    db.Ideas.Add(idea);
+                    db.SaveChanges();
+
+                    // save the files to the specified folder and link them to the idea
+                    for (int i = 0; i < files.Count(); ++i)
+                    {
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
                         {
-                            if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                            var file = files.ElementAt(i);
+                            var attachmentName = Path.GetFileName(file.FileName);
+                            var namepath = string.Format("{0}\\{1}", storagePath, attachmentName);
+
+                            // save the new Attachments to the Idea
+                            var attachment = new Models.Attachment
                             {
-                                // store the name of the attachment
-                                var attachmentName = Path.GetFileName(files.ElementAt(i).FileName);
+                                storageLocation = string.Format("{0}\\", storagePath),
+                                name = attachmentName,
+                                cre_date = DateTime.Now,
+                                ownIdea = idea,
+                                delete = false
+                            };
 
-                                // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
-                                var attachment = new Models.Attachment
-                                {
-                                    storageLocation = string.Format("{0}\\", storagePath),
-                                    name = attachmentName,
-                                    cre_date = DateTime.Now,
-                                    ownIdea = idea,
-                                    delete = false
-                                };
-
-                                files.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
-
-                                if (idea.attachments == null)
-                                {
-                                    idea.attachments = new List<Models.Attachment>();
-                                }
-                                idea.attachments.Add(attachment);
-                                db.Attachments.Add(attachment);
+                            try
+                            {
+                                file.SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
                             }
+                            catch (Exception ex)
+                            {
+                                TempData["Message"] += String.Format("An error was caught: Error number: {0}, Message: {1}", ex.HResult, ex.Message);
+                                return View(idea);
+                            }
+
+                            if (idea.attachments == null)
+                            {
+                                idea.attachments = new List<Models.Attachment>();
+                            }
+
+                            idea.attachments.Add(attachment);
+                            db.Attachments.Add(attachment);
                         }
                     }
-
-                    catch
-                    {
-                        //TempData["Idea"] = idea;
-                        TempData["Message"] = "One or more attachments failed to upload";
-                        //return RedirectToAction("Create");
-                        return View(idea);
-                    }
                 }
-
-                // save the new Attachments to the Idea
                 db.SaveChanges();
 
 
                 // Compose an email to send to PPMO Group
-                /*List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
+                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
                 TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails");*/
+                //return RedirectToAction("AutoEmail", "Mails");
 
                 // This is only for Josh and Alex since they don't have access to AD
-                return RedirectToAction("Index", "Ideas");
+                //return RedirectToAction("Index", "Ideas");
             }
             return View(idea);
         }
@@ -297,16 +346,9 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Edit/5
         public ActionResult Edit(int? id)
         {
-            /* ERROR HANDLING SET TO GLOBAL
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            */
             var model = new FileSelectionViewModel();
 
             model.idea = db.Ideas.Find(id);
-            model.idea.statusCode = "Submitted";
 
             foreach (var attachment in db.Attachments)
             {
@@ -321,28 +363,6 @@ namespace IdeaSite.Controllers
                     model.Attachs.Add(editorViewModel);
                 }
             }
-
-            /*idea.statusCodes = new[]
-            {
-                new SelectListItem { Value = "Added", Text = "Added" },
-                new SelectListItem { Value = "Archived", Text = "Archived" },
-                new SelectListItem { Value = "Project Submission", Text = "Project Submission" },
-            };*/
-
-            /* ERROR HANDLING SET TO GLOBAL
-            if (model.idea == null)
-            {
-                return HttpNotFound();
-            }
-            */
-
-            var tempModel = TempData["Model"] as FileSelectionViewModel;
-
-            // Test to see if there was a redirection because of a duplicate title
-            /*if (tempModel != null)
-            {
-                model = tempModel;
-            }*/
             return View(model);
         }
 
@@ -363,69 +383,108 @@ namespace IdeaSite.Controllers
 
                 if (ideas.Count > 0)
                 {
-                    //TempData["Model"] = model;
-                    //TempData["Message"] = "Title must be a unique value";
                     return View(model);
                 }
 
+                // If the Idea is already in the "Submitted" state, another email will not be sent.
+                bool alreadySubmitted = false;
+                if (currentIdea.statusCode == "Submitted")
+                {
+                    alreadySubmitted = true;
+                }
                 currentIdea.title = model.idea.title;
                 currentIdea.body = model.idea.body;
                 currentIdea.statusCode = model.idea.statusCode;
                 currentIdea.statusCodes = model.idea.statusCodes;
                 currentIdea.denialReason = model.idea.denialReason;
 
-                var appSettings = ConfigurationManager.AppSettings;
-
-                // store path to server location of the attachment storage
-                var connectionInfo = appSettings["serverPath"];
-
-                // combine the server location and the name of the new folder to be created
-                var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, model.idea.ID, model.idea.title);
-
-                DirectoryInfo di = Directory.CreateDirectory(storagePath);
                 if (attachments != null)
                 {
-                    try
+                    var appSettings = ConfigurationManager.AppSettings;
+
+                    // store path to server location of the attachment storage
+                    var connectionInfo = appSettings["serverPath"];
+
+                    // combine the server location and the name of the new folder to be created
+                    var storagePath = string.Format(@"{0}{1}_{2}", connectionInfo, model.idea.ID, model.idea.title);
+                    if (!Directory.Exists(storagePath))
                     {
-                        // loop through the uploads and pull out each attachment from it.
-                        for (int i = 0; i < attachments.Count(); ++i)
+                        DirectoryInfo di = Directory.CreateDirectory(storagePath);
+                    }
+
+                    // run each file through MetaScan and check for forbidden extensions
+                    //for (int i = 0; i < attachments.Count(); ++i)
+                    //{
+                    //if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                    //{
+                    //    var file = attachments.ElementAt(i);
+                    //    // store the name of the attachment
+
+                    //    // place the file into a bytearray for MetaScan use
+                    //    FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
+                    //    byte[] fileBytes = new byte[stream.Length];
+
+                    //    stream.Read(fileBytes, 0, fileBytes.Length);
+                    //    stream.Close();
+
+                    //    // make the file a bytearray and send to MetaScan here?
+                    //    FileService.FileService sf = new FileService.FileService();
+
+                    //    string ext = Path.GetExtension(file.FileName);
+
+                    //    bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
+
+                    //    // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
+                    //    if (!valrtn)
+                    //    {
+                    //        TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
+                    //            "Please scan them locally using McAffey before re-uploading" +
+                    //            " by editing the idea. Selected files have not been deleted.";
+
+                    //        return View(model);
+                    //    }
+                    //}
+                    //}
+
+                    // save the files to the specified folder and link them to the idea
+                    for (int i = 0; i < attachments.Count(); ++i)
+                    {
+                        if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
                         {
-                            if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                            var file = attachments.ElementAt(i);
+                            var attachmentName = Path.GetFileName(file.FileName);
+                            var namepath = string.Format("{0}\\{1}", storagePath, attachmentName);
+
+                            // save the new Attachments to the Idea
+                            var attachment = new Models.Attachment
                             {
-                                // store the name of the attachment
-                                var attachmentName = Path.GetFileName(attachments.ElementAt(i).FileName);
+                                storageLocation = string.Format("{0}\\", storagePath),
+                                name = attachmentName,
+                                cre_date = DateTime.Now,
+                                ownIdea = model.idea,
+                                delete = false
+                            };
 
-                                // create new object to reference the loaction of the new attachment and the ID of the idea to which it belongs.
-                                var attachment = new Models.Attachment
-                                {
-                                    storageLocation = string.Format("{0}\\", storagePath),
-                                    name = attachmentName,
-                                    cre_date = DateTime.Now,
-                                    ownIdea = model.idea,
-                                    delete = false
-                                };
-
-                                attachments.ElementAt(i).SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
-
-                                if (model.idea.attachments == null)
-                                {
-                                    model.idea.attachments = new List<Models.Attachment>();
-                                }
-                                model.idea.attachments.Add(attachment);
-                                db.Attachments.Add(attachment);
+                            try
+                            {
+                                file.SaveAs(string.Format("{0}\\{1}", storagePath, attachmentName));
                             }
+                            catch (Exception ex)
+                            {
+                                TempData["Message"] += String.Format("An error was caught: Error number: {0}, Message: {1}", ex.HResult, ex.Message);
+                                return View(model);
+                            }
+
+                            if (model.idea.attachments == null)
+                            {
+                                model.idea.attachments = new List<Models.Attachment>();
+                            }
+
+                            model.idea.attachments.Add(attachment);
+                            db.Attachments.Add(attachment);
                         }
                     }
-
-                    catch
-                    {
-                        //TempData["Idea"] = idea;
-                        TempData["Message"] = "One or more attachments failed to upload";
-                        //return RedirectToAction("Create");
-                        return View(model.idea);
-                    }
                 }
-
                 // save the new Attachments to the Idea
                 db.SaveChanges();
 
@@ -448,15 +507,19 @@ namespace IdeaSite.Controllers
 
                 db.SaveChanges();
 
+                if (!alreadySubmitted)
+                {
+                    // Compose an email to send to PPMO Group and return to index
+                    List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
+                    TempData["EmailInfo"] = emailInfo;
 
-                // Compose an email to send to PPMO Group and return to index
-                /*List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
-                TempData["EmailInfo"] = emailInfo;
-
-                return RedirectToAction("AutoEmail", "Mails");*/
-
-                // This is only for Josh and Alex since they don't have access to AD
+                    //return RedirectToAction("AutoEmail", "Mails");
+                    // This is only for Josh and Alex since they don't have access to AD
+                    return RedirectToAction("Index", "Ideas");
+                }
+                TempData["Message"] = "Your idea has been successfully submitted.";
                 return RedirectToAction("Index", "Ideas");
+
             }
             return View(model);
         }
@@ -464,17 +527,6 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Delete/5
         public ActionResult Delete(int? id)
         {
-            /* ERROR HANDLING SET TO GLOBAL
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            
-            if (idea == null)
-            {
-                return HttpNotFound();
-            }
-            */
             Idea idea = db.Ideas.Find(id);
             return View(idea);
         }
@@ -512,19 +564,68 @@ namespace IdeaSite.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: Ideas/Archive/5
+        public ActionResult Archive(int? id)
+        {
+            Idea idea = db.Ideas.Find(id);
+            return View(idea);
+        }
+
+        // POST: Ideas/Archive/5
+        [HttpPost, ActionName("Archive")]
+        [ValidateAntiForgeryToken]
+        public ActionResult ArchiveConfirmed([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(idea).State = EntityState.Modified;
+
+                if (idea.statusCode == "Archive")
+                {
+                    idea.statusCode = "Accepted";
+                    TempData["Message"] = "The idea was successfully removed from archived list.";
+                }
+                else
+                {
+                    idea.statusCode = "Archive";
+                    TempData["Message"] = "The idea was successfully archived.";
+                }
+
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
+        }
+
+        // GET: Ideas/ProjectSubmission/5
+        public ActionResult ProjectSubmission(int? id)
+        {
+            Idea idea = db.Ideas.Find(id);
+            idea.statusCode = "Project Submission";
+
+            return View(idea);
+        }
+
+        // This needs an autoemail
+        // POST: Ideas/ProjectSubmission/5
+        [HttpPost, ActionName("ProjectSubmission")]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProjectSubmissionConfirmed([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(idea).State = EntityState.Modified;
+
+                db.SaveChanges();
+                TempData["Message"] = "The idea was successfully moved to Project Submission.";
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
+        }
+
         // GET: Ideas/Approve/5
         public ActionResult Approval(int? id)
         {
-            /* ERROR HANDLING SET TO GLOBAL
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (idea == null)
-            {
-                return HttpNotFound();
-            }
-            */
             Idea idea = db.Ideas.Find(id);
             return View(idea);
         }
@@ -552,7 +653,7 @@ namespace IdeaSite.Controllers
 
                 //ViewBag.attachments = attachments;*/
 
-                /*List<string> emailInfo;
+                List<string> emailInfo;
 
                 // Prepare email based on s
                 if (idea.statusCode == "Accepted")
@@ -566,7 +667,7 @@ namespace IdeaSite.Controllers
 
                 // Compose an email to send to PPMO Group and return to index
                 TempData["EmailInfo"] = emailInfo;
-                return RedirectToAction("AutoEmail", "Mails");*/
+                //return RedirectToAction("AutoEmail", "Mails");
 
                 // This is only for Josh and Alex since they don't have access to AD
                 return RedirectToAction("Index", "Ideas");
@@ -575,12 +676,52 @@ namespace IdeaSite.Controllers
             return View(idea);
         }
 
-        // GET: Ideas/Create
+        //public string GetUsername(int i)
+        //{
+        //    // pull the current user's name from active directory and use it for cre_user
+        //    System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
+        //    string[] a = HttpContext.User.Identity.Name.Split('\\');
+        //    DirectoryEntry ADEntry = new DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
 
-        /*public ActionResult SupportEmail()
-        {
-            return View();
-        }*/
+        //    if (i == 0)
+        //    {
+        //        return ADEntry.Properties["Name"].Value.ToString();
+        //    }
+        //    return ADEntry.Properties["FullName"].Value.ToString();
+        //}
+
+        //public string[] GetRolesForUser(string username)
+        //{
+        //    List<string> roles = new List<string>();
+        //    string[] user = username.Split(new char[] { '@' });
+        //    SearchResult result;
+        //    DirectorySearcher search = new DirectorySearcher();
+        //    search.Filter = String.Format("(SAMAccountName={0})", user[0]);
+        //    // member contains list of users identified by distinguishedName
+        //    search.PropertiesToLoad.Add("memberof");
+        //    result = search.FindOne();
+        //    if (result != null)
+        //    {
+        //        // search through members of group
+        //        for (int counter = 0; counter < result.Properties["memberof"].Count; counter++)
+        //        {
+        //            SearchResult srUser;
+        //            search = new DirectorySearcher();
+        //            // Filter on distinguishedName to find user
+        //            search.Filter = string.Format("(distinguishedName={0})", (string)result.Properties["memberof"][counter]);
+        //            // samaccountname is login id without domain qualifier
+        //            search.PropertiesToLoad.Add("SAMAccountName");
+        //            srUser = search.FindOne();
+        //            if (srUser != null)
+        //            {
+        //                roles.Add((string)srUser.Properties["samaccountname"][0].ToString());
+        //            }
+        //        }
+        //    }
+        //    return roles.ToArray();
+        //}
+
+        // GET: Ideas/Create
 
         protected override void Dispose(bool disposing)
         {
