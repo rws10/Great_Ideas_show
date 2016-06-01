@@ -16,6 +16,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.idea.ID)
         @Html.HiddenFor(model => model.idea.cre_date)
+        @Html.HiddenFor(model => model.idea.mod_date)
         @Html.HiddenFor(model => model.idea.cre_user)
         @Html.HiddenFor(model => model.idea.statusCode)
 

@@ -25,21 +25,20 @@ namespace IdeaSite.Models
         public string body { get; set; }
 
         // What is the date the idea was created?
-        // This needs to be set automatically when the form is submitted
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime cre_date { get; set; }
+
+        // What is the date of the last modification?
+        [Display(Name = "Modification Date")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime mod_date { get; set; }
 
         // What is the name of the individual who submitted this idea?
         [Display(Name = "Name")]
         public string cre_user { get; set; }
 
-        // Is the idea Submitted, Active, Rejected, or Archived?
-        // This needs to be adjusted as the idea's status changes. n
-        // On submission it needs to be "Submitted"
-        // On approval it needs to be "Added"
-        // On archival it needs to be "Archived"
-        // On rejection it needs to be "Denied"
+        // Is the idea Submitted, Accepted, Rejected, Archived, or submitted as a project?
         // Admin needs to be able to make this "Project Submission" as well. Possibly disable edit after this?
         [Required]
         [Display(Name = "Status")]

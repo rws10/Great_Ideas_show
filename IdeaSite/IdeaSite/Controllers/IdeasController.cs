@@ -30,152 +30,31 @@ namespace IdeaSite.Controllers
         }
 
 
-        private string[] SeparateSearchTerms(string search)
-        {
-            //List<String> holdKeywords = new List<String>(search.Trim().Split(' '));
-            List<String> holdKeywords = new List<String>(search.Split(' '));
-            bool flag = false;
-            foreach (String keyword in holdKeywords.ToList())
-            {
-                if (keyword.Contains("\"") && !flag) { holdKeywords.Remove(keyword); flag = true; }
-                else if (keyword.Contains("\"") && flag) { holdKeywords.Remove(keyword); flag = false; }
-                else if (flag) { holdKeywords.Remove(keyword); }
-            }
-
-
-            List<String> searchTermsList = new List<String>();
-            for (int i = 0; i < search.Length; ++i)
-            {
-                searchTermsList.Add(search[i].ToString());
-            }
-            String phrase = "";
-            List<String> phraseL = new List<String>();
-            Queue<String> phraseQ = new Queue<String>();
-            List<String> searchPhraseList = new List<String>();
-            //bool flag = false;
-            flag = false;
-            foreach (String term in searchTermsList)
-            {
-                if (term == "\"" || flag == true)
-                {
-                    flag = true;
-                    phraseQ.Enqueue(term);
-                    if (term == "\"" && phraseQ.Count > 2)
-                    {
-                        phraseQ.Dequeue();
-                        while (phraseQ.Peek() != "\"") { phraseL.Add(phraseQ.Dequeue()); }
-                        phrase = string.Join("", phraseL.ToArray());
-                        phraseQ.Clear();
-                        phraseL.Clear();
-                        flag = false;
-                    }
-                    //else { searchPhraseList.Add(phrase); }   
-                    //if (phraseQ.Count() == 0) { searchPhraseList.Add(phrase); }
-                    if (!flag) { searchPhraseList.Add(phrase); }
-                }
-                else
-                {
-                    searchPhraseList.Add(term);
-                }
-            }
-            String[] searchTerms = new String[searchPhraseList.Count()];
-            int pos = 0;
-            foreach (String term in searchPhraseList) { searchTerms[pos++] = term; }
-            var removeSpaces = new List<String>(searchTerms);
-            removeSpaces.Remove(" ");
-            removeSpaces = removeSpaces.Concat(holdKeywords).ToList();
-            searchTerms = removeSpaces.ToArray();
-            return searchTerms;
-        }
-
-
-        private IEnumerable<Idea> SearchByTerms(IEnumerable<Idea> _results, string searchBy, string search)
-        {
-            //IEnumerable<Idea> results = new List<Idea>();
-            IEnumerable<Idea> results = _results;
-            IEnumerable<Idea> finalResults = new List<Idea>();
-            string[] searchTerms;
-            //searchTerms = search.Trim().Split(' ');
-            searchTerms = SeparateSearchTerms(search);
-            // new function before ^^ to find terms from string & phrases
-
-            finalResults = results;
-            for (int i = 0; i < searchTerms.Length; ++i)
-            {
-                // set to finalResults.Where (results => whatever) to allow a less strict searchs
-                var term = searchTerms[i];
-                if (searchBy == "Title") { finalResults = finalResults.Where(x => x.title.Contains(term)).ToList(); }
-                else if (searchBy == "Description") { finalResults = finalResults.Where(x => x.body.Contains(term)).ToList(); }
-                else if (searchBy == "All")
-                {
-                    finalResults = finalResults.Where(x => x.title.Contains(term) || x.body.Contains(term)).ToList();
-                    //finalResults = finalResults.Concat(finalResults.Where(x => x.body.Contains(term)).ToList());
-                }
-            }
-            return MatchSearchResults(finalResults);
-        }
-
-        private IEnumerable<Idea> MatchSearchResults(IEnumerable<Idea> results)
-        {
-            var ideas = db.Ideas.ToList();
-            List<int[]> matches = new List<int[]>();
-            foreach (Idea idea in results)
-            {
-                foreach (var match in matches) { if (idea.ID == match[0]) { ++match[1]; } }
-            }
-            foreach (Idea idea in ideas)
-            {
-                int[] match = new int[2];
-                match[0] = idea.ID;
-                match[1] = 0;
-                matches.Add(match);
-            }
-            matches = matches.OrderBy(x => x[1]).ToList();
-            matches.Reverse();
-            results.Distinct();
-            IEnumerable<Idea> finalResults = new List<Idea>();
-            for (int i = 0; i < matches.Count(); ++i)
-            {
-                foreach (var idea in results)
-                {
-                    if (idea.ID == matches[i][0])
-                    {
-                        finalResults = finalResults.Concat(results.Where(x => x.ID == idea.ID).ToList());
-                    }
-                }
-            }
-            finalResults = finalResults.Distinct();
-            return finalResults;
-        }
-
+        
         // GET: Ideas
-        //[Authorize(Roles = "TLADAG")]
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="searchBy"></param>
-        /// <param name="search"></param>
-        /// <param name="sortByStatus"></param>
-        /// <returns></returns>
         public ActionResult Index(string searchBy, string search, string[] sortByStatus)
         {
 
-            //var roles = GetRolesForUser(GetUsername(0));
+            var roles = GetRolesForUser(GetUsername(0));
 
-            //// get the domain name for the admin group
-            //var appSettings = ConfigurationManager.AppSettings;
-            //string group = appSettings["AdminGroup"];
+            // get the name of the current user
+            ViewBag.currentUser = GetUsername(1);
 
-            //// determine if the user is an admin and carry this information to the view
-            //ViewBag.isAdmin = false;
-            //for (int i = 0; i < roles.Count(); i++)
-            //{
-            //    if (roles.ElementAt(i) == group)
-            //    {
-            //        ViewBag.isAdmin = true;
-            //        break;
-            //    }
-            //}
+
+            // get the domain name for the admin group
+            var appSettings = ConfigurationManager.AppSettings;
+            string group = appSettings["AdminGroup"];
+
+            // determine if the user is an admin and carry this information to the view
+            ViewBag.isAdmin = false;
+            for (int i = 0; i < roles.Count(); i++)
+            {
+                if (roles.ElementAt(i) == group)
+                {
+                    ViewBag.isAdmin = true;
+                    break;
+                }
+            }
 
             IEnumerable<Idea> results = new List<Idea>();
             // This handles the first run of the index. Since the default checkbox is set to Accepted,
@@ -188,8 +67,6 @@ namespace IdeaSite.Controllers
                 return View(results);
             }
 
-            // get the name of the current user
-            //ViewBag.currentUser = GetUsername(1);
 
             if (sortByStatus[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
             if (sortByStatus[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
@@ -227,10 +104,10 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                //idea.cre_user = GetUsername(1);
-                idea.cre_user = "Administrator";
+                idea.cre_user = GetUsername(1);
+                //idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
-
+                idea.mod_date = DateTime.Now;
 
                 var ideas = db.Ideas.Where(IDEA => IDEA.title == idea.title).ToList();
 
@@ -256,35 +133,35 @@ namespace IdeaSite.Controllers
                     // run each file through MetaScan and check for forbidden extensions
                     for (int i = 0; i < files.Count(); ++i)
                     {
-                        //if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
-                        //{
-                        //    var file = files.ElementAt(i);
-                        //    // store the name of the attachment
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
+                        {
+                            var file = files.ElementAt(i);
+                            // store the name of the attachment
 
-                        //    // place the file into a bytearray for MetaScan use
-                        //    FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
-                        //    byte[] fileBytes = new byte[stream.Length];
+                            // place the file into a bytearray for MetaScan use
+                            FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
+                            byte[] fileBytes = new byte[stream.Length];
 
-                        //    stream.Read(fileBytes, 0, fileBytes.Length);
-                        //    stream.Close();
+                            stream.Read(fileBytes, 0, fileBytes.Length);
+                            stream.Close();
 
-                        //    // make the file a bytearray and send to MetaScan here?
-                        //    FileService.FileService sf = new FileService.FileService();
+                            // make the file a bytearray and send to MetaScan here?
+                            FileService.FileService sf = new FileService.FileService();
 
-                        //    string ext = Path.GetExtension(file.FileName);
+                            string ext = Path.GetExtension(file.FileName);
 
-                        //    bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
+                            bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
 
-                        //    // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
-                        //    if (!valrtn)
-                        //    {
-                        //        TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
-                        //            "Please scan them locally using McAffey before re-uploading" +
-                        //            " by editing the idea";
+                            // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
+                            if (!valrtn)
+                            {
+                                TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
+                                    "Please scan them locally using McAffey before re-uploading" +
+                                    " by editing the idea";
 
-                        //        return View(idea);
-                        //    }
-                        //}
+                                return View(idea);
+                            }
+                        }
                     }
 
                     db.Ideas.Add(idea);
@@ -335,7 +212,7 @@ namespace IdeaSite.Controllers
                 // Compose an email to send to PPMO Group
                 List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
                 TempData["EmailInfo"] = emailInfo;
-                //return RedirectToAction("AutoEmail", "Mails");
+                return RedirectToAction("AutoEmail", "Mails");
 
                 // This is only for Josh and Alex since they don't have access to AD
                 //return RedirectToAction("Index", "Ideas");
@@ -396,6 +273,7 @@ namespace IdeaSite.Controllers
                 currentIdea.body = model.idea.body;
                 currentIdea.statusCode = model.idea.statusCode;
                 currentIdea.denialReason = model.idea.denialReason;
+                currentIdea.mod_date = DateTime.Now;
 
                 if (attachments != null)
                 {
@@ -411,39 +289,39 @@ namespace IdeaSite.Controllers
                         DirectoryInfo di = Directory.CreateDirectory(storagePath);
                     }
 
-                    // run each file through MetaScan and check for forbidden extensions
-                    //for (int i = 0; i < attachments.Count(); ++i)
-                    //{
-                    //if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
-                    //{
-                    //    var file = attachments.ElementAt(i);
-                    //    // store the name of the attachment
+                    //run each file through MetaScan and check for forbidden extensions
+                    for (int i = 0; i < attachments.Count(); ++i)
+                        {
+                            if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                            {
+                                var file = attachments.ElementAt(i);
+                                // store the name of the attachment
 
-                    //    // place the file into a bytearray for MetaScan use
-                    //    FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
-                    //    byte[] fileBytes = new byte[stream.Length];
+                                // place the file into a bytearray for MetaScan use
+                                FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
+                                byte[] fileBytes = new byte[stream.Length];
 
-                    //    stream.Read(fileBytes, 0, fileBytes.Length);
-                    //    stream.Close();
+                                stream.Read(fileBytes, 0, fileBytes.Length);
+                                stream.Close();
 
-                    //    // make the file a bytearray and send to MetaScan here?
-                    //    FileService.FileService sf = new FileService.FileService();
+                                // make the file a bytearray and send to MetaScan here?
+                                FileService.FileService sf = new FileService.FileService();
 
-                    //    string ext = Path.GetExtension(file.FileName);
+                                string ext = Path.GetExtension(file.FileName);
 
-                    //    bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
+                                bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
 
-                    //    // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
-                    //    if (!valrtn)
-                    //    {
-                    //        TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
-                    //            "Please scan them locally using McAffey before re-uploading" +
-                    //            " by editing the idea. Selected files have not been deleted.";
+                                // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
+                                if (!valrtn)
+                                {
+                                    TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
+                                        "Please scan them locally using McAffey before re-uploading" +
+                                        " by editing the idea. Selected files have not been deleted.";
 
-                    //        return View(model);
-                    //    }
-                    //}
-                    //}
+                                    return View(model);
+                                }
+                            }
+                        }
 
                     // save the files to the specified folder and link them to the idea
                     for (int i = 0; i < attachments.Count(); ++i)
@@ -666,59 +544,178 @@ namespace IdeaSite.Controllers
 
                 // Compose an email to send to PPMO Group and return to index
                 TempData["EmailInfo"] = emailInfo;
-                //return RedirectToAction("AutoEmail", "Mails");
+                return RedirectToAction("AutoEmail", "Mails");
 
                 // This is only for Josh and Alex since they don't have access to AD
-                return RedirectToAction("Index", "Ideas");
+                //return RedirectToAction("Index", "Ideas");
             }
 
             return View(idea);
         }
 
-        //public string GetUsername(int i)
-        //{
-        //    // pull the current user's name from active directory and use it for cre_user
-        //    System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
-        //    string[] a = HttpContext.User.Identity.Name.Split('\\');
-        //    DirectoryEntry ADEntry = new DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
+        private string[] SeparateSearchTerms(string search)
+        {
+            //List<String> holdKeywords = new List<String>(search.Trim().Split(' '));
+            List<String> holdKeywords = new List<String>(search.Split(' '));
+            bool flag = false;
+            foreach (String keyword in holdKeywords.ToList())
+            {
+                if (keyword.Contains("\"") && !flag) { holdKeywords.Remove(keyword); flag = true; }
+                else if (keyword.Contains("\"") && flag) { holdKeywords.Remove(keyword); flag = false; }
+                else if (flag) { holdKeywords.Remove(keyword); }
+            }
 
-        //    if (i == 0)
-        //    {
-        //        return ADEntry.Properties["Name"].Value.ToString();
-        //    }
-        //    return ADEntry.Properties["FullName"].Value.ToString();
-        //}
 
-        //public string[] GetRolesForUser(string username)
-        //{
-        //    List<string> roles = new List<string>();
-        //    string[] user = username.Split(new char[] { '@' });
-        //    SearchResult result;
-        //    DirectorySearcher search = new DirectorySearcher();
-        //    search.Filter = String.Format("(SAMAccountName={0})", user[0]);
-        //    // member contains list of users identified by distinguishedName
-        //    search.PropertiesToLoad.Add("memberof");
-        //    result = search.FindOne();
-        //    if (result != null)
-        //    {
-        //        // search through members of group
-        //        for (int counter = 0; counter < result.Properties["memberof"].Count; counter++)
-        //        {
-        //            SearchResult srUser;
-        //            search = new DirectorySearcher();
-        //            // Filter on distinguishedName to find user
-        //            search.Filter = string.Format("(distinguishedName={0})", (string)result.Properties["memberof"][counter]);
-        //            // samaccountname is login id without domain qualifier
-        //            search.PropertiesToLoad.Add("SAMAccountName");
-        //            srUser = search.FindOne();
-        //            if (srUser != null)
-        //            {
-        //                roles.Add((string)srUser.Properties["samaccountname"][0].ToString());
-        //            }
-        //        }
-        //    }
-        //    return roles.ToArray();
-        //}
+            List<String> searchTermsList = new List<String>();
+            for (int i = 0; i < search.Length; ++i)
+            {
+                searchTermsList.Add(search[i].ToString());
+            }
+            String phrase = "";
+            List<String> phraseL = new List<String>();
+            Queue<String> phraseQ = new Queue<String>();
+            List<String> searchPhraseList = new List<String>();
+            //bool flag = false;
+            flag = false;
+            foreach (String term in searchTermsList)
+            {
+                if (term == "\"" || flag == true)
+                {
+                    flag = true;
+                    phraseQ.Enqueue(term);
+                    if (term == "\"" && phraseQ.Count > 2)
+                    {
+                        phraseQ.Dequeue();
+                        while (phraseQ.Peek() != "\"") { phraseL.Add(phraseQ.Dequeue()); }
+                        phrase = string.Join("", phraseL.ToArray());
+                        phraseQ.Clear();
+                        phraseL.Clear();
+                        flag = false;
+                    }
+                    //else { searchPhraseList.Add(phrase); }   
+                    //if (phraseQ.Count() == 0) { searchPhraseList.Add(phrase); }
+                    if (!flag) { searchPhraseList.Add(phrase); }
+                }
+                else
+                {
+                    searchPhraseList.Add(term);
+                }
+            }
+            String[] searchTerms = new String[searchPhraseList.Count()];
+            int pos = 0;
+            foreach (String term in searchPhraseList) { searchTerms[pos++] = term; }
+            var removeSpaces = new List<String>(searchTerms);
+            removeSpaces.Remove(" ");
+            removeSpaces = removeSpaces.Concat(holdKeywords).ToList();
+            searchTerms = removeSpaces.ToArray();
+            return searchTerms;
+        }
+
+
+        private IEnumerable<Idea> SearchByTerms(IEnumerable<Idea> _results, string searchBy, string search)
+        {
+            //IEnumerable<Idea> results = new List<Idea>();
+            IEnumerable<Idea> results = _results;
+            IEnumerable<Idea> finalResults = new List<Idea>();
+            string[] searchTerms;
+            //searchTerms = search.Trim().Split(' ');
+            searchTerms = SeparateSearchTerms(search);
+            // new function before ^^ to find terms from string & phrases
+
+            finalResults = results;
+            for (int i = 0; i < searchTerms.Length; ++i)
+            {
+                // set to finalResults.Where (results => whatever) to allow a less strict searchs
+                var term = searchTerms[i];
+                if (searchBy == "Title") { finalResults = finalResults.Where(x => x.title.Contains(term)).ToList(); }
+                else if (searchBy == "Description") { finalResults = finalResults.Where(x => x.body.Contains(term)).ToList(); }
+                else if (searchBy == "All")
+                {
+                    finalResults = finalResults.Where(x => x.title.Contains(term) || x.body.Contains(term)).ToList();
+                    //finalResults = finalResults.Concat(finalResults.Where(x => x.body.Contains(term)).ToList());
+                }
+            }
+            return MatchSearchResults(finalResults);
+        }
+
+        private IEnumerable<Idea> MatchSearchResults(IEnumerable<Idea> results)
+        {
+            var ideas = db.Ideas.ToList();
+            List<int[]> matches = new List<int[]>();
+            foreach (Idea idea in results)
+            {
+                foreach (var match in matches) { if (idea.ID == match[0]) { ++match[1]; } }
+            }
+            foreach (Idea idea in ideas)
+            {
+                int[] match = new int[2];
+                match[0] = idea.ID;
+                match[1] = 0;
+                matches.Add(match);
+            }
+            matches = matches.OrderBy(x => x[1]).ToList();
+            matches.Reverse();
+            results.Distinct();
+            IEnumerable<Idea> finalResults = new List<Idea>();
+            for (int i = 0; i < matches.Count(); ++i)
+            {
+                foreach (var idea in results)
+                {
+                    if (idea.ID == matches[i][0])
+                    {
+                        finalResults = finalResults.Concat(results.Where(x => x.ID == idea.ID).ToList());
+                    }
+                }
+            }
+            finalResults = finalResults.Distinct();
+            return finalResults;
+        }
+
+
+        public string GetUsername(int i)
+        {
+            // pull the current user's name from active directory and use it for cre_user
+            System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
+            string[] a = HttpContext.User.Identity.Name.Split('\\');
+            DirectoryEntry ADEntry = new DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
+
+            if (i == 0)
+            {
+                return ADEntry.Properties["Name"].Value.ToString();
+            }
+            return ADEntry.Properties["FullName"].Value.ToString();
+        }
+
+        public string[] GetRolesForUser(string username)
+        {
+            List<string> roles = new List<string>();
+            string[] user = username.Split(new char[] { '@' });
+            SearchResult result;
+            DirectorySearcher search = new DirectorySearcher();
+            search.Filter = String.Format("(SAMAccountName={0})", user[0]);
+            // member contains list of users identified by distinguishedName
+            search.PropertiesToLoad.Add("memberof");
+            result = search.FindOne();
+            if (result != null)
+            {
+                // search through members of group
+                for (int counter = 0; counter < result.Properties["memberof"].Count; counter++)
+                {
+                    SearchResult srUser;
+                    search = new DirectorySearcher();
+                    // Filter on distinguishedName to find user
+                    search.Filter = string.Format("(distinguishedName={0})", (string)result.Properties["memberof"][counter]);
+                    // samaccountname is login id without domain qualifier
+                    search.PropertiesToLoad.Add("SAMAccountName");
+                    srUser = search.FindOne();
+                    if (srUser != null)
+                    {
+                        roles.Add((string)srUser.Properties["samaccountname"][0].ToString());
+                    }
+                }
+            }
+            return roles.ToArray();
+        }
 
         // GET: Ideas/Create
 

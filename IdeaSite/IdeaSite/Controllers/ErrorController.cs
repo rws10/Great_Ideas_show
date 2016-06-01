@@ -13,7 +13,7 @@ namespace IdeaSite.Controllers
 
         public ViewResult Index()
         {
-            using (StreamWriter tw = new StreamWriter(@"C:\Users\alex\Desktop\log.txt"))
+            using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
             {
                 tw.Write("UNSPECIFIED ERROR");
             }
@@ -22,7 +22,7 @@ namespace IdeaSite.Controllers
         
         public ViewResult Forbidden()
         {
-            using (StreamWriter tw = new StreamWriter(@"C:\Users\alex\Desktop\log.txt"))
+            using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
             {
                 tw.WriteLine("ERROR CODE 403: FORBIDDEN");
             }
@@ -33,7 +33,7 @@ namespace IdeaSite.Controllers
         public ViewResult NotFound()
         {
             Response.StatusCode = 404;
-            using (StreamWriter tw = new StreamWriter(@"C:\Users\alex\Desktop\log.txt"))
+            using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
             {
                 tw.WriteLine("ERROR CODE 404: NOT FOUND");
             }
@@ -43,7 +43,7 @@ namespace IdeaSite.Controllers
         public ViewResult InternalServerError()
         {
             Response.StatusCode = 500;
-            using (StreamWriter tw = new StreamWriter(@"C:\Users\alex\Desktop\log.txt"))
+            using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
             {
                 tw.WriteLine("ERROR CODE 500: INTERNAL SERVER ERROR");
             }
@@ -53,7 +53,7 @@ namespace IdeaSite.Controllers
         public ViewResult Unauthorized()
         {
             Response.StatusCode = 401;
-            using (StreamWriter tw = new StreamWriter(@"C:\Users\alex\Desktop\log.txt"))
+            using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
             {
                 tw.WriteLine("ERROR CODE 401: UNAUTHORIZED");
             }

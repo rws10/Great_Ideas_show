@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Files>
+  <File name="test.txt" />
+  <File name="test1.txt" />
+  <File name="test2.txt" />
+  <File name="test3.txt" />
+  <File name="test4.txt" />
+  <FileExtension ext="exe"/>
+  <FileExtension ext="js"/>
+  <FileExtension ext="htm"/>
+  <FileExtension ext="html"/>
+</Files>

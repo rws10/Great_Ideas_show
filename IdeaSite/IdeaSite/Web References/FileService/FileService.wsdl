@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="ScanByFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="fsBytes" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ScanByFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ScanByFileResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ScanByFileWithName">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="fsBytes" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ScanByFileWithNameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ScanByFileWithNameResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ScanByFileWithNameAndExtension">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="fsBytes" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="extension" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ScanByFileWithNameAndExtensionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ScanByFileWithNameAndExtensionResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckFileByName">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckFileByNameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CheckFileByNameResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckFileByNameAndExtension">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="extension" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckFileByNameAndExtensionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CheckFileByNameAndExtensionResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ScanByFileSoapIn">
+    <wsdl:part name="parameters" element="tns:ScanByFile" />
+  </wsdl:message>
+  <wsdl:message name="ScanByFileSoapOut">
+    <wsdl:part name="parameters" element="tns:ScanByFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="ScanByFileWithNameSoapIn">
+    <wsdl:part name="parameters" element="tns:ScanByFileWithName" />
+  </wsdl:message>
+  <wsdl:message name="ScanByFileWithNameSoapOut">
+    <wsdl:part name="parameters" element="tns:ScanByFileWithNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="ScanByFileWithNameAndExtensionSoapIn">
+    <wsdl:part name="parameters" element="tns:ScanByFileWithNameAndExtension" />
+  </wsdl:message>
+  <wsdl:message name="ScanByFileWithNameAndExtensionSoapOut">
+    <wsdl:part name="parameters" element="tns:ScanByFileWithNameAndExtensionResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckFileByNameSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckFileByName" />
+  </wsdl:message>
+  <wsdl:message name="CheckFileByNameSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckFileByNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckFileByNameAndExtensionSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckFileByNameAndExtension" />
+  </wsdl:message>
+  <wsdl:message name="CheckFileByNameAndExtensionSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckFileByNameAndExtensionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="FileServiceSoap">
+    <wsdl:operation name="ScanByFile">
+      <wsdl:input message="tns:ScanByFileSoapIn" />
+      <wsdl:output message="tns:ScanByFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ScanByFileWithName">
+      <wsdl:input message="tns:ScanByFileWithNameSoapIn" />
+      <wsdl:output message="tns:ScanByFileWithNameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ScanByFileWithNameAndExtension">
+      <wsdl:input message="tns:ScanByFileWithNameAndExtensionSoapIn" />
+      <wsdl:output message="tns:ScanByFileWithNameAndExtensionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileByName">
+      <wsdl:input message="tns:CheckFileByNameSoapIn" />
+      <wsdl:output message="tns:CheckFileByNameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileByNameAndExtension">
+      <wsdl:input message="tns:CheckFileByNameAndExtensionSoapIn" />
+      <wsdl:output message="tns:CheckFileByNameAndExtensionSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="FileServiceSoap" type="tns:FileServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScanByFile">
+      <soap:operation soapAction="http://tempuri.org/ScanByFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ScanByFileWithName">
+      <soap:operation soapAction="http://tempuri.org/ScanByFileWithName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ScanByFileWithNameAndExtension">
+      <soap:operation soapAction="http://tempuri.org/ScanByFileWithNameAndExtension" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileByName">
+      <soap:operation soapAction="http://tempuri.org/CheckFileByName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileByNameAndExtension">
+      <soap:operation soapAction="http://tempuri.org/CheckFileByNameAndExtension" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="FileServiceSoap12" type="tns:FileServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScanByFile">
+      <soap12:operation soapAction="http://tempuri.org/ScanByFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ScanByFileWithName">
+      <soap12:operation soapAction="http://tempuri.org/ScanByFileWithName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ScanByFileWithNameAndExtension">
+      <soap12:operation soapAction="http://tempuri.org/ScanByFileWithNameAndExtension" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileByName">
+      <soap12:operation soapAction="http://tempuri.org/CheckFileByName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckFileByNameAndExtension">
+      <soap12:operation soapAction="http://tempuri.org/CheckFileByNameAndExtension" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FileService">
+    <wsdl:port name="FileServiceSoap" binding="tns:FileServiceSoap">
+      <soap:address location="http://app2.freshfromflorida.com/web_services/filehandler/FileService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="FileServiceSoap12" binding="tns:FileServiceSoap12">
+      <soap12:address location="http://app2.freshfromflorida.com/web_services/filehandler/FileService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

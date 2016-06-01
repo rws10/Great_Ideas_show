@@ -31,12 +31,13 @@
         <div class="col-md-9">
             <h2>@Html.DisplayFor(model => model.title)</h2>
             <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
+            <h5><span class="glyphicon glyphicon-time"></span> Last modified on @Html.DisplayFor(model => model.mod_date)</h5>
             <h5>status: <span class="@statusIcon"></span> @Html.DisplayFor(model => model.statusCode)</h5>
             <h5><span class="label label-success">Description:</span></h5>
             @Html.DisplayFor(model => model.body)
 
             <!--Call the partial view for displaying the attachments-->
-            @Html.Action("Display", "Attachment", new {ideaID = Model.ID})
+            @Html.Action("Display", "Attachment", new { ideaID = Model.ID })
 
             <br>
             @if (Model.statusCode == "Denied")

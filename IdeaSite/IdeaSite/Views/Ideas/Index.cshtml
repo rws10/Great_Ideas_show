@@ -36,11 +36,11 @@
                 @Html.CheckBox("sortByStatus[1]", sortByStatus[1] == "true") <text>  Accepted   </text>
                 @Html.CheckBox("sortByStatus[3]", sortByStatus[3] == "true") <text> Archived </text>
                 @Html.CheckBox("sortByStatus[4]", sortByStatus[4] == "true") <text> Project Submission </text>
-                @*@if (ViewBag.isAdmin)
-                    {*@
+                @if (ViewBag.isAdmin)
+                    {
                 @Html.CheckBox("sortByStatus[2]", sortByStatus[2] == "true") <text>  Denied     </text>
                 @Html.CheckBox("sortByStatus[0]", sortByStatus[0] == "true") <text>  Submitted  </text>
-                @*}*@
+                }
             </p>
             <p>
                 @Html.TextBox("search") <button type="submit" class="btn btn-default btn-sm">
@@ -72,14 +72,12 @@
                         @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                         @Html.ActionLink("Comments", "Index", "Comments", item, new { @class = "btn btn-default btn-sm" })
                         @*show the edit button only for the creator of the idea*@
-                        @*@if (item.cre_user == ViewBag.currentUser)
-                            {*@
+                        @if (item.cre_user == ViewBag.currentUser)
+                            {
                         @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                         }
                         @*Display the archive button only for the creator of the idea or an admin and only if the idea is "Accepted" or "Project Submission"*@
-                        @if (
-//(item.cre_user == ViewBag.currentUser || ViewBag.isAdmin) &&
-(item.statusCode == "Accepted" || item.statusCode == "Project Submission" || item.statusCode == "Archive"))
+                        @if ((item.cre_user == ViewBag.currentUser || ViewBag.isAdmin) && (item.statusCode == "Accepted" || item.statusCode == "Project Submission" || item.statusCode == "Archive"))
                         {
                             @*If the idea is already archived, give the option to bring it out.*@
                         if (item.statusCode == "Archive")
@@ -92,20 +90,20 @@
                             }
                         }
                         @*show these buttons only for Admins*@
-                        @*@if (ViewBag.isAdmin)
-                        {*@
+                        @if (ViewBag.isAdmin)
+                        {
                             @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                             @*display project submission only for admins and when the idea isn't already in project submission*@
-                        @if (item.statusCode == "Accepted")
+                        if (item.statusCode == "Accepted")
                         {
-                            @Html.ActionLink("Project Submission", "Project Submission", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            @Html.ActionLink("ProjectSubmission", "ProjectSubmission", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                         }
                         @*An admin cannot accept/deny their own submission*@
-                        @if (item.statusCode == "Submitted" /*&& item.cre_user != ViewBag.currentUser*/)
+                        if (item.statusCode == "Submitted" && item.cre_user != ViewBag.currentUser)
                         {
                             @Html.ActionLink("Approval", "Approval", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                             }
-                        @*}*@
+                        }
                     </div>
                 </div>
             </div>
