@@ -1,13 +1,13 @@
 ﻿@model IdeaSite.Models.Idea
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Submit";
 }
 
-<h2>Create New Idea</h2>
+<h1>Submit New Idea</h1>
 <hr />
 
-@using (Html.BeginForm("Create", "Ideas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Submit", "Ideas", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -18,26 +18,29 @@
                 @Html.Action(actionName: "TempMessage", controllerName: "Message")
             </div>
         </div>
+
         <div class="form-group">
-            <label class="control-label col-md-2" for="name">Title</label>
+            @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input class="form-control text-box" id="title" name="title" value="@Html.DisplayFor(model => model.title)" type="text">
+                @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
                 <span class="field-validation-valid text-danger" data-valmsg-for="title" data-valmsg-replace="true"></span>
                 <div class="error-message">@Html.ValidationMessageFor(model => model.title)</div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2" for="description">Description</label>
+            @Html.LabelFor(model => model.body, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10 multiline-field">
-                @Html.EditorFor(model => model.body)
+                @Html.EditorFor(model => model.body, new { htmlAttributes = new { @class = "form-control shortBody" } })
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
-                <br><div class="error-message">@Html.ValidationMessageFor(model => model.body)</div>
+                <br>
+                @Html.ValidationMessageFor(model => model.body, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <!--This is probably better done in the controller-->
         <input id="statusCode" name="statusCode" value="Submitted" type="hidden">
+
+        <div class="text-danger">Files with these extensions may not be uploaded to to Great Ideas: .exe, .js, .htm, .html</div>
 
         <div class="form-group">
             @Html.Label("Attachment", new { @class = "control-label col-md-2" })
@@ -47,16 +50,13 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input value="Create" class="btn btn-default" type="submit">
+            <div class="col-md-offset-2 col-md-10 btn-group">
+                <input value="Submit" class="btn btn-default btn-sm" type="submit">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-sm" })
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

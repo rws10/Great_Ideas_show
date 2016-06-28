@@ -1,14 +1,13 @@
 ﻿@model IdeaSite.Models.Idea
 
 @{
-    ViewBag.Title = "Archive";
+    ViewBag.Title = "Active Project";
 }
 
-<h2>Project Submission</h2>
+<h1>Active Project</h1>
 
-<h3>Are you sure you want start the project submission process?</h3>
+<div class="H3">Are you sure you want set this as an Active Project?</div>
 <div>
-    <h4>Idea</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -17,6 +16,13 @@
 
         <dd>
             @Html.DisplayFor(model => model.title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.cre_user)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cre_user)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.cre_date)
@@ -29,15 +35,8 @@
             @Html.DisplayNameFor(model => model.body)
         </dt>
 
-        <dd>
+        <dd class="display" >
             @Html.DisplayFor(model => model.body)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.cre_user)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.cre_user)
         </dd>
     </dl>
 
@@ -53,10 +52,10 @@
         @Html.HiddenFor(model => model.cre_user)
         @Html.HiddenFor(model => model.mod_date)
         @Html.HiddenFor(model => model.email)
-
+        @Html.HiddenFor(model => model.commentsNumber)
 
         <div class="form-actions no-color btn-group">
-            <input type="submit" value="ProjectSubmission" class="btn btn-default btn-sm" />
+            <input type="submit" value="Active Project" class="btn btn-default btn-sm" />
             @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-sm" })
         </div>
     }
