@@ -1,7 +1,8 @@
 ﻿<table class="table">
+@if (ViewBag.attachments.Count > 0)
+{
     <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th><th></th></tr>
-    @if (ViewBag.attachments != null)
-    {
+    
         for (int i = 0; i < ViewBag.attachments.Count; i++)
         {
             var attachment = ViewBag.attachments[i];
@@ -12,6 +13,11 @@
                 <td><span class="glyphicon glyphicon-floppy-save"></span> @Html.ActionLink("Download", "Download", new { attachmentpath = attachmentPath, attachmentName = attachment.name }, new { @target = "_blank" })</td>
             </tr>
         }
+    }
+    else
+    {
+        @Html.Label("No attachments"@*, new { @class = "control-label col-md-2" }*@)
+
     }
 </table>
 

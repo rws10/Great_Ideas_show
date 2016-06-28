@@ -14,13 +14,17 @@
     {
         statusIcon = "glyphicon glyphicon-remove";
     }
-    if (Model.statusCode == "Added")
+    if (Model.statusCode == "Accepted")
     {
         statusIcon = "glyphicon glyphicon-ok";
     }
     if (Model.statusCode == "Archived")
     {
         statusIcon = "glyphicon glyphicon-saved";
+    }
+    if (Model.statusCode == "Active Project")
+    {
+        statusIcon = "glyphicon glyphicon-briefcase";
     }
 
 }
@@ -29,16 +33,16 @@
 <div class="container-fluid">
     <div class="row content">
         <div class="col-md-9">
-            <h2>@Html.DisplayFor(model => model.title)</h2>
-            <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
-            <h5><span class="glyphicon glyphicon-time"></span> Last modified on @Html.DisplayFor(model => model.mod_date)</h5>
-            <h5>status: <span class="@statusIcon"></span> @Html.DisplayFor(model => model.statusCode)</h5>
-            <h5><span class="label label-success">Description:</span></h5>
-            @Html.DisplayFor(model => model.body)
-
+            <div class="H2">@Html.DisplayFor(model => model.title)</div>
+            <div class="H5"><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</div>
+            <div class="H5"><span class="glyphicon glyphicon-time"></span> Last modified on @Html.DisplayFor(model => model.mod_date)</div>
+            <div class="H5">Status: <span class="@statusIcon"></span> @Html.DisplayFor(model => model.statusCode)</div>
+            <div class="H5"><span class="label label-success">Description:</span></div>
+            <div class="display">@Html.DisplayFor(model => model.body)</div>
+            <br />
+            <br />
             <!--Call the partial view for displaying the attachments-->
             @Html.Action("Display", "Attachment", new { ideaID = Model.ID })
-
             <br>
             @if (Model.statusCode == "Denied")
             {
@@ -48,8 +52,12 @@
         </div>
     </div>
     <br>
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-        @Html.ActionLink("Back to List", "Index")
+    <p class="btn-group" ">
+        @if (Model.cre_user == ViewBag.currentUser)
+        {
+            @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-default btn-sm" })
+        }
+        @Html.ActionLink("Comments", "Index", "Comments", Model, new { @class = "btn btn-default btn-sm" })
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-sm" })
     </p>
 </div>

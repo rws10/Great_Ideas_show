@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<h1>Edit</h1>
 <hr>
 
 
@@ -19,6 +19,10 @@
         @Html.HiddenFor(model => model.idea.mod_date)
         @Html.HiddenFor(model => model.idea.cre_user)
         @Html.HiddenFor(model => model.idea.statusCode)
+        @Html.HiddenFor(model => model.idea.email)
+        @Html.HiddenFor(model => model.idea.mod_date)
+        @Html.HiddenFor(model => model.idea.commentsNumber)
+
 
         <div class="form-group">
             <div class="col-md-10">
@@ -41,63 +45,77 @@
             @Html.LabelFor(model => model.idea.body, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10 multiline-field">
                 @Html.EditorFor(model => model.idea.body, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.idea.title, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.idea.body, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <!--Display box for the denialReason. This only appears if the status is set to denied.-->
-        <div class="form-group @Model.idea.statusCode">
-            @Html.LabelFor(model => model.idea.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.idea.denialReason)
-                @Html.ValidationMessageFor(model => model.idea.denialReason, "", new { @class = "text-danger" })
+        @if (Model.idea.statusCode == "Denied")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.idea.denialReason, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.idea.denialReason)
+                    @Html.ValidationMessageFor(model => model.idea.denialReason, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
+        }
+
         <!--This table is for displaying any attachments associated with an idea.
             It allows the user to download and/or delete current attachments-->
-        <!--Add a new checkbox in its own div element:-->
-        <div>
-            <input type="checkbox" id="checkall" /><span>Select All</span>
-        </div>
+        @if (Model.Attachs.Count > 0)
+        {
+            <div>
+                <input type="checkbox" id="checkall" /><span>Select All</span>
+            </div>
 
         <!--Wrap the table element in a div named "checkboxes":-->
-        <div id="checkboxes">
-            <table class="table">
-                <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th><th></th></tr>
-                <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Delete
-                    </th>
-                </tr>
-                @Html.EditorFor(model => model.Attachs, @"~\Views\Shared\EditorTemplates\SelectFileEditorModelView")
-            </table>
-            @*Close the "checkboxes" div element:*@
-        </div>
-        <hr />
+            <div id="checkboxes">
+                <table class="table">
+                    <tr><th><span class="glyphicon glyphicon-paperclip"></span> attachments:</th><th></th></tr>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Delete
+                        </th>
+                    </tr>
+                    @Html.EditorFor(model => model.Attachs, @"~\Views\Shared\EditorTemplates\SelectFileEditorModelView")
+                </table>
+                @*Close the "checkboxes" div element:*@
+            </div>
+        }
+        else
+        {
+            @Html.Label("No attachments", new { @class = "control-label col-md-6" })
+            <br />
+        }
         <br />
-        <br>
+        <br />
+
+        <div class="text-danger">Files with these extensions may not be uploaded to to Great Ideas: .exe, .js, .htm, .html</div>
+
 
         <!--Button used to upload any new attachments-->
         <div class="form-group">
-            @Html.Label("", new { @class = "control-label col-md-2" })
+            @Html.Label("New Attachments", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="file" id="files" name="attachments" value="Edit" multiple="multiple" />
+                <input type="file" id="files" name="files" value="" multiple="multiple" />
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" name="operation" value="Save" class="btn btn-default" />
+            <div class="col-md-offset-2 col-md-10 btn-group">
+                <input type="submit" name="operation" value="Save" class="btn btn-default btn-sm" />
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-sm" })
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+
 </div>
 
 @section Scripts {

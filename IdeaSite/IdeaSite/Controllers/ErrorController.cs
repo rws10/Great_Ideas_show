@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.IO;
-using System.Text;
 
 namespace IdeaSite.Controllers
 {
@@ -40,15 +35,15 @@ namespace IdeaSite.Controllers
             return View("NotFound");
         }
 
-        public ViewResult InternalServerError()
-        {
-            Response.StatusCode = 500;
-            using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
-            {
-                tw.WriteLine("ERROR CODE 500: INTERNAL SERVER ERROR");
-            }
-            return View("InternalServerError");
-        }
+        //public ViewResult InternalServerError()
+        //{
+        //    Response.StatusCode = 500;
+        //    using (StreamWriter tw = new StreamWriter(@"C:\Users\simmonr1\Desktop\log.txt"))
+        //    {
+        //        tw.WriteLine("ERROR CODE 500: INTERNAL SERVER ERROR");
+        //    }
+        //    return View("InternalServerError");
+        //}
 
         public ViewResult Unauthorized()
         {

@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using IdeaSite.Models;
 using System.Configuration;
 using System.IO;
-using System.Net.Mail;
-using System.Text;
 using System.Data.Entity;
-using System.Web.UI;
-using System.Web.Services.Protocols;
-using System.Web.Security;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using PagedList;
 
 namespace IdeaSite.Controllers
 {
@@ -30,20 +26,37 @@ namespace IdeaSite.Controllers
         }
 
 
-        
+
         // GET: Ideas
-        public ActionResult Index(string searchBy, string search, string[] sortByStatus)
+        public ActionResult Index(int? page, string currentSearch, string sortByStatus, string[] sortByStatusArr, string search, string searchBy)
         {
+            int pageSize = 10;
+
+            ViewBag.searchBy = searchBy;
+
+            ViewBag.sortByStatusArr = sortByStatusArr;
+            ViewBag.sortByStatus = sortByStatus;
 
             var roles = GetRolesForUser(GetUsername(0));
 
             // get the name of the current user
             ViewBag.currentUser = GetUsername(1);
-
+            var currentUser = GetUsername(1);
 
             // get the domain name for the admin group
             var appSettings = ConfigurationManager.AppSettings;
             string group = appSettings["AdminGroup"];
+
+            if (search != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                search = currentSearch;
+            }
+
+            ViewBag.currentSearch = search;
 
             // determine if the user is an admin and carry this information to the view
             ViewBag.isAdmin = false;
@@ -56,27 +69,58 @@ namespace IdeaSite.Controllers
                 }
             }
 
+            int pageNumber = (page ?? 1);
+
             IEnumerable<Idea> results = new List<Idea>();
+
             // This handles the first run of the index. Since the default checkbox is set to Accepted,
             // The default (first run with parameters of null) view is to show Accepted ideas
             // Checkboxes will maintain their "checked" status across searches
             if (searchBy == null && search == null && sortByStatus == null)
             {
                 results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted"));
-                results = results.Reverse();
-                return View(results);
+                results = results.Reverse().ToPagedList(pageNumber, pageSize);
+                ViewBag.OnePageOfIdeas = results;
+                //return View(results);
+                return View(results.ToPagedList(pageNumber, pageSize));
             }
 
+            if (sortByStatus != null)
+            {
+                string[] stringSeparators = new string[] { " " };
+                sortByStatusArr = sortByStatus.Split(stringSeparators, StringSplitOptions.None);
 
-            if (sortByStatus[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
-            if (sortByStatus[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
-            if (sortByStatus[2] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied")); }
-            if (sortByStatus[3] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Archive")); }
-            if (sortByStatus[4] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Project Submission")); }
-            if (sortByStatus[5] == "true" && sortByStatus[0] == "false") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted" /*&& x.cre_user == currentUser*/)); }
+            }
+            else
+            {
+                sortByStatus = string.Join(" ", sortByStatusArr);
+            }
+
+            ViewBag.sortByStatus = sortByStatus;
+
+            if (sortByStatusArr[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
+            if (sortByStatusArr[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
+            if (sortByStatusArr[2] == "true")
+            {
+                if (ViewBag.isAdmin)
+                {
+                    results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied"));
+                }
+                else
+                {
+                    results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied" && x.cre_user == currentUser));
+                }
+            }
+                if (sortByStatusArr[3] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Archive")); }
+            if (sortByStatusArr[4] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Active Project")); }
+            if (sortByStatusArr[5] == "true" && sortByStatusArr[0] == "false")
+            { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted" && x.cre_user == currentUser)); }
             if (search != null && search != "") { results = SearchByTerms(results, searchBy, search); }
-            //if (search != null && search != "") { results = results.Concat(SearchByTerms(results, searchBy, search)); /*results = results.Distinct();*/ }
             else { results = results.Reverse(); } // the search above already reverses the results
+
+            results = results.ToPagedList(pageNumber, pageSize);
+            ViewBag.OnePageOfIdeas = results;
+
             return View(results);
         }
 
@@ -85,22 +129,24 @@ namespace IdeaSite.Controllers
         {
             Idea idea = db.Ideas.Find(id);
 
+            ViewBag.currentUser = GetUsername(1);
+
             return View(idea);
         }
 
-        // GET: Ideas/Create
+        // GET: Ideas/Submit
 
-        public ActionResult Create()
+        public ActionResult Submit()
         {
             return View();
         }
 
-        // POST: Ideas/Create
+        // POST: Ideas/Submit
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Submit([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason, mod_date, email, commentsNumber")] Idea idea, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -108,12 +154,12 @@ namespace IdeaSite.Controllers
                 //idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
                 idea.mod_date = DateTime.Now;
-
+                idea.email = GetEmail();
                 var ideas = db.Ideas.Where(IDEA => IDEA.title == idea.title).ToList();
 
                 if (ideas.Count > 0)
                 {
-                    TempData["Message"] = "Title must be a unique value";
+                    TempData["FailureMessage"] = "Title must be a unique value";
                     return View(idea);
                 }
 
@@ -155,9 +201,8 @@ namespace IdeaSite.Controllers
                             // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
                             if (!valrtn)
                             {
-                                TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
-                                    "Please scan them locally using McAffey before re-uploading" +
-                                    " by editing the idea";
+                                TempData["FailureMessage"] += "\n\nThe files failed to upload. " +
+                                    "Please scan them locally using McAffee before uploading them again.";
 
                                 return View(idea);
                             }
@@ -201,8 +246,9 @@ namespace IdeaSite.Controllers
                                 idea.attachments = new List<Models.Attachment>();
                             }
 
-                            idea.attachments.Add(attachment);
                             db.Attachments.Add(attachment);
+                            db.SaveChanges();
+                            //idea.attachments.Add(attachment);
                         }
                     }
                 }
@@ -210,7 +256,7 @@ namespace IdeaSite.Controllers
 
 
                 // Compose an email to send to PPMO Group
-                List<string> emailInfo = new List<string> { "1", idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
+                List<string> emailInfo = new List<string> { "1", idea.email, idea.title, idea.body, idea.cre_user, idea.ID.ToString() };
                 TempData["EmailInfo"] = emailInfo;
                 return RedirectToAction("AutoEmail", "Mails");
 
@@ -248,7 +294,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(FileSelectionViewModel model, IEnumerable<HttpPostedFileBase> attachments)
+        public ActionResult Edit(FileSelectionViewModel model, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -271,11 +317,12 @@ namespace IdeaSite.Controllers
                 }
                 currentIdea.title = model.idea.title;
                 currentIdea.body = model.idea.body;
-                currentIdea.statusCode = model.idea.statusCode;
+                currentIdea.statusCode = "Submitted";
                 currentIdea.denialReason = model.idea.denialReason;
                 currentIdea.mod_date = DateTime.Now;
+                currentIdea.email = model.idea.email;
 
-                if (attachments != null)
+                if (files != null)
                 {
                     var appSettings = ConfigurationManager.AppSettings;
 
@@ -290,45 +337,45 @@ namespace IdeaSite.Controllers
                     }
 
                     //run each file through MetaScan and check for forbidden extensions
-                    for (int i = 0; i < attachments.Count(); ++i)
+                    for (int i = 0; i < files.Count(); ++i)
+                    {
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
                         {
-                            if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                            var file = files.ElementAt(i);
+                            // store the name of the attachment
+
+                            // place the file into a bytearray for MetaScan use
+                            FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
+                            byte[] fileBytes = new byte[stream.Length];
+
+                            stream.Read(fileBytes, 0, fileBytes.Length);
+                            stream.Close();
+
+                            // make the file a bytearray and send to MetaScan here?
+                            FileService.FileService sf = new FileService.FileService();
+
+                            string ext = Path.GetExtension(file.FileName);
+
+                            bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
+
+                            // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
+                            if (!valrtn)
                             {
-                                var file = attachments.ElementAt(i);
-                                // store the name of the attachment
+                                TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
+                                    "Please scan them locally using McAffee before uploading them again." +
+                                    " Selected files have not been deleted.";
 
-                                // place the file into a bytearray for MetaScan use
-                                FileStream stream = System.IO.File.OpenRead(Path.GetFullPath(file.FileName));
-                                byte[] fileBytes = new byte[stream.Length];
-
-                                stream.Read(fileBytes, 0, fileBytes.Length);
-                                stream.Close();
-
-                                // make the file a bytearray and send to MetaScan here?
-                                FileService.FileService sf = new FileService.FileService();
-
-                                string ext = Path.GetExtension(file.FileName);
-
-                                bool valrtn = sf.ScanByFileWithNameAndExtension(fileBytes, file.FileName, ext);
-
-                                // If any file fails to load, reload the creation screen and inform the submitter of the need to scan the files.
-                                if (!valrtn)
-                                {
-                                    TempData["ScanFailure"] = "\n\nThe files failed to upload. " +
-                                        "Please scan them locally using McAffey before re-uploading" +
-                                        " by editing the idea. Selected files have not been deleted.";
-
-                                    return View(model);
-                                }
+                                return View(model);
                             }
                         }
+                    }
 
                     // save the files to the specified folder and link them to the idea
-                    for (int i = 0; i < attachments.Count(); ++i)
+                    for (int i = 0; i < files.Count(); ++i)
                     {
-                        if (attachments.ElementAt(i) != null && attachments.ElementAt(i).ContentLength > 0)
+                        if (files.ElementAt(i) != null && files.ElementAt(i).ContentLength > 0)
                         {
-                            var file = attachments.ElementAt(i);
+                            var file = files.ElementAt(i);
                             var attachmentName = Path.GetFileName(file.FileName);
                             var namepath = string.Format("{0}\\{1}", storagePath, attachmentName);
 
@@ -387,12 +434,12 @@ namespace IdeaSite.Controllers
                 if (!alreadySubmitted)
                 {
                     // Compose an email to send to PPMO Group and return to index
-                    List<string> emailInfo = new List<string> { "2", model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
+                    List<string> emailInfo = new List<string> { "2", model.idea.email, model.idea.title, model.idea.body, model.idea.cre_user, model.idea.ID.ToString() };
                     TempData["EmailInfo"] = emailInfo;
 
-                    //return RedirectToAction("AutoEmail", "Mails");
+                    return RedirectToAction("AutoEmail", "Mails");
                     // This is only for Josh and Alex since they don't have access to AD
-                    return RedirectToAction("Index", "Ideas");
+                    //return RedirectToAction("Index", "Ideas");
                 }
                 TempData["Message"] = "Your idea has been successfully submitted.";
                 return RedirectToAction("Index", "Ideas");
@@ -451,7 +498,7 @@ namespace IdeaSite.Controllers
         // POST: Ideas/Archive/5
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
-        public ActionResult ArchiveConfirmed([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea)
+        public ActionResult ArchiveConfirmed([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason, mod_date, email, commentsNumber")] Idea idea)
         {
             if (ModelState.IsValid)
             {
@@ -475,26 +522,26 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas/ProjectSubmission/5
-        public ActionResult ProjectSubmission(int? id)
+        public ActionResult ActiveProject(int? id)
         {
             Idea idea = db.Ideas.Find(id);
-            idea.statusCode = "Project Submission";
+            idea.statusCode = "Active Project";
 
             return View(idea);
         }
 
         // This needs an autoemail
         // POST: Ideas/ProjectSubmission/5
-        [HttpPost, ActionName("ProjectSubmission")]
+        [HttpPost, ActionName("ActiveProject")]
         [ValidateAntiForgeryToken]
-        public ActionResult ProjectSubmissionConfirmed([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea)
+        public ActionResult ActiveProjectConfirmed([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason, mod_date, email, commentsNumber")] Idea idea)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(idea).State = EntityState.Modified;
 
                 db.SaveChanges();
-                TempData["Message"] = "The idea was successfully moved to Project Submission.";
+                TempData["SuccessMessage"] = "The idea was successfully moved to Active Project.";
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
@@ -504,7 +551,16 @@ namespace IdeaSite.Controllers
         public ActionResult Approval(int? id)
         {
             Idea idea = db.Ideas.Find(id);
-            return View(idea);
+            if (idea.statusCode == "Submitted")
+            {
+                return View(idea);
+            }
+            else
+            {
+                TempData["FailureMessage"] = "An approval decision has already been made on this idea.";
+                return RedirectToAction("Index");
+            }
+
         }
 
         // POST: Ideas/Approve/5
@@ -512,7 +568,7 @@ namespace IdeaSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Approval([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason")] Idea idea)
+        public ActionResult Approval([Bind(Include = "ID,title,body,cre_date,cre_user,statusCode,denialReason, mod_date, email, commentsNumber")] Idea idea)
         {
             if (ModelState.IsValid)
             {
@@ -535,11 +591,11 @@ namespace IdeaSite.Controllers
                 // Prepare email based on s
                 if (idea.statusCode == "Accepted")
                 {
-                    emailInfo = new List<string> { "3", idea.title, idea.body, idea.cre_user };
+                    emailInfo = new List<string> { "3", idea.email, idea.title, idea.body, idea.cre_user };
                 }
                 else
                 {
-                    emailInfo = new List<string> { "4", idea.title, idea.body, idea.cre_user, idea.denialReason, idea.ID.ToString() };
+                    emailInfo = new List<string> { "4", idea.email, idea.title, idea.body, idea.cre_user, idea.denialReason, idea.ID.ToString() };
                 }
 
                 // Compose an email to send to PPMO Group and return to index
@@ -618,7 +674,7 @@ namespace IdeaSite.Controllers
             IEnumerable<Idea> results = _results;
             IEnumerable<Idea> finalResults = new List<Idea>();
             string[] searchTerms;
-            //searchTerms = search.Trim().Split(' ');
+            //searchTindexerms = search.Trim().Split(' ');
             searchTerms = SeparateSearchTerms(search);
             // new function before ^^ to find terms from string & phrases
 
@@ -626,12 +682,12 @@ namespace IdeaSite.Controllers
             for (int i = 0; i < searchTerms.Length; ++i)
             {
                 // set to finalResults.Where (results => whatever) to allow a less strict searchs
-                var term = searchTerms[i];
-                if (searchBy == "Title") { finalResults = finalResults.Where(x => x.title.Contains(term)).ToList(); }
-                else if (searchBy == "Description") { finalResults = finalResults.Where(x => x.body.Contains(term)).ToList(); }
+                var term = searchTerms[i].ToUpper();
+                if (searchBy == "Title") { finalResults = finalResults.Where(x => x.title.ToUpper().Contains(term)).ToList(); }
+                else if (searchBy == "Description") { finalResults = finalResults.Where(x => x.body.ToUpper().Contains(term)).ToList(); }
                 else if (searchBy == "All")
                 {
-                    finalResults = finalResults.Where(x => x.title.Contains(term) || x.body.Contains(term)).ToList();
+                    finalResults = finalResults.Where(x => x.title.ToUpper().Contains(term) || x.body.ToUpper().Contains(term)).ToList();
                     //finalResults = finalResults.Concat(finalResults.Where(x => x.body.Contains(term)).ToList());
                 }
             }
@@ -717,7 +773,39 @@ namespace IdeaSite.Controllers
             return roles.ToArray();
         }
 
-        // GET: Ideas/Create
+        string GetEmail()
+        {
+            string username = Environment.UserName;
+            string domain = Environment.UserDomainName;
+
+            List<string> emailAddresses = new List<string>();
+
+            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
+            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
+
+            // Add the "mail" entry
+            emailAddresses.Add(user.EmailAddress);
+
+            // Add the "proxyaddresses" entries.
+            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
+            foreach (object property in properties["proxyaddresses"])
+            {
+                emailAddresses.Add(property.ToString());
+            }
+
+            string from = null;
+
+            for (int i = 0; i < emailAddresses.Count; i++)
+            {
+                if (emailAddresses[i].Contains("@freshfromflorida.com"))
+                {
+                    from = emailAddresses[i];
+                    break;
+                }
+            }
+
+            return from;
+        }
 
         protected override void Dispose(bool disposing)
         {

@@ -4,7 +4,7 @@
     ViewBag.Title = "Approval";
 }
 
-<h2>Approval</h2>
+<h1>Approval</h1>
 
 @using (Html.BeginForm("Approval", "Ideas", FormMethod.Post))
 {
@@ -13,11 +13,13 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-md-9">
-                <h3>@Html.DisplayFor(model => model.title)</h3>
-                <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</h5>
-                <h5>Status: <span class="glyphicon glyphicon-transfer"></span> @Html.DisplayFor(model => model.statusCode)</h5>
-                <h5><span class="label label-success">Description:</span></h5>
-                <textarea rows="3" cols="100" style="border:none" readonly>@Html.DisplayFor(model => model.body)</textarea>
+                <span class="H3" style="display: inline">Title: </span>@Html.DisplayFor(model => model.title)
+                <div class="H5"><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(model => model.cre_user) on @Html.DisplayFor(model => model.cre_date)</div>
+                <div class="H5">Status: <span class="glyphicon glyphicon-transfer"></span> @Html.DisplayFor(model => model.statusCode)</div>
+                <div class="H4"><span class="label label-success">Description:</span></div>
+                <div class="display">@Html.DisplayFor(model => model.body)</div>
+
+                <br />
 
                 <!--Call the partial view for displaying the attachments-->
                 @Html.Action("Display", "Attachment", new { ideaID = Model.ID })
@@ -33,32 +35,37 @@
         @Html.HiddenFor(model => model.cre_date)
         @Html.HiddenFor(model => model.mod_date)
         @Html.HiddenFor(model => model.cre_user)
-
+        @Html.HiddenFor(model => model.email)
+        @Html.HiddenFor(model => model.commentsNumber)
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <b>Accept or Deny Idea:</b> <br />
-        @Html.RadioButtonFor(model => model.statusCode, "Accepted", new { id = "statusCode_Accepted" })
-        <label for="statusCode_Added">Accept</label>
+        <label class="textBoxText">
+            @Html.RadioButtonFor(model => model.statusCode, "Accepted", new { id = "statusCode_Accepted" })
+            Accept
+        </label>
         <br />
-        @Html.RadioButtonFor(model => model.statusCode, "Denied", new { id = "statusCode_Denied" })
-        <label for="statusCode_Denied">Deny</label>
-        <br>
-        <br>
+        <label class="textBoxText">
+            @Html.RadioButtonFor(model => model.statusCode, "Denied", new { id = "statusCode_Denied" })
+            Deny
+        </label>
+        <br />
         <div class="form-group" id="DenialReason">
-            <h4>Reason for Denial</h4>
-            @Html.EditorFor(model => model.denialReason, new { style = "border: 1px solid #ccc;border-radius: 4px;", id = "denialReason", name = "denialReason", rows = "5", cols = "75" })
-            <!--<textarea style="border: 1px solid #ccc;border-radius: 4px;" id="denialReason" name="denialReason" rows="5" cols="75" value="" type="text"></textarea>-->
-            <span class="field-validation-valid text-danger" data-valmsg-for="denialReason" data-valmsg-replace="true"></span>
-            <br>
+            <div class="H4">Reason for Denial</div>
+            <div class="@*col-md-10*@ multiline-field">
+                @Html.EditorFor(model => model.denialReason)
+                <span class="field-validation-valid text-danger" data-valmsg-for="denialReason" data-valmsg-replace="true"></span>
+            </div>
         </div>
-        <input type="submit" value="Save" class="btn btn-default btn-sm" />
+        <br />
+        <div class="btn-group @*col-md-10*@">
+            <input type="submit" value="Save" class="btn btn-default btn-sm" />
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-sm" })
+        </div>
     </div>
 }
 <br>
 <br>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

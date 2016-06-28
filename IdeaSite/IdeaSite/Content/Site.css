@@ -1,13 +1,78 @@
-﻿/* This makes sure that the "denialReason" attribute will be shown only if "statusCode" is set to "Rejected"*/
-.Submitted,
-.Archived,
-.Added {
-    display: none;
-}
-
-body {
+﻿body {
     padding-top: 60px;
     padding-bottom: 20px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+text-box {
+    max-width: 260px;
+}
+
+.H2 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.H3 {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.H4 {
+    display: block;
+    margin-top: 1.33em;
+    margin-bottom: 1.33em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.H5 {
+    display: block;
+    font-size: .83em;
+    margin-top: 1.67em;
+    margin-bottom: 1.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.H6 {
+    display: block;
+    font-size: .67em;
+    margin-top: 2.33em;
+    margin-bottom: 2.33em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.display {
+    border: 1px solid black;
+}
+
+.shortBody {
+    width: 60%;
+}
+
+.textBoxText {
+    font-weight: normal;
+}
+
+.searchBox {
+    width: 85%;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -23,13 +88,6 @@ body {
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-text-box {
-    max-width: 260px;
-}
-
 .bsolid {
     border-style: outset;
     border-color: black;
@@ -42,21 +100,9 @@ text-box {
 }
 
 .table {
-  width: 100%;
-  max-width: 650px;
-  margin-bottom: 20px;
-}
-
-/* On small screens, set height to 'auto' for sidenav and grid */
-@media screen and (max-width: 767px) {
-    .sidenav {
-        height: auto;
-        padding: 15px;
-    }
-
-    .row.content {
-        height: auto;
-    }
+    width: 100%;
+    max-width: 650px;
+    margin-bottom: 20px;
 }
 
 /* Set height of the grid so .sidenav can be 100% (adjust if needed) 
@@ -64,6 +110,14 @@ text-box {
 
 .error-message {
     color: red;
+}
+
+.success-message {
+    color: green;
+}
+
+.message {
+    font-size: large;
 }
 
 editor-label {
@@ -94,3 +148,15 @@ a.my-class {
     a.my-class:visited {
         color: #000000;
     }
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+@media screen and (max-width: 767px) {
+    .sidenav {
+        height: auto;
+        padding: 15px;
+    }
+
+    .row.content {
+        height: auto;
+    }
+}

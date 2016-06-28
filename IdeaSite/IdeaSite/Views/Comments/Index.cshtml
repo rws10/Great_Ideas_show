@@ -1,5 +1,8 @@
-﻿@using IdeaSite.Models
-@model IEnumerable<IdeaSite.Models.Comment>
+﻿@model IPagedList<IdeaSite.Models.Comment>
+
+@using PagedList.Mvc;
+@using PagedList;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "IdeaComments";
@@ -8,33 +11,44 @@
 <div class="container-fluid">
     <div class="row content">
         <div class="col-md-9">
-            <h4>@ViewBag.idea.title</h4>
-            <h5><span class="glyphicon glyphicon-time"></span> Posted by @ViewBag.idea.cre_user on @ViewBag.idea.cre_date</h5>
-            <h5><span class="label label-success">Description:</span></h5>
-            <textarea rows="3" cols="100" style="border:none" readonly>@ViewBag.idea.body</textarea>
+            <div class="H3" style="display: inline">Title: </div> @ViewBag.idea.title
+            <div class="H5"><span class="glyphicon glyphicon-time"></span> Posted by @ViewBag.idea.cre_user on @ViewBag.idea.cre_date</div>
+            <div class="H4"><span class="label label-success">Description:</span></div>
+            <div class="display">@ViewBag.idea.body</div>
         </div>
     </div>
 </div>
-<h1>Posted Comments</h1>
+<hr />
+<h1>Comments</h1>
+<p><b>Click below to create a new comment</b></p>
+@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, new { @class = "btn btn-default btn-sm" })
+
 @foreach (var item in Model)
 {
     <hr>
     <div class="container-fluid">
         <div class="row content">
-            <h4>Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h4>
-            @Html.DisplayFor(modelItem => item.body)
+            <div class="H4">Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</div>
+            <div>@Html.DisplayFor(modelItem => item.body)</div>
+            <br />
             <div class="btn-group">
-                @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, new { @class = "btn btn-default btn-sm" })
-                @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, new { @class = "btn btn-default btn-sm" })
+                @if (ViewBag.isAdmin || item.cre_user == ViewBag.currentUser)
+                {
+                    @Html.ActionLink("Delete", "Delete", "Comments", new { item.ID }, new { @class = "btn btn-default btn-sm" })
+                }
+                @if (item.cre_user == ViewBag.currentUser)
+                {
+                    @Html.ActionLink("Edit", "Edit", "Comments", new { item.ID }, new { @class = "btn btn-default btn-sm" })
+                }
             </div>
         </div>
     </div>
     <hr>
 }
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfComments, page => Url.Action("Index", new { page, id = ViewBag.idea.ID }))
 
-
-<p>Click below to create new comment</p>
-<p>@Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, new { @class = "btn btn-default btn-sm" })</p>
-<br>
-<br>
-<p>@Html.ActionLink("Back to List", "Index", "Ideas")</p>
+<p><b>Click below to create a new comment</b></p>
+<p class="btn-group">
+    @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, new { @class = "btn btn-default btn-sm" })
+    @Html.ActionLink("Back to List", "Index", "Ideas", null, new { @class = "btn btn-default btn-sm" })
+<p />

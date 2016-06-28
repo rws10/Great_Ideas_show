@@ -1,117 +1,239 @@
-﻿@model IEnumerable<IdeaSite.Models.Idea>
+﻿@model IPagedList<IdeaSite.Models.Idea>
+@using PagedList.Mvc;
+@using PagedList;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@*@model IEnumerable<IdeaSite.Models.Idea>*@
+
 @{
     ViewBag.Title = "Ideas";
 }
 <div class="container col-md-12">
     <h1>Great Ideas</h1>
+    <hr />
+
     @using (Html.BeginForm("Index", "Ideas", FormMethod.Get))
     {
-        <br />
         <div>
+            Before submitting a new idea, be sure to search the currently accepted ideas to see if there are any other ideas similar
+            to your own. If one is found, you may make suggestions of improvements or declare the need for the same.
             <div class="editor-label">
                 <b>Search By:</b>
-                @Html.RadioButton("searchBy", "All", true) <text> All </text>
+                @Html.RadioButton("searchBy", "All", new { @checked = "checked" }) <text> All </text>
                 @Html.RadioButton("searchBy", "Title") <text> Title </text>
                 @Html.RadioButton("searchBy", "Description") <text> Description </text>
             </div>
             <p>
-                <b>Filter By:</b>
+
                 @*
                     Default starting value shows "Accepted" Ideas only (checked). This is because users
-                    will only be able to see "Accepted" Ideas. Administrators will have the ability to change
-                    checkboxes as they please. The checkboxes will maintain their status across searches; however,
-                    a refresh (or Back to List) will go back to the original state of Accepted ideas only. This
-                    is due to the way "Back to list" is implemented, because the status is not maintained in the
-                    ViewBag.
+                    will only be able to see "Accepted" Ideas. The checkboxes will maintain their status across
+                    searches; however, a refresh (or Back to List) will go back to the original state of Accepted
+                    ideas only. This is due to the way "Back to list" is implemented, because the status is not maintained
+                    in the ViewBag.
                 *@
 
-                @{ string[] sortByStatus = { "false", "true", "false", "false", "false", "false" }; }
 
-                @*Html.CheckBox("sortByStatus[0]", sortByStatus[0] == "true", new { @checked = "false"  }) <text>  Submitted  </text>*@
+                @{
+                    string[] sortByStatusArr;
 
-
-
-
-                @Html.CheckBox("sortByStatus[5]", sortByStatus[4] == "true") <text> My Submitted </text>
-                @Html.CheckBox("sortByStatus[1]", sortByStatus[1] == "true") <text>  Accepted   </text>
-                @Html.CheckBox("sortByStatus[3]", sortByStatus[3] == "true") <text> Archived </text>
-                @Html.CheckBox("sortByStatus[4]", sortByStatus[4] == "true") <text> Project Submission </text>
-                @if (ViewBag.isAdmin)
+                    <!--Populate sortByStatusArr with a default array if data does not exist in the viewbag for sortByStatusArr
+                    or sortByStatus.-->
+                    if (ViewBag.sortByStatusArr == null)
                     {
-                @Html.CheckBox("sortByStatus[2]", sortByStatus[2] == "true") <text>  Denied     </text>
-                @Html.CheckBox("sortByStatus[0]", sortByStatus[0] == "true") <text>  Submitted  </text>
-                }
-            </p>
-            <p>
-                @Html.TextBox("search") <button type="submit" class="btn btn-default btn-sm">
-                    <span class="glyphicon glyphicon-search"></span> Search
-                </button>
-            </p>
-        </div>
-
-                    }
-    <!--Display message informing user of successful idea submission-->
-    @Html.Action(actionName: "TempMessage", controllerName: "Message")
-
-    @foreach (var item in Model)
-    {
-
-        <div class="container-fluid bsolid">
-            <div class="row content">
-                <div class="col-md-12">
-                    <h4>Title: @Html.DisplayFor(modelItem => item.title)</h4>
-                    <h5><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</h5>
-                    <hr>
-                    <h5><span class="label label-success">Description:</span></h5>
-                    <div id="comment">
-                        @Html.DisplayFor(modelItem => item.body)
-                    </div>
-                    <br />
-                    <br />
-                    <div class="btn-group">
-                        @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                        @Html.ActionLink("Comments", "Index", "Comments", item, new { @class = "btn btn-default btn-sm" })
-                        @*show the edit button only for the creator of the idea*@
-                        @if (item.cre_user == ViewBag.currentUser)
-                            {
-                        @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                        }
-                        @*Display the archive button only for the creator of the idea or an admin and only if the idea is "Accepted" or "Project Submission"*@
-                        @if ((item.cre_user == ViewBag.currentUser || ViewBag.isAdmin) && (item.statusCode == "Accepted" || item.statusCode == "Project Submission" || item.statusCode == "Archive"))
+                        if (ViewBag.sortByStatus == null)
                         {
-                            @*If the idea is already archived, give the option to bring it out.*@
-                        if (item.statusCode == "Archive")
-                        {
-                            @Html.ActionLink("Un-Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            sortByStatusArr = new string[] { "false", "true", "false", "false", "false", "false" };
                         }
                         else
                         {
-                            @Html.ActionLink("Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            string[] stringSeparators = new string[] { " " };
+                            sortByStatusArr = ViewBag.sortByStatus.Split(stringSeparators, StringSplitOptions.None);
+                        }
+                    }
+                    else
+                    {
+                        sortByStatusArr = ViewBag.sortByStatusArr as string[];
+                    }
+
+                    bool[] sortBool = new bool[6];
+
+                    <!--Convert the string form of the bools into bools-->
+                    for (int i = 0; i < sortByStatusArr.Count(); i++)
+                    {
+                        if (sortByStatusArr[i] == "true")
+                        {
+                            sortBool[i] = true;
+                        }
+                        else
+                        {
+                            sortBool[i] = false;
+                        }
+                    }
+                }
+
+                <!--Display the checkboxes for selecting by which status to filter the results.-->
+                <div>
+                    <label><input type="checkbox" id="checkall" />Select All</label>
+                </div>
+                <div id="checkboxes">
+                    <b>Filter By:</b>
+                    <label class="textBoxText">
+                        @Html.CheckBox("sortByStatusArr[5]", sortByStatusArr[5] == "true") My Submitted
+                    </label>
+                    <label class="textBoxText">
+                        @Html.CheckBox("sortByStatusArr[1]", sortByStatusArr[1] == "true") Accepted
+                    </label>
+                    <label class="textBoxText">
+                        @Html.CheckBox("sortByStatusArr[3]", sortByStatusArr[3] == "true") Archived
+                    </label>
+                    <label class="textBoxText">
+                        @Html.CheckBox("sortByStatusArr[4]", sortByStatusArr[4] == "true") Active Project
+                    </label>
+                    <label class="textBoxText">
+                        @Html.CheckBox("sortByStatusArr[2]", sortByStatusArr[2] == "true") Denied
+                    </label>
+
+                    <!--Display the Submitted checkbox only if the user is an admin.-->
+                    @if (ViewBag.isAdmin)
+                {
+                        <label class="textBoxText">
+                            @Html.CheckBox("sortByStatusArr[0]", sortByStatusArr[0] == "true") Submitted
+                        </label>
+                    }
+                    else
+                    {
+                        <div style="visibility:hidden">
+                            @Html.CheckBox("sortByStatusArr[0]", sortByStatusArr[0] == "true", new { Styles = "visibility:hidden" }) <text>  Submitted  </text>
+                        </div>
+                    }
+                </div>
+
+                <!--Place sortByStatusArr into a string to be passed back to the controller.-->
+                @{ string sortByStatus = string.Join(" ", sortByStatusArr);}
+            </p>
+            <p>
+
+                <!--Search button-->
+                @Html.TextBox("search", ViewBag.currentSearch as string, new { @class = "searchBox" })
+                <button type="submit" value="Search" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </p>
+        </div>
+                    }
+    <!--Display message of success or failure of intended action.-->
+    @Html.Action(actionName: "TempMessage", controllerName: "Message")
+
+    If nothing is found you can submit a new idea. You must provide a title and a brief description of your idea and may
+    add any attachments to support your idea. After submitting, the PPMO Group will review your submission. If your idea
+    is not accepted, you will be notified and will have 15 days to edit and re-submit your idea. Otherwise, the submitted
+    idea will be removed from Great Ideas.
+    <br />
+    <br />
+    <p>
+        <b>Click below to submit new Idea</b>
+        <br />
+        <a href="@Url.Action("Submit", "Ideas")" class="btn btn-default btn-sm">Submit New</a>
+        </p>
+        <br />
+
+        @foreach (var item in Model)
+        {
+            <div class="container-fluid bsolid">
+                <div class="row content">
+                    <div class="col-md-12">
+                        <div class="H4">Title: @Html.DisplayFor(modelItem => item.title)</div>
+                        <div class="H5"><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</div>
+                        <hr>
+                        <div class="H5"><span class="label label-success">Description:</span></div>
+                        <div id="comment" class="display">
+                            @Html.DisplayFor(modelItem => item.body)
+                        </div>
+                        <br />
+                        <br />
+                        <div class="btn-group">
+                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            @Html.ActionLink(string.Format("{0} Comments", item.commentsNumber), "Index", "Comments", item, new { @class = "btn btn-default btn-sm" })
+                            @*show the edit button only for the creator of the idea*@
+                            @if (item.cre_user == ViewBag.currentUser && item.statusCode != "Active Project")
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                             }
-                        }
-                        @*show these buttons only for Admins*@
-                        @if (ViewBag.isAdmin)
-                        {
-                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                            @*display project submission only for admins and when the idea isn't already in project submission*@
-                        if (item.statusCode == "Accepted")
-                        {
-                            @Html.ActionLink("ProjectSubmission", "ProjectSubmission", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                        }
-                        @*An admin cannot accept/deny their own submission*@
-                        if (item.statusCode == "Submitted" && item.cre_user != ViewBag.currentUser)
-                        {
-                            @Html.ActionLink("Approval", "Approval", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            @*Display the archive button only for the creator of the idea or an admin and only if the idea is "Accepted" or "Active Project"*@
+                            @if ((item.cre_user == ViewBag.currentUser || ViewBag.isAdmin) && (item.statusCode == "Accepted" || item.statusCode == "Active Project" || item.statusCode == "Archive"))
+                            {
+                                @*If the idea is already archived, give the option to bring it out.*@
+                            if (item.statusCode == "Archive")
+                            {
+                                @Html.ActionLink("Un-Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                             }
-                        }
+                            else
+                            {
+                                @Html.ActionLink("Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                                }
+                            }
+                            @*show these buttons only for Admins*@
+                            @if (ViewBag.isAdmin)
+                            {
+                                @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                                @*display Active Project only for admins and when the idea isn't already in Active Project*@
+                            if (item.statusCode == "Accepted")
+                            {
+                                @Html.ActionLink("Active Project", "ActiveProject", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            }
+                            @*An admin cannot accept/deny their own submission*@
+                            if (item.statusCode == "Submitted")
+                            {
+                                @Html.ActionLink("Approval", "Approval", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                                }
+                            }
+                        </div>
                     </div>
                 </div>
+                <br>
             </div>
             <br>
-        </div>
-        <br>
-    }
+        }
+
+        @Html.PagedListPager((IPagedList)ViewBag.OnePageOfIdeas, page => Url.Action("Index",
+    new
+    {
+        page,
+        sortByStatus = ViewBag.sortByStatus,
+        currentSearch = ViewBag.CurrentSearch,
+        searchBy = ViewBag.searchBy
+    }))
 
     <p><b>Click below to submit new Idea</b></p>
-    <a href="@Url.Action("Create", "Ideas")" class="btn btn-default btn-sm">Create New</a>
+    <a href="@Url.Action("Submit", "Ideas")" class="btn btn-default btn-sm">Submit New</a>
+
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        function toggleChecked(status) {
+            $("#checkboxes input").each(function () {
+
+                // Set the checked status of each to match the
+                // checked status of the check all checkbox:
+                $(this).prop("checked", status);
+            });
+        }
+
+        $(document).ready(function () {
+
+            //Set the default value of the global checkbox to true:
+            $("#checkall").prop('checked', true);
+
+            // Attach the call to toggleChecked to the
+            // click event of the global checkbox:
+            $("#checkall").click(function () {
+                var status = $("#checkall").prop('checked');
+                toggleChecked(status);
+            });
+        });
+    </script>
+}

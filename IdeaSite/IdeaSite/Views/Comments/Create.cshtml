@@ -13,26 +13,28 @@
     @Html.HiddenFor(model => model.ideaID)
     @Html.HiddenFor(model => model.cre_date)
     @Html.HiddenFor(model => model.cre_user)
-
+    <h1>New Comment</h1>
+    <hr />
     <div class="form-horizontal">
-        <h4>Leave comment below</h4>
-        <hr />
+        <div class="H4">Leave your comment below</div>
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            <label class="control-label col-md-2" for="description">Comment</label>
+            @Html.LabelFor(model => model.body, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <textarea style="border: 1px solid #ccc;border-radius: 4px;" id="body" name="body" rows="5" cols="75" value="" type="text"></textarea>
+                @Html.EditorFor(model => model.body, new { htmlAttributes = new { @class = "form-control shortBody" } })
                 <span class="field-validation-valid text-danger" data-valmsg-for="body" data-valmsg-replace="true"></span>
                 <br>@Html.ValidationMessageFor(model => model.body)
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn btn-default" />
+            <div class="col-md-offset-2 col-md-10 btn-group">
+                <input type="submit" value="Create" class="btn btn-default btn-sm" />
+                @Html.ActionLink("Back to List", "Index", "Comments", new { id = Model.ideaID }, new { @class = "btn btn-default btn-sm" })
+
             </div>
         </div>
     </div>
 }
 
-<p> @Html.ActionLink("Back to List", "Index", "Comments", new { id = ViewBag.ideaID }, null) </p>
