@@ -10,6 +10,15 @@ text-box {
     max-width: 260px;
 }
 
+a.morelink {
+    text-decoration: none;
+    outline: none;
+}
+
+.morecontent span {
+    display: none;
+}
+
 .H2 {
     display: block;
     font-size: 1.5em;
@@ -148,6 +157,10 @@ a.my-class {
     a.my-class:visited {
         color: #000000;
     }
+
+#a {
+    color: #0254EB;
+}
 
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {

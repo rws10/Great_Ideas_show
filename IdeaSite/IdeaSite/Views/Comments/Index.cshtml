@@ -29,7 +29,9 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="H4">Created by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</div>
-            <div>@Html.DisplayFor(modelItem => item.body)</div>
+            <div class="more">
+                @Html.DisplayFor(modelItem => item.body)
+            </div>
             <br />
             <div class="btn-group">
                 @if (ViewBag.isAdmin || item.cre_user == ViewBag.currentUser)
@@ -52,3 +54,44 @@
     @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, new { @class = "btn btn-default btn-sm" })
     @Html.ActionLink("Back to List", "Index", "Ideas", null, new { @class = "btn btn-default btn-sm" })
 <p />
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var showChar = 312;
+            var ellipsestext = "...";
+            var moretext = "show more";
+            var lesstext = "show less";
+            $('.more').each(function () {
+                var content = $(this).html();
+
+                if (content.length > showChar) {
+
+                    var c = content.substr(0, showChar);
+                    var h = content.substr(showChar - 1, content.length - showChar);
+
+                    var html = c + '<span class="moreellipses">' + ellipsestext
+                        + '&nbsp;</span><span class="morecontent"><span>' + h
+                        + '</span>&nbsp;&nbsp;<a href="" class="morelink" id="a">' + moretext + '</a></span>';
+
+                    $(this).html(html);
+                }
+
+            });
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+}
