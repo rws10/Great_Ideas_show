@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using log4net;
 
 namespace IdeaSite.Models
 {

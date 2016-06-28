@@ -1,4 +1,5 @@
-﻿namespace IdeaSite.Models
+﻿using log4net;
+namespace IdeaSite.Models
 {
     public class SelectFileEditorViewModel
     {

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
+using log4net;
 
 namespace IdeaSite.Models
 {
