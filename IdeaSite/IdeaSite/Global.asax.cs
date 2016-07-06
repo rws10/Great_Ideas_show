@@ -1,6 +1,7 @@
 ﻿using IdeaSite.Models;
 using log4net;
 using System;
+using System.Globalization;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -27,16 +28,10 @@ namespace IdeaSite
         {
             HttpContext ctx = HttpContext.Current;
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append(ctx.Request.Url.ToString() + System.Environment.NewLine);
-            sb.Append("Source:" + System.Environment.NewLine + ctx.Server.GetLastError().Source.ToString());
-            sb.Append("Message:" + System.Environment.NewLine + ctx.Server.GetLastError().Message.ToString());
-            sb.Append("Stack Trace:" + System.Environment.NewLine + ctx.Server.GetLastError().StackTrace.ToString());
-
             log.Error("An unhandled error occured.", ctx.Error);
 
-            //REDIRECT USER TO ERROR PAGE
-            Response.Redirect("~/Views/Shared/Error.cshtml");
+            Response.RedirectToRoute("Error", new { controller = "Error", action = "Index"});
+            this.Context.ClearError();
         }
     }
 }

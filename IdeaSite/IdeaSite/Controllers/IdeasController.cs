@@ -26,6 +26,7 @@ namespace IdeaSite.Controllers
         //home index
         public ActionResult Home()
         {
+            int.Parse("break");
             return View();
         }
 
@@ -119,12 +120,10 @@ namespace IdeaSite.Controllers
                 if (sortByStatusArr[5] == "true" && sortByStatusArr[0] == "false")
                 { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted" && x.cre_user == currentUser)); }
             }
-            catch(Exception ex)
+            catch(SqlException ex)
             {
-                if (ex is SqlException)
-                {
-                    return RedirectToAction("Index", "Error");
-                }
+                log.Error("An error has occured while accessing the database.", ex);
+                return RedirectToAction("Index", "Error");
             }
 
             if (search != null && search != "") { results = SearchByTerms(results, searchBy, search); }
@@ -229,7 +228,8 @@ namespace IdeaSite.Controllers
                     }
                     catch (SqlException ex)
                     {
-                        log.Error("There was an issue saving changes to the database.", ex);
+                        log.Error("An error has occured while accessing the database.", ex);
+                        return RedirectToAction("Index", "Error");
                     }
 
                     // save the files to the specified folder and link them to the idea
@@ -257,8 +257,8 @@ namespace IdeaSite.Controllers
                             }
                             catch (Exception ex)
                             {
-                                TempData["Message"] += String.Format("An error was caught: Error number: {0}, Message: {1}", ex.HResult, ex.Message);
-                                return View(idea);
+                                log.Error("An error has occured while attempting to save a file.", ex);
+                                return RedirectToAction("Index", "Error");
                             }
 
                             if (idea.attachments == null)
@@ -275,8 +275,8 @@ namespace IdeaSite.Controllers
                             catch (SqlException ex)
                             {
                                 log.Error("There was an issue saving changes to the database.", ex);
+                                return RedirectToAction("Index", "Error");
                             }
-                            //idea.attachments.Add(attachment);
                         }
                     }
                 }
@@ -286,7 +286,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue saving changes to the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
 
 
@@ -451,7 +452,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue saving changes to the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
 
                 // get the ids of the items selected:
@@ -477,7 +479,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue saving changes to the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
 
                 if (!alreadySubmitted)
@@ -531,7 +534,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue when attempting to access the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
             }
 
@@ -545,7 +549,8 @@ namespace IdeaSite.Controllers
             }
             catch (SqlException ex)
             {
-                log.Error("There was an issue when attempting to access the database.", ex);
+                log.Error("An error has occured while accessing the database.", ex);
+                return RedirectToAction("Index", "Error");
             }
 
             TempData["Message"] = "The idea was successfully deleted.";
@@ -562,12 +567,8 @@ namespace IdeaSite.Controllers
             }
             catch (SqlException ex)
             {
-                log.Error("There was an issue when attempting to access the database.", ex);
-                return View("");
-            }
-            catch (Exception ex)
-            {
-
+                log.Error("An error has occured while accessing the database.", ex);
+                return RedirectToAction("Index", "Error");
             }
 
             return View(idea);
@@ -599,7 +600,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue saving changes to the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
 
                 return RedirectToAction("Index");
@@ -632,7 +634,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue attempting to access the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
 
                 TempData["SuccessMessage"] = "The idea was successfully moved to Active Project.";
@@ -682,7 +685,8 @@ namespace IdeaSite.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    log.Error("There was an issue saving changes to the database.", ex);
+                    log.Error("An error has occured while accessing the database.", ex);
+                    return RedirectToAction("Index", "Error");
                 }
 
                 //ViewBag.attachments = attachments;*/
