@@ -1,12 +1,5 @@
-# Team_Zed
-Team email:
-teamzed@outlook.com
-T3@m_Z3d
 Here is a list of items that need to be done to finish the project:
-ADDITIONS
-
-Alex:
-- On the comments delete page:
+ADDITIONS:
 - Add a view for handling unhandled exceptions. 
   * Reference what I did on the IdeaController/create Post for db.Savechanges().
 - See about integrating "Logfor Net"
@@ -17,21 +10,13 @@ Alex:
 - Have the attachments that are ready to be uploaded listed by name
 - Add in the time sensitive auto-actions
 
-Russell:
-Idea:
--index: 
- - Have the body show the first 5 lines and then have the rest hidden in a "show more" type container.
-   Then, accordian the rest of the idea out on clicking "show more"
-
+Russell
 Comment:
 - index:
   - When the comment index is called for an idea, the URL is populated with the attributes of the idea. 
       * Any large body of an idea will cause an error.
 
-BUGS
-
-
-Future Updates:
+FUTURE UPDATES:
 - Allow users to cancel uploading a document. Once a file has been selected using the "browse" 
   button, they are locked into uploading at least one file
 - Add a new field of "Project Manager"

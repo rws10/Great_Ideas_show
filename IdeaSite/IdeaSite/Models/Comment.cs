@@ -30,16 +30,5 @@ namespace IdeaSite.Models
         [Display(Name = "Creation Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime cre_date { get; set; }
-
-       
-
-        // these are useless and are not used
-        //public string ownerName { get; set; }
-        //public string ownerDescription { get; set; }
-        //public Idea ownerIdea { get; set; }
-
-        //public string loginID { get; set; }
-
-
     }
 }

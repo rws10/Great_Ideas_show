@@ -11,12 +11,16 @@ using System.Data.Entity;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using PagedList;
+using log4net;
+using System.Data.SqlClient;
 
 namespace IdeaSite.Controllers
 {
     //[Authorize]
     public class IdeasController : Controller
     {
+        private static readonly ILog log = LogHelper.GetLogger();
+
         private IdeaSiteContext db = new IdeaSiteContext();
 
         //home index
@@ -24,8 +28,6 @@ namespace IdeaSite.Controllers
         {
             return View();
         }
-
-
 
         // GET: Ideas
         public ActionResult Index(int? page, string currentSearch, string sortByStatus, string[] sortByStatusArr, string search, string searchBy)
@@ -97,24 +99,34 @@ namespace IdeaSite.Controllers
             }
 
             ViewBag.sortByStatus = sortByStatus;
-
-            if (sortByStatusArr[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
-            if (sortByStatusArr[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
-            if (sortByStatusArr[2] == "true")
-            {
-                if (ViewBag.isAdmin)
+            try {
+                if (sortByStatusArr[0] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted")); }
+                if (sortByStatusArr[1] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Accepted")); }
+                if (sortByStatusArr[2] == "true")
                 {
-                    results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied"));
+                    if (ViewBag.isAdmin)
+                    {
+                        results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied"));
+                    }
+                    else
+                    {
+                        results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied" && x.cre_user == currentUser));
+                    }
                 }
-                else
+
+                if (sortByStatusArr[3] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Archive")); }
+                if (sortByStatusArr[4] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Active Project")); }
+                if (sortByStatusArr[5] == "true" && sortByStatusArr[0] == "false")
+                { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted" && x.cre_user == currentUser)); }
+            }
+            catch(Exception ex)
+            {
+                if (ex is SqlException)
                 {
-                    results = results.Concat(db.Ideas.Where(x => x.statusCode == "Denied" && x.cre_user == currentUser));
+                    return RedirectToAction("Index", "Error");
                 }
             }
-                if (sortByStatusArr[3] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Archive")); }
-            if (sortByStatusArr[4] == "true") { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Active Project")); }
-            if (sortByStatusArr[5] == "true" && sortByStatusArr[0] == "false")
-            { results = results.Concat(db.Ideas.Where(x => x.statusCode == "Submitted" && x.cre_user == currentUser)); }
+
             if (search != null && search != "") { results = SearchByTerms(results, searchBy, search); }
             else { results = results.Reverse(); } // the search above already reverses the results
 
@@ -210,7 +222,15 @@ namespace IdeaSite.Controllers
                     }
 
                     db.Ideas.Add(idea);
-                    db.SaveChanges();
+
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (SqlException ex)
+                    {
+                        log.Error("There was an issue saving changes to the database.", ex);
+                    }
 
                     // save the files to the specified folder and link them to the idea
                     for (int i = 0; i < files.Count(); ++i)
@@ -247,12 +267,27 @@ namespace IdeaSite.Controllers
                             }
 
                             db.Attachments.Add(attachment);
-                            db.SaveChanges();
+
+                            try
+                            {
+                                db.SaveChanges();
+                            }
+                            catch (SqlException ex)
+                            {
+                                log.Error("There was an issue saving changes to the database.", ex);
+                            }
                             //idea.attachments.Add(attachment);
                         }
                     }
                 }
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue saving changes to the database.", ex);
+                }
 
 
                 // Compose an email to send to PPMO Group
@@ -410,7 +445,14 @@ namespace IdeaSite.Controllers
                     }
                 }
                 // save the new Attachments to the Idea
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue saving changes to the database.", ex);
+                }
 
                 // get the ids of the items selected:
                 var selectedIds = model.getSelectedIds();
@@ -429,7 +471,14 @@ namespace IdeaSite.Controllers
                     db.Attachments.Remove(attachment);
                 }
 
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue saving changes to the database.", ex);
+                }
 
                 if (!alreadySubmitted)
                 {
@@ -476,13 +525,28 @@ namespace IdeaSite.Controllers
                     attachment.DeleteDirectory();
                 }
 
-                db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.ownIdea.ID == id));
+                try
+                {
+                    db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.ownIdea.ID == id));
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue when attempting to access the database.", ex);
+                }
             }
 
-            db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
+            try
+            {
+                db.Comments.RemoveRange(db.Comments.Where(com => com.ideaID == id));
 
-            db.Ideas.Remove(idea);
-            db.SaveChanges();
+                db.Ideas.Remove(idea);
+
+                db.SaveChanges();
+            }
+            catch (SqlException ex)
+            {
+                log.Error("There was an issue when attempting to access the database.", ex);
+            }
 
             TempData["Message"] = "The idea was successfully deleted.";
             return RedirectToAction("Index");
@@ -491,7 +555,21 @@ namespace IdeaSite.Controllers
         // GET: Ideas/Archive/5
         public ActionResult Archive(int? id)
         {
-            Idea idea = db.Ideas.Find(id);
+            Idea idea = null;
+            try
+            {
+                idea = db.Ideas.Find(id);
+            }
+            catch (SqlException ex)
+            {
+                log.Error("There was an issue when attempting to access the database.", ex);
+                return View("");
+            }
+            catch (Exception ex)
+            {
+
+            }
+
             return View(idea);
         }
 
@@ -515,7 +593,15 @@ namespace IdeaSite.Controllers
                     TempData["Message"] = "The idea was successfully archived.";
                 }
 
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue saving changes to the database.", ex);
+                }
+
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
@@ -538,9 +624,17 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(idea).State = EntityState.Modified;
+                try
+                {
+                    db.Entry(idea).State = EntityState.Modified;
 
-                db.SaveChanges();
+                    db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue attempting to access the database.", ex);
+                }
+
                 TempData["SuccessMessage"] = "The idea was successfully moved to Active Project.";
                 return RedirectToAction("Index");
             }
@@ -582,7 +676,14 @@ namespace IdeaSite.Controllers
                 currentIdea.statusCode = idea.statusCode;
                 currentIdea.denialReason = idea.denialReason;
 
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (SqlException ex)
+                {
+                    log.Error("There was an issue saving changes to the database.", ex);
+                }
 
                 //ViewBag.attachments = attachments;*/
 
