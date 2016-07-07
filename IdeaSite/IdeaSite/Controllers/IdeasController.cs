@@ -10,7 +10,7 @@ using System.IO;
 using System.Data.Entity;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using PagedList;
+using X.PagedList;
 using log4net;
 using System.Data.SqlClient;
 
@@ -26,7 +26,6 @@ namespace IdeaSite.Controllers
         //home index
         public ActionResult Home()
         {
-            int.Parse("break");
             return View();
         }
 

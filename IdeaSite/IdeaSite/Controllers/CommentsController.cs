@@ -11,7 +11,7 @@ using System.Net.Mail;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices;
 using System.Configuration;
-using PagedList;
+using X.PagedList;
 
 // for commit
 namespace IdeaSite.Controllers
