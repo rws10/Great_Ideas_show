@@ -1,7 +1,7 @@
 ﻿@model IPagedList<IdeaSite.Models.Comment>
 
-@using PagedList.Mvc;
-@using PagedList;
+@using X.PagedList.Mvc;
+@using X.PagedList;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
@@ -22,6 +22,9 @@
 <h1>Comments</h1>
 <p><b>Click below to create a new comment</b></p>
 @Html.ActionLink("Create New", "Create", "Comments", new { id = ViewBag.idea.ID }, new { @class = "btn btn-default btn-sm" })
+
+<!--Display the buttons to allow navigation of the multiple pages of comments if there are multiple pages.-->
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfComments, page => Url.Action("Index", new { page, id = ViewBag.idea.ID }))
 
 @foreach (var item in Model)
 {
@@ -47,6 +50,7 @@
     </div>
     <hr>
 }
+<!--Display the buttons to allow navigation of the multiple pages of comments if there are multiple pages.-->
 @Html.PagedListPager((IPagedList)ViewBag.OnePageOfComments, page => Url.Action("Index", new { page, id = ViewBag.idea.ID }))
 
 <p><b>Click below to create a new comment</b></p>

@@ -3,11 +3,9 @@ ToDo:
   - timed checking events
     * This is going to be taken care on the server side.
     * Create stored procedures (partly done) on the server side using T-SQL
-  - Get an email for Great Ideas from Bobby Sanchez
   - Follow ADA Format
     * Label on name on form
   - Have the attachments that are ready to be uploaded listed by name
-  - Add in the time sensitive auto-actions
   - (Call Janet Quinten for secuirty?)
 
 Bugs:

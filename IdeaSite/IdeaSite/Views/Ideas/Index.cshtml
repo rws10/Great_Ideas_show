@@ -1,6 +1,6 @@
 ﻿@model IPagedList<IdeaSite.Models.Idea>
-@using PagedList.Mvc;
-@using PagedList;
+@using X.PagedList.Mvc;
+@using X.PagedList;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @*@model IEnumerable<IdeaSite.Models.Idea>*@
 
@@ -134,68 +134,77 @@
         <b>Click below to submit new Idea</b>
         <br />
         <a href="@Url.Action("Submit", "Ideas")" class="btn btn-default btn-sm">Submit New</a>
-        </p>
-        <br />
+    </p>
+    <!--Display the buttons to allow navigation of the multiple pages of ideas if there are multiple pages.-->
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfIdeas, page => Url.Action("Index",
+    new
+    {
+        page,
+        sortByStatus = ViewBag.sortByStatus,
+        currentSearch = ViewBag.CurrentSearch,
+        searchBy = ViewBag.searchBy
+    }))
+    <br />
 
-        @foreach (var item in Model)
-        {
-            <div class="container-fluid bsolid">
-                <div class="row content">
-                    <div class="col-md-12">
-                        <div class="H4">Title: @Html.DisplayFor(modelItem => item.title)</div>
-                        <div class="H5"><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</div>
-                        <hr>
-                        <div class="H5"><span class="label label-success">Description:</span></div>
-                        <div id="comment" class="more">
-                            @Html.DisplayFor(modelItem => item.body)
-                        </div>
-                        <br />
-                        <br />
-                        <div class="btn-group">
-                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                            @Html.ActionLink(string.Format("{0} Comments", item.commentsNumber), "Index", "Comments", item, new { @class = "btn btn-default btn-sm" })
-                            @*show the edit button only for the creator of the idea*@
-                            @if (item.cre_user == ViewBag.currentUser && item.statusCode != "Active Project")
-                            {
-                                @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+    @foreach (var item in Model)
+    {
+        <div class="container-fluid bsolid">
+            <div class="row content">
+                <div class="col-md-12">
+                    <div class="H4">Title: @Html.DisplayFor(modelItem => item.title)</div>
+                    <div class="H5"><span class="glyphicon glyphicon-time"></span> Posted by @Html.DisplayFor(modelItem => item.cre_user) on @Html.DisplayFor(modelItem => item.cre_date)</div>
+                    <hr>
+                    <div class="H5"><span class="label label-success">Description:</span></div>
+                    <div id="comment" class="more">
+                        @Html.DisplayFor(modelItem => item.body)
+                    </div>
+                    <br />
+                    <br />
+                    <div class="btn-group">
+                        @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                        @Html.ActionLink(string.Format("{0} Comments", item.commentsNumber), "Index", "Comments", item, new { @class = "btn btn-default btn-sm" })
+                        @*show the edit button only for the creator of the idea*@
+                        @if (item.cre_user == ViewBag.currentUser && item.statusCode != "Active Project")
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                        }
+                        @*Display the archive button only for the creator of the idea or an admin and only if the idea is "Accepted" or "Active Project"*@
+                        @if ((item.cre_user == ViewBag.currentUser || ViewBag.isAdmin) && (item.statusCode == "Accepted" || item.statusCode == "Active Project" || item.statusCode == "Archive"))
+                        {
+                            @*If the idea is already archived, give the option to bring it out.*@
+                        if (item.statusCode == "Archive")
+                        {
+                            @Html.ActionLink("Un-Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                             }
-                            @*Display the archive button only for the creator of the idea or an admin and only if the idea is "Accepted" or "Active Project"*@
-                            @if ((item.cre_user == ViewBag.currentUser || ViewBag.isAdmin) && (item.statusCode == "Accepted" || item.statusCode == "Active Project" || item.statusCode == "Archive"))
-                            {
-                                @*If the idea is already archived, give the option to bring it out.*@
-                            if (item.statusCode == "Archive")
-                            {
-                                @Html.ActionLink("Un-Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                        }
+                        @*show these buttons only for Admins*@
+                        @if (ViewBag.isAdmin)
+                        {
+                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                            @*display Active Project only for admins and when the idea isn't already in Active Project*@
+                        if (item.statusCode == "Accepted")
+                        {
+                            @Html.ActionLink("Active Project", "ActiveProject", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
+                        }
+                        @*An admin cannot accept/deny their own submission*@
+                        if (item.statusCode == "Submitted")
+                        {
+                            @Html.ActionLink("Approval", "Approval", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
                             }
-                            else
-                            {
-                                @Html.ActionLink("Archive", "Archive", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                                }
-                            }
-                            @*show these buttons only for Admins*@
-                            @if (ViewBag.isAdmin)
-                            {
-                                @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                                @*display Active Project only for admins and when the idea isn't already in Active Project*@
-                            if (item.statusCode == "Accepted")
-                            {
-                                @Html.ActionLink("Active Project", "ActiveProject", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                            }
-                            @*An admin cannot accept/deny their own submission*@
-                            if (item.statusCode == "Submitted")
-                            {
-                                @Html.ActionLink("Approval", "Approval", new { id = item.ID }, new { @class = "btn btn-default btn-sm" })
-                                }
-                            }
-                        </div>
+                        }
                     </div>
                 </div>
-                <br>
             </div>
             <br>
-        }
-
-        @Html.PagedListPager((IPagedList)ViewBag.OnePageOfIdeas, page => Url.Action("Index",
+        </div>
+            <br>
+    }
+    <!--Display the buttons to allow navigation of the multiple pages of ideas if there are multiple pages.-->
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfIdeas, page => Url.Action("Index",
     new
     {
         page,
@@ -223,18 +232,18 @@
             });
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             var showChar = 312;
             var ellipsestext = "...";
             var moretext = "show more";
             var lesstext = "show less";
-            $('.more').each(function() {
+            $('.more').each(function () {
                 var content = $(this).html();
 
-                if(content.length > showChar) {
+                if (content.length > showChar) {
 
                     var c = content.substr(0, showChar);
-                    var h = content.substr(showChar-1, content.length - showChar);
+                    var h = content.substr(showChar - 1, content.length - showChar);
 
                     var html = c + '<span class="moreellipses">' + ellipsestext
                         + '&nbsp;</span><span class="morecontent"><span>' + h
