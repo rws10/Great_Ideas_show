@@ -1,0 +1,80 @@
+﻿@model IdeaSite.Models.Idea
+
+@{
+    ViewBag.Title = "Archive";
+}
+
+<h1>Archive</h1>
+
+@if (Model.statusCode != "Archive")
+{
+    <h3>Are you sure you want to archive this idea?</h3>
+}
+else
+{
+    <h3>Are you sure you want to remove this idea from the archive list?</h3>
+}
+
+<div>
+    <div class="H4">Idea</div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.cre_user)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cre_user)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.cre_date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cre_date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.body)
+        </dt>
+
+        <dd class="display">
+            @Html.DisplayFor(model => model.body)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.attachments)
+        @Html.HiddenFor(model => model.statusCode)
+        @Html.HiddenFor(model => model.denialReason)
+        @Html.HiddenFor(model => model.title)
+        @Html.HiddenFor(model => model.body)
+        @Html.HiddenFor(model => model.cre_date)
+        @Html.HiddenFor(model => model.cre_user)
+        @Html.HiddenFor(model => model.mod_date)
+        @Html.HiddenFor(model => model.email)
+        @Html.HiddenFor(model => model.commentsNumber)
+
+
+        <div class="form-actions no-color btn-group">
+            @if (Model.statusCode != "Archive")
+            {
+                <input type="submit" value="Archive" class="btn btn-default btn-sm" />
+            }
+            else
+            {
+                <input type="submit" value="Un-Archive" class="btn btn-default btn-sm" />
+            }
+
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-sm" })        </div>
+    }
+</div>
