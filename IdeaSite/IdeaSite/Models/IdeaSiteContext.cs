@@ -12,7 +12,7 @@ namespace IdeaSite.Models
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
     
-        public IdeaSiteContext() : base("name=IdeaSiteContext")
+        public IdeaSiteContext() : base("name=agadm049423.Great_Ideas.dbo")
         {
             //Database.SetInitializer<IdeaSiteContext>(null);
         }

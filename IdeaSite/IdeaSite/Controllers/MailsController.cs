@@ -5,12 +5,15 @@ using IdeaSite.Models;
 using System.Net.Mail;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using log4net;
 
 namespace IdeaSite.Controllers
 {
     public class MailsController : Controller
     {
         private IdeaSiteContext db = new IdeaSiteContext();
+
+        private static readonly ILog log = LogHelper.GetLogger();
 
         // GET: Mails/Create
         public ActionResult WriteNew()
@@ -192,10 +195,11 @@ namespace IdeaSite.Controllers
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.Send(mailMessage);
             }
+
             catch (SmtpException ex)
             {
                 TempData["FailureMessage"] = "Your email was not sent.";
-                // Code to Log error
+                 log.Error("An error has occured while accessing the database.", ex);
             }
         }
 

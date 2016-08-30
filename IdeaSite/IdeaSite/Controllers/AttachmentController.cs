@@ -15,7 +15,7 @@ namespace IdeaSite.Controllers
         public ActionResult Display(int ideaID)
         {
             List<Attachment> attachments = new List<Models.Attachment>();
-            attachments = db.Attachments.Where(attachment => attachment.ownIdea.ID == ideaID).ToList();
+            attachments = db.Attachments.Where(attachment => attachment.IdeaID == ideaID).ToList();
 
             ViewBag.attachments = attachments;
 

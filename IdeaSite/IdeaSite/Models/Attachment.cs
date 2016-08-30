@@ -16,9 +16,7 @@ namespace IdeaSite.Models
         [Required]
         public int ID { get; set; }
 
-        public int IdeaID { get; set; }
-
-        public virtual Idea ownIdea { get; set; }
+        public int ideaID { get; set; }
 
         public string name { get; set; }
 
@@ -28,7 +26,7 @@ namespace IdeaSite.Models
         [StringLength(255)]
         public string storageLocation { get; set; }
 
-        public bool delete { get; set; }
+        public string deleteObj { get; set; }
 
         public void DeleteFile()
         {
