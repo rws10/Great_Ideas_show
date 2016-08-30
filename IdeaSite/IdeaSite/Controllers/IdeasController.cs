@@ -309,7 +309,7 @@ namespace IdeaSite.Controllers
 
             foreach (var attachment in db.Attachments)
             {
-                if (attachment.IdeaID == model.idea.ID)
+                if (attachment.ideaID == model.idea.ID)
                 {
                     var editorViewModel = new SelectFileEditorViewModel()
                     {
@@ -515,7 +515,7 @@ namespace IdeaSite.Controllers
              * associated with them. Once all of the files are gone from each files directory, the directory is 
              * deleted*/
             IEnumerable<Models.Attachment> attachments = new List<Models.Attachment>();
-            attachments = db.Attachments.Where(attach => attach.IdeaID == idea.ID).ToList();
+            attachments = db.Attachments.Where(attach => attach.ideaID == idea.ID).ToList();
 
             if (attachments != null)
             {
@@ -527,7 +527,7 @@ namespace IdeaSite.Controllers
 
                 try
                 {
-                    db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.IdeaID == id));
+                    db.Attachments.RemoveRange(db.Attachments.Where(attach => attach.ideaID == id));
                 }
                 catch (SqlException ex)
                 {
