@@ -18,7 +18,7 @@ namespace IdeaSite.Controllers
 {
     public class CommentsController : Controller
     {
-        private IdeaSiteContext db = new IdeaSiteContext();
+        private Great_Ideas db = new Great_Ideas();
 
         // GET: Comments
         public ActionResult Index(int id, int? page)

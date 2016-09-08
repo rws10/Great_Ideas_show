@@ -11,7 +11,7 @@ namespace IdeaSite.Controllers
 {
     public class MailsController : Controller
     {
-        private IdeaSiteContext db = new IdeaSiteContext();
+        private Great_Ideas db = new Great_Ideas();
 
         private static readonly ILog log = LogHelper.GetLogger();
 

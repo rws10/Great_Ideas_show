@@ -3,3 +3,16 @@
 ################################################################################
 
 *.suo
+/IdeaSite/packages/X.PagedList.Mvc.5.1.0.5000
+/IdeaSite/packages/X.PagedList.5.1.0.5000
+/IdeaSite/packages/Microsoft.Net.Compilers.1.2.2
+/IdeaSite/packages/Microsoft.Bcl.Build.1.0.21
+/IdeaSite/packages/Microsoft.Bcl.Async.1.0.168
+/IdeaSite/packages/Microsoft.Bcl.1.1.10
+/IdeaSite/packages/log4net.2.0.5
+*.dll
+*.cache
+*.resources
+/IdeaSite/IdeaSite/Properties/Resources.Designer.cs
+/IdeaSite/IdeaSite/Properties/Settings.Designer.cs
+/IdeaSite/IdeaSite/Properties/Settings.settings

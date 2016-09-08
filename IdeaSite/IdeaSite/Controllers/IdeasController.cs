@@ -21,7 +21,8 @@ namespace IdeaSite.Controllers
     {
         private static readonly ILog log = LogHelper.GetLogger();
 
-        private IdeaSiteContext db = new IdeaSiteContext();
+
+        private Great_Ideas db = new Great_Ideas();
 
         //home index
         public ActionResult Home()
@@ -161,7 +162,6 @@ namespace IdeaSite.Controllers
             if (ModelState.IsValid)
             {
                 idea.cre_user = GetUsername(1);
-                //idea.cre_user = "Administrator";
                 idea.cre_date = DateTime.Now;
                 idea.mod_date = DateTime.Now;
                 idea.email = GetEmail();

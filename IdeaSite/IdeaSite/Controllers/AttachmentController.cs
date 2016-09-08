@@ -8,7 +8,7 @@ namespace IdeaSite.Controllers
 {
     public class AttachmentController : Controller
     {
-        private IdeaSiteContext db = new IdeaSiteContext();
+        private Great_Ideas db = new Great_Ideas();
 
         // GET: Attachment
         [ChildActionOnly]
