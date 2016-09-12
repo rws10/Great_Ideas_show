@@ -44,7 +44,7 @@ namespace IdeaSite.FileService {
         /// <remarks/>
         public FileService() {
             this.Url = global::IdeaSite.Properties.Settings.Default.IdeaSite_FileService_FileService;
-            if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
+            if ((this.IsLocalFileSystemWebService(Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;
             }
