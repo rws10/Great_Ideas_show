@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="IdeaSite.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IdeaSite_FileService1_FileService" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://app2.freshfromflorida.com/web_services/filehandler/FileService.asmx</Value>
+    </Setting>
+    <Setting Name="IdeaSite_FileService_FileService" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://app2.freshfromflorida.com/web_services/filehandler/FileService.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
