@@ -13,6 +13,7 @@ using System.DirectoryServices.AccountManagement;
 using X.PagedList;
 using log4net;
 using System.Data.SqlClient;
+using System.Data.Entity.Infrastructure;
 
 namespace IdeaSite.Controllers
 {
@@ -230,12 +231,11 @@ namespace IdeaSite.Controllers
                         log.Error("An error has occured while accessing the database.", ex);
                         return RedirectToAction("AnError", "Error");
                     }
-                    //catch (Exception ex)
-                    //{
-                    //    log.Error("Some other error has occured.", ex);
-                    //    return RedirectToRoute("NewError");
-                    //    //return RedirectToAction("AnError", "Error");
-                    //}
+                    catch (DbUpdateException ex)
+                    {
+                        log.Error("Some other error has occured.", ex);
+                        return RedirectToRoute("NewError");
+                    }
 
                     // save the files to the specified folder and link them to the idea
                     for (int i = 0; i < files.Count(); ++i)
