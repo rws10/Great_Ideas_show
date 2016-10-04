@@ -5,7 +5,7 @@ namespace IdeaSite.Controllers
 {
     public class ErrorController : Controller
     {
-        public ViewResult Index()
+        public ViewResult AnError()
         {
             return View("Error");
         }

@@ -17,7 +17,13 @@ namespace IdeaSite
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Ideas", action = "Home", id = UrlParameter.Optional }
-            );
+                );
+
+            routes.MapRoute(
+                "NewError",
+                "Error/AnError",
+                new { controller = "Error", action = "AnError"}
+                );
         }
     }
 }

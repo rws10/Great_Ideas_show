@@ -30,8 +30,11 @@ namespace IdeaSite
 
             log.Error("An unhandled error occured.", ctx.Error);
 
-            Response.RedirectToRoute("Error", new { controller = "Error", action = "Index"});
-            this.Context.ClearError();
+            //Server.Transfer("Error.cshtml");
+            Context.ClearError();
+
+            Response.RedirectToRoute("NewError");
+            Response.Clear();
         }
     }
 }
