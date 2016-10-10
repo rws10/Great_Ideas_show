@@ -19,7 +19,7 @@ namespace IdeaSite.Controllers
         public ActionResult WriteNew()
         {
             // retrieve the current user's email
-            string from = GetEmail();            
+            string from = "teamzed@outlook.com";            
             
             // test for an '@freshfromflorida.com' email address. And stop the creation of the email and stop whatever action is occuring.
             if(from == null)
@@ -190,7 +190,7 @@ namespace IdeaSite.Controllers
             MailMessage mailMessage = (MailMessage)mailMsg;
             try
             {
-                SmtpClient smtpClient = new SmtpClient("relay.DOACS.State.FL.US");
+                SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com");
                 smtpClient.EnableSsl = false;
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.Send(mailMessage);
@@ -201,41 +201,6 @@ namespace IdeaSite.Controllers
                 TempData["FailureMessage"] = "Your email was not sent.";
                  log.Error("An error has occured while accessing the database.", ex);
             }
-        }
-
-        string GetEmail()
-        {
-            string username = Environment.UserName;
-            string domain = Environment.UserDomainName;
-
-            List<string> emailAddresses = new List<string>();
-
-            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
-            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
-
-            // Add the "mail" entry
-            emailAddresses.Add(user.EmailAddress);
-
-            // Add the "proxyaddresses" entries.
-            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
-            foreach (object property in properties["proxyaddresses"])
-            {
-                emailAddresses.Add(property.ToString());
-            }
-
-            string from = null;
-
-            // Retrieve the @freshfromflorida.com email address
-            for (int i = 0; i < emailAddresses.Count; i++)
-            {
-                if (emailAddresses[i].Contains("@freshfromflorida.com"))
-                {
-                    from = emailAddresses[i];
-                    break;
-                }
-            }
-
-            return from;
         }
 
         protected override void Dispose(bool disposing)

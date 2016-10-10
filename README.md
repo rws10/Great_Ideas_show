@@ -1,12 +1,8 @@
 Here is a list of items that need to be done to finish the project:
 ToDo:
-  - timed checking events
-    * This is going to be taken care on the server side.
-    * Create stored procedures (partly done) on the server side using T-SQL
-  - Follow ADA Format
-    * Label on name on form
-  - Have the attachments that are ready to be uploaded listed by name
-  - (Call Janet Quinten for secuirty?)
+  - Remove all Active Directory references
+  - Add in team_zed email
+  - Add reference to new database (possibly on GoDaddy?)
 
 Bugs:
   General:

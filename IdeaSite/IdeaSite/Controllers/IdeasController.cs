@@ -32,7 +32,7 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas
-        public ActionResult Index(int? page, string currentSearch, string sortByStatus, string[] sortByStatusArr, string search, string searchBy)
+        public ActionResult Index(int? page, string currentSearch, string sortByStatus, string[] sortByStatusArr, string search, string searchBy, string AdminChoice)
         {
             int pageSize = 10;
 
@@ -41,11 +41,9 @@ namespace IdeaSite.Controllers
             ViewBag.sortByStatusArr = sortByStatusArr;
             ViewBag.sortByStatus = sortByStatus;
 
-            var roles = GetRolesForUser(GetUsername(0));
-
             // get the name of the current user
-            ViewBag.currentUser = GetUsername(1);
-            var currentUser = GetUsername(1);
+            ViewBag.currentUser = "SomeUser";
+            var currentUser = "SomeUser";
 
             // get the domain name for the admin group
             var appSettings = ConfigurationManager.AppSettings;
@@ -63,15 +61,7 @@ namespace IdeaSite.Controllers
             ViewBag.currentSearch = search;
 
             // determine if the user is an admin and carry this information to the view
-            ViewBag.isAdmin = false;
-            for (int i = 0; i < roles.Count(); i++)
-            {
-                if (roles.ElementAt(i) == group)
-                {
-                    ViewBag.isAdmin = true;
-                    break;
-                }
-            }
+            ViewBag.isAdmin = AdminChoice;
 
             int pageNumber = (page ?? 1);
 
@@ -141,7 +131,7 @@ namespace IdeaSite.Controllers
         {
             Idea idea = db.Ideas.Find(id);
 
-            ViewBag.currentUser = GetUsername(1);
+            ViewBag.currentUser = "SomeUser";
 
             return View(idea);
         }
@@ -162,10 +152,10 @@ namespace IdeaSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                idea.cre_user = GetUsername(1);
+                idea.cre_user = "SomeUser";
                 idea.cre_date = DateTime.Now;
                 idea.mod_date = DateTime.Now;
-                idea.email = GetEmail();
+                idea.email = " teamzed@outlook.com";
                 var ideas = db.Ideas.Where(IDEA => IDEA.title == idea.title).ToList();
 
                 if (ideas.Count > 0)
@@ -840,86 +830,6 @@ namespace IdeaSite.Controllers
             }
             finalResults = finalResults.Distinct();
             return finalResults;
-        }
-
-
-        public string GetUsername(int i)
-        {
-            // pull the current user's name from active directory and use it for cre_user
-            System.Security.Principal.WindowsIdentity wi = System.Security.Principal.WindowsIdentity.GetCurrent();
-            string[] a = HttpContext.User.Identity.Name.Split('\\');
-            DirectoryEntry ADEntry = new DirectoryEntry("WinNT://" + a[0] + "/" + a[1]);
-
-            if (i == 0)
-            {
-                return ADEntry.Properties["Name"].Value.ToString();
-            }
-            return ADEntry.Properties["FullName"].Value.ToString();
-        }
-
-        public string[] GetRolesForUser(string username)
-        {
-            List<string> roles = new List<string>();
-            string[] user = username.Split(new char[] { '@' });
-            SearchResult result;
-            DirectorySearcher search = new DirectorySearcher();
-            search.Filter = String.Format("(SAMAccountName={0})", user[0]);
-            // member contains list of users identified by distinguishedName
-            search.PropertiesToLoad.Add("memberof");
-            result = search.FindOne();
-            if (result != null)
-            {
-                // search through members of group
-                for (int counter = 0; counter < result.Properties["memberof"].Count; counter++)
-                {
-                    SearchResult srUser;
-                    search = new DirectorySearcher();
-                    // Filter on distinguishedName to find user
-                    search.Filter = string.Format("(distinguishedName={0})", (string)result.Properties["memberof"][counter]);
-                    // samaccountname is login id without domain qualifier
-                    search.PropertiesToLoad.Add("SAMAccountName");
-                    srUser = search.FindOne();
-                    if (srUser != null)
-                    {
-                        roles.Add((string)srUser.Properties["samaccountname"][0].ToString());
-                    }
-                }
-            }
-            return roles.ToArray();
-        }
-
-        string GetEmail()
-        {
-            string username = Environment.UserName;
-            string domain = Environment.UserDomainName;
-
-            List<string> emailAddresses = new List<string>();
-
-            PrincipalContext domainContext = new PrincipalContext(ContextType.Domain, domain);
-            UserPrincipal user = UserPrincipal.FindByIdentity(domainContext, username);
-
-            // Add the "mail" entry
-            emailAddresses.Add(user.EmailAddress);
-
-            // Add the "proxyaddresses" entries.
-            System.DirectoryServices.PropertyCollection properties = ((DirectoryEntry)user.GetUnderlyingObject()).Properties;
-            foreach (object property in properties["proxyaddresses"])
-            {
-                emailAddresses.Add(property.ToString());
-            }
-
-            string from = null;
-
-            for (int i = 0; i < emailAddresses.Count; i++)
-            {
-                if (emailAddresses[i].Contains("@freshfromflorida.com"))
-                {
-                    from = emailAddresses[i];
-                    break;
-                }
-            }
-
-            return from;
         }
 
         protected override void Dispose(bool disposing)
