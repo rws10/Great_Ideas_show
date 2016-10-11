@@ -32,7 +32,7 @@ namespace IdeaSite.Controllers
         }
 
         // GET: Ideas
-        public ActionResult Index(int? page, string currentSearch, string sortByStatus, string[] sortByStatusArr, string search, string searchBy, string AdminChoice)
+        public ActionResult Index(int? page, string currentSearch, string sortByStatus, string[] sortByStatusArr, string search, string searchBy, bool AdminChoice = true)
         {
             int pageSize = 10;
 

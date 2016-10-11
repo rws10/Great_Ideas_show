@@ -190,12 +190,12 @@ namespace IdeaSite.Controllers
             MailMessage mailMessage = (MailMessage)mailMsg;
             try
             {
-                SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com");
-                smtpClient.EnableSsl = false;
+                SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com", 587);
+                smtpClient.Credentials = new System.Net.NetworkCredential("teamzed@outlook.com", "T3@m_Z3d");
+                smtpClient.EnableSsl = true;
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.Send(mailMessage);
             }
-
             catch (SmtpException ex)
             {
                 TempData["FailureMessage"] = "Your email was not sent.";
