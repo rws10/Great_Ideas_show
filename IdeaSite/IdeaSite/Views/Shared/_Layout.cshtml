@@ -13,7 +13,9 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <!--Would like to shift "home" button back a tab or so-->
-            <div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
@@ -26,14 +28,18 @@
             </div>
         </div>
     </div>
-    <div class="container body-content col-md-20 ">
-        <div class=”row”>
+    <div class="container body-content col-md-20">
+        <div class="row">
             <div class=”col-md-12”><img src="~/Content/images/fdacs.jpg" class="img-responsive center-block pad-down" /></div>
+            <div class="col-md-12 error-message">
+                    Any email sent from this site will be from "teamzed@outlook.com." If you do not want your email to be spammed
+                    by notifications from submitted ideas, please delete your idea when you are finished.
+            </div>
         </div>
         @RenderBody()
         <footer class="col-md-12">
-		<br/>
-		<hr/>
+            <br />
+            <hr />
             <p style="font-size:12px">
                 <b>
                     Please note that Florida has a broad public records law (Chapter 119, Florida Statutes).

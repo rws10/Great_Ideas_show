@@ -18,7 +18,17 @@
                 @Html.Action(actionName: "TempMessage", controllerName: "Message")
             </div>
         </div>
-
+        <!--Box for entering an email-->
+        <div class="form-group">
+            If you wish to test the email function, please insert a valid email address here.
+            @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("Email", new { htmlAttributes = new { @class = "form-control" } })
+                <span class="field-validation-valid text-danger" data-valmsg-for="title" data-valmsg-replace="true"></span>
+                <div class="error-message">@Html.ValidationMessageFor(model => model.title)</div>
+            </div>
+        </div>
+        <!--Box for entering a title-->
         <div class="form-group">
             @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -27,7 +37,7 @@
                 <div class="error-message">@Html.ValidationMessageFor(model => model.title)</div>
             </div>
         </div>
-
+        <!--Box for entering a description-->
         <div class="form-group">
             @Html.LabelFor(model => model.body, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10 multiline-field">
@@ -40,6 +50,7 @@
 
         <input id="statusCode" name="statusCode" value="Submitted" type="hidden">
 
+        <!--Submit new attachments-->
         <div class="form-group">
             @Html.Label("Attachment", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
